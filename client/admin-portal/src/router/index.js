@@ -1,15 +1,15 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import Login from "../views/Login.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
-  {
-    path: "/",
-    name: "home",
-    component: Home
-  },
+  // {
+  //   path: "/",
+  //   name: "home",
+  //   component: Home
+  // },
   {
     path: "/about",
     name: "about",
@@ -20,9 +20,24 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/About.vue")
   },
   {
-    path: "/login",
+    path: "/",
     name: "login",
-    component: () => import("../views/Login.vue")
+    component: Login
+  },
+  {
+    path: "/home",
+    name: "home",
+    component: () => import("../views/Home.vue"),
+    children: [
+      {
+        path: "products",
+        component: () => import("../views/children/Products.vue")
+      },
+      { 
+        path: "orders",
+        component: () => import("../views/children/Orders.vue")
+      }
+    ]
   }
 ];
 
