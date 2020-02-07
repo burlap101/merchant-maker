@@ -3,15 +3,23 @@
     <div class="sidebar-sticky">
       <ul class="nav flex-column">
         <li class="nav-item">
-          <router-link to="/home"> 
-            <div class="nav-link" v-on:click="activeOption = 'dashboard'" v-bind:class="{ active: activeOption=='dashboard' }">
+          <router-link to="/home">
+            <div
+              class="nav-link"
+              v-on:click="activeOption = 'dashboard'"
+              v-bind:class="{ active: activeOption == 'dashboard' }"
+            >
               Dashboard
             </div>
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/home/products">
-            <div v-bind:class="{ active: activeOption=='products' }" class="nav-link" v-on:click="activeOption = 'products'">
+          <router-link to="/products">
+            <div
+              v-bind:class="{ active: activeOption == 'products' }"
+              class="nav-link"
+              v-on:click="activeOption = 'products'"
+            >
               Products
             </div>
           </router-link>
@@ -29,8 +37,12 @@
           </a>
         </li>
         <li class="nav-item">
-          <router-link to="/home/orders">
-            <div v-bind:class="{ active: activeOption=='orders' }" class="nav-link disabled" v-on:click="activeOption = 'orders'">
+          <router-link to="/orders">
+            <div
+              v-bind:class="{ active: activeOption == 'orders' }"
+              class="nav-link disabled"
+              v-on:click="activeOption = 'orders'"
+            >
               Orders
             </div>
           </router-link>
@@ -78,8 +90,8 @@ export default {
   name: "sidebar",
   data() {
     return {
-      activeOption: 'dashboard'
-    }
+      activeOption: "dashboard"
+    };
   }
-}
+};
 </script>

@@ -1,13 +1,11 @@
 <template>
   <div class="table-responsive">
-    <table class="table table-striped table-sm">
+    <table class="table table-striped table-bordered table-hover">
       <thead>
         <tr>
-          <th>#</th>
-          <th>Header</th>
-          <th>Header</th>
-          <th>Header</th>
-          <th>Header</th>
+          <th v-for="(title, index) in headers" v-bind:key="'header-' + index">
+            {{ title }}
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -131,10 +129,12 @@
 <script>
 export default {
   name: "my-table",
+  props: ["apiUrl"],
   data() {
     return {
-      
-    }
-  }
-}
+      headers: []
+    };
+  },
+  created() {}
+};
 </script>

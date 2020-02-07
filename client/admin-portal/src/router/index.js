@@ -20,12 +20,12 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/About.vue")
   },
   {
-    path: "/",
+    path: "/login",
     name: "login",
     component: Login
   },
   {
-    path: "/home",
+    path: "/",
     name: "home",
     component: () => import("../views/Home.vue"),
     children: [
@@ -33,9 +33,13 @@ const routes = [
         path: "products",
         component: () => import("../views/children/Products.vue")
       },
-      { 
+      {
         path: "orders",
         component: () => import("../views/children/Orders.vue")
+      },
+      {
+        path: "products/add",
+        component: () => import("../views/children/ProductsAdd.vue")
       }
     ]
   }
