@@ -12,7 +12,7 @@ export class ProductsController {
    return this.productsService.findall();
   }
 
-  @Post()
+  @Post('add')
   async create(@Body() createProductDto: CreateProductDto): Promise<Product> {
     return this.productsService.create(createProductDto);
   } 
