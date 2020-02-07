@@ -10,6 +10,7 @@
             class="form-control"
             id="name"
             v-bind:placeholder="'The ' + objectType + '\'s name'"
+            v-model="name"
             required
           />
         </div>
@@ -22,7 +23,7 @@
             class="form-control"
             id="description"
             v-bind:placeholder="'A short description of the ' + objectType"
-            value=""
+            v-model="description"
             required
           />
         </div>
@@ -35,7 +36,7 @@
             class="form-control"
             id="price"
             placeholder="The price per 'unit of measure' you are selling this product for"
-            value=""
+            v-model="price"
             required
           />
         </div>
