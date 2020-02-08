@@ -5,16 +5,25 @@
     >
       <h2 class="h2">Products - Add</h2>
     </div>
-    <add-form v-bind:object-type="'product'" />
+    <add-form 
+    v-bind:object-type="'product'" 
+    v-bind:fields-obj="formFields"
+    />
   </div>
 </template>
 
 <script>
 import AddForm from "../../components/AddForm.vue";
+import { productFields } from "../../assets/js/ProductFields";
 export default {
   name: "products-add",
   components: {
     AddForm
+  },
+  data () {
+    return {
+      formFields: productFields
+    }
   }
 };
 </script>

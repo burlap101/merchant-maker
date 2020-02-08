@@ -1,78 +1,49 @@
 <template>
   <div>
-    <h4 class="mb-3">Details</h4>
+    <h4 class="mb-3">Core Details</h4>
     <div v-if="added" class="alert alert-success" role="alert">
       Record added successfully
     </div>
-    <div v-if="error" class="alert alert-danger" role="alert">
-      {{ error }}
+    <div v-if="errors.length > 0" class="alert alert-danger" role="alert">
+      <ul class="listgroup">
+        <li v-for="(error, index) of errors" 
+        class="list-group-item"
+        v-bind:key="'error-' + index"
+        >
+          {{ error }}
+        </li>
+      </ul>
+      
     </div>
     <div class="needs-validation">
-      <div class="row">
+      <div v-for="(field, index) of fieldsObj.text" class="row" v-bind:key="'text-field-' + index">
         <div class="col-md-6 mb-3">
-          <label for="name">Name</label>
+          <label v-bind:for="field.id">{{ field.label }}</label>
           <input
             type="text"
             class="form-control"
-            id="name"
-            v-bind:placeholder="'The ' + objectType + '\'s name'"
-            v-model="formData.name"
+            v-bind:id="field.id"
+            v-bind:placeholder="field.hint"
+            v-model="field.value"
+            v-on:keyup="textFieldValidation(field)"
             required
           />
         </div>
       </div>
-      <div class="row">
+      <div v-for="(field, index) of fieldsObj.number" class="row" v-bind:key="'number-field-' + index">
         <div class="col-md-6 mb-3">
-          <label for="description">Description</label>
-          <input
-            type="text"
-            class="form-control"
-            id="description"
-            v-bind:placeholder="'A short description of the ' + objectType"
-            v-model="formData.description"
-            required
-          />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="price">Price</label>
+          <label v-bind:for="field.id">{{ field.label }}</label>
           <input
             type="number"
             class="form-control"
-            id="price"
-            placeholder="The price per 'unit of measure' you are selling this product for"
-            v-model="formData.price"
+            v-bind:id="field.id"
+            v-bind:placeholder="field.hint"
+            v-model="field.value"
             required
           />
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="uom">Unit of measure</label>
-          <input
-            type="text"
-            class="form-control"
-            id="uom"
-            placeholder="E.g. 'each', 'm', 'box of 12'"
-            v-model="formData.uom"
-            required
-          />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="stock-code">Stock Code (optional)</label>
-          <input
-            type="text"
-            class="form-control"
-            id="stock-code"
-            placeholder="A code that you may want to designate your product"
-            v-model="formData.stockCode"
-          />
-        </div>
-      </div>
-      <div class="row">
+      <!-- <div class="row">
         <div class="col-md-6 mb-3">
           <label for="available">Available</label>
           <input
@@ -86,8 +57,9 @@
             required
           />
         </div>
-      </div>
-      <h3 class="h4">Additional Attributes</h3>
+      </div> -->
+
+      <h3 class="h4 my-3">Additional Attributes</h3>
       <div
         class="row"
         v-for="(attr, index) of Object.keys(formData.attributes)"
@@ -106,29 +78,29 @@
             required
           />
         </div>
-        <button v-on:click="deleteAttribute(attr)" class="btn btn-outline-danger">
+        <button v-on:click="deleteAttribute(attr)" class="btn btn-outline-danger col-md-6">
           - Remove
         </button>
       </div>
       <div class="row">
         <div class="col-md-6 mb-3">
-          <span>
-            <input
-              type="text"
-              class="form-control"
-              id="attribute-name"
-              v-bind:placeholder="'e.g. Size, Colour'"
-              v-model="attrName"
-              required
-            />
-            <button v-on:click="addAttribute(attrName)" class="btn btn-outline-success">
-              + Add
-            </button>
-          </span>
+          <input
+            type="text"
+            class="form-control"
+            id="attribute-name"
+            v-bind:placeholder="'e.g. Size, Colour'"
+            v-model="attrName"
+            required
+          />
+        </div>
+        <div class="col-md-6">
+          <button v-on:click="addAttribute(attrName)" class="btn btn-outline-success">
+            + Add
+          </button>
         </div>
       </div>
-      <button v-on:click="submit" class="btn btn-primary">
-        Add
+      <button v-on:click="submit" class="btn btn-primary mt-4">
+        Submit
       </button>
     </div>
   </div>
@@ -137,7 +109,7 @@
 <script>
 export default {
   name: "add-form",
-  props: ["url", "objectType"],
+  props: ["url", "objectType", "fieldsObj"],
   data() {
     return {
       formData: {
@@ -147,11 +119,11 @@ export default {
         uom: "",
         stockCode: "",
         available: undefined,
-        attributes: {},
+        attributes: {}
       },
       attrName: "",
       added: false,
-      error: ""
+      errors: []
     };
   },
   methods: {
@@ -177,18 +149,30 @@ export default {
           attributes: {}
         };
       } else {
-        this.error =
-          "There was a problem: (" + res.status + ") " + res.statusText;
+        this.errors.push(
+          "There was a problem: (" + res.status + ") " + res.statusText
+        );
         this.added = false;
       }
     },
     addAttribute: function(attr) {
-      this.$set(this.formData.attributes, attr, "");
-      this.attrName = "";
+      let re = /[A-Z+,a-z+]/;
+      console.log("Attribute valid?: " + re.test(attr))
+      if (re.test(attr)) {
+        this.$set(this.formData.attributes, attr, "");
+        this.attrName = "";
+      }
     },
     deleteAttribute: function(attr) {
       delete this.formData.attributes[attr];
-      this.$forceUpdate()
+      this.$forceUpdate();
+    },
+    textFieldValidation: function(fieldObj) {
+      if(fieldObj.re.test(fieldObj.value)) {
+        fieldObj.isValid = true;
+      } else {
+        fieldObj.isValid = false;
+      }
     }
   }
 };
