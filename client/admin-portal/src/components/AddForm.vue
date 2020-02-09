@@ -1,65 +1,134 @@
 <template>
-  <div>
+  <div v-on:keypress.enter="submit">
     <h4 class="mb-3">Core Details</h4>
     <div v-if="added" class="alert alert-success" role="alert">
       Record added successfully
     </div>
     <div v-if="errors.length > 0" class="alert alert-danger" role="alert">
       <ul class="listgroup">
-        <li v-for="(error, index) of errors" 
-        class="list-group-item"
-        v-bind:key="'error-' + index"
+        <li
+          v-for="(error, index) of errors"
+          class="list-group-item"
+          v-bind:key="'error-' + index"
         >
           {{ error }}
         </li>
       </ul>
-      
     </div>
-    <div class="needs-validation">
-      <div v-for="(field, index) of fieldsObj.text" class="row" v-bind:key="'text-field-' + index">
+    <form class="needs-validation">
+      <div
+        v-for="(field, index) of fieldsObj.text"
+        class="row"
+        v-bind:key="'text-field-' + index"
+      >
         <div class="col-md-6 mb-3">
-          <label v-bind:for="field.id">{{ field.label }}</label>
+          <label v-bind:for="field.id">
+            {{ field.label }}
+            <small class="text-muted" v-if="!field.required">
+              (optional)
+            </small>
+          </label>
+          <i
+            class="far fa-question-circle ml-2 text-muted"
+            data-toggle="tooltip"
+            data-placement="right"
+            v-bind:title="field.hint"
+          >
+          </i>
           <input
             type="text"
             class="form-control"
             v-bind:id="field.id"
-            v-bind:placeholder="field.hint"
+            v-bind:placeholder="'e.g. ' + field.example"
             v-model="field.value"
             v-on:keyup="textFieldValidation(field)"
-            required
+            v-bind:required="field.required"
           />
         </div>
       </div>
-      <div v-for="(field, index) of fieldsObj.number" class="row" v-bind:key="'number-field-' + index">
+      <div
+        v-for="(field, index) of fieldsObj.number"
+        class="row"
+        v-bind:key="'number-field-' + index"
+      >
         <div class="col-md-6 mb-3">
           <label v-bind:for="field.id">{{ field.label }}</label>
+          <i
+            class="far fa-question-circle ml-2 text-muted"
+            data-toggle="tooltip"
+            data-placement="right"
+            v-bind:title="field.hint"
+          >
+          </i>
           <input
             type="number"
             class="form-control"
             v-bind:id="field.id"
-            v-bind:placeholder="field.hint"
+            v-bind:placeholder="'e.g. ' + field.example"
             v-model="field.value"
-            required
+            v-bind:required="field.required"
           />
         </div>
       </div>
-      <!-- <div class="row">
+      <div
+        v-for="(field, index) of fieldsObj.textArea"
+        class="row"
+        v-bind:key="'number-field-' + index"
+      >
         <div class="col-md-6 mb-3">
-          <label for="available">Available</label>
-          <input
-            type="number"
+          <label v-bind:for="field.id">{{ field.label }}</label>
+          <i
+            class="far fa-question-circle ml-2 text-muted"
+            data-toggle="tooltip"
+            data-placement="right"
+            v-bind:title="field.hint"
+          >
+          </i>
+          <textarea
             class="form-control"
-            id="available"
-            v-bind:placeholder="
-              'The number of ' + objectType + '\'s currently in stock'
-            "
-            v-model="formData.available"
-            required
+            v-bind:id="field.id"
+            v-bind:placeholder="'e.g. ' + field.example"
+            v-model="field.value"
+            v-bind:required="field.required"
+            rows="4"
           />
         </div>
-      </div> -->
-
-      <h3 class="h4 my-3">Additional Attributes</h3>
+      </div>
+      <h4 class="my-3">
+        Images
+      </h4>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <input
+            type="file"
+            class="custom-file-input "
+            id="product-image"
+            v-bind:placeholder="'e.g. Size, Colour'"
+            required
+          />
+          <label for="product-image" class="custom-file-label text-muted mx-3">
+            Choose image
+          </label>
+        </div>
+        <div class="col-md-6">
+          <button
+            v-on:click="addImageField(attrName)"
+            class="btn btn-outline-success"
+          >
+            + Add
+          </button>
+        </div>
+      </div>
+      <h3 class="h4 my-3">
+        Additional Attributes
+        <i
+          class="h6 far fa-question-circle ml-2 text-muted"
+          data-toggle="tooltip"
+          data-placement="right"
+          title="Any additional attributes that you would like to designate to distinguish this product from others that you may stock similar"
+        >
+        </i>
+      </h3>
       <div
         class="row"
         v-for="(attr, index) of Object.keys(formData.attributes)"
@@ -78,7 +147,10 @@
             required
           />
         </div>
-        <button v-on:click="deleteAttribute(attr)" class="btn btn-outline-danger col-md-6">
+        <button
+          v-on:click="deleteAttribute(attr)"
+          class="btn btn-outline-danger col-md-6"
+        >
           - Remove
         </button>
       </div>
@@ -94,7 +166,10 @@
           />
         </div>
         <div class="col-md-6">
-          <button v-on:click="addAttribute(attrName)" class="btn btn-outline-success">
+          <button
+            v-on:click="addAttribute(attrName)"
+            class="btn btn-outline-success"
+          >
             + Add
           </button>
         </div>
@@ -102,7 +177,7 @@
       <button v-on:click="submit" class="btn btn-primary mt-4">
         Submit
       </button>
-    </div>
+    </form>
   </div>
 </template>
 
@@ -123,7 +198,8 @@ export default {
       },
       attrName: "",
       added: false,
-      errors: []
+      errors: [],
+      images: []
     };
   },
   methods: {
@@ -157,7 +233,7 @@ export default {
     },
     addAttribute: function(attr) {
       let re = /[A-Z+,a-z+]/;
-      console.log("Attribute valid?: " + re.test(attr))
+      console.log("Attribute valid?: " + re.test(attr));
       if (re.test(attr)) {
         this.$set(this.formData.attributes, attr, "");
         this.attrName = "";
@@ -168,7 +244,17 @@ export default {
       this.$forceUpdate();
     },
     textFieldValidation: function(fieldObj) {
-      if(fieldObj.re.test(fieldObj.value)) {
+      if (fieldObj.re.test(fieldObj.value)) {
+        fieldObj.isValid = true;
+      } else {
+        fieldObj.isValid = false;
+      }
+    },
+    textAreaValidation: function(fieldObj) {
+      if (
+        fieldObj.re.test(fieldObj.value) ||
+        fieldObj.value.length < fieldObj.maxLength
+      ) {
         fieldObj.isValid = true;
       } else {
         fieldObj.isValid = false;

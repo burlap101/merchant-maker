@@ -5,9 +5,10 @@ export const productFields = {
       id: "name",
       label: "Name",
       re: /[A-Za-z]/,
-      length: 255,
+      maxLength: 255,
       errorMsg: "Needs to contain one or more letters",
       hint: "The product's name",
+      example: "Combobulator",
       value: "",
       isValid: false,
       required: true
@@ -16,9 +17,10 @@ export const productFields = {
       id: "stockCode",
       label: "Stock Code",
       re: /[0-9A-Za-z]/,
-      length: 255,
+      maxLength: 256,
       errorMsg: "Needs to contain one or more letters or digits",
       hint: "A code that you may want to designate your product",
+      example: "COMB001",
       value: "",
       isValid: false,
       required: false
@@ -27,9 +29,10 @@ export const productFields = {
       id: "uom",
       label: "Unit of Measure",
       re: /[A-Za-z]/,
-      length: 255,
+      maxLength: 256,
       errorMsg: "Needs to contain one or more letters",
-      hint: "E.g. 'each', 'm', 'box of 12'",
+      hint: "The unit of measure you are selling your product",
+      example: "'each', 'm', 'box of 12'",
       value: "",
       isValid: false,
       required: true
@@ -41,9 +44,10 @@ export const productFields = {
       id: "description",
       label: "Description",
       re: /[A-Za-z]/,
-      length: 1023,
+      maxLength: 1024,
       errorMsg: "Needs to contain one or more letters",
       hint: "A short description of the product",
+      example: "This product combobulates whatever you want!",
       value: "",
       isValid: false,
       required: true
@@ -56,6 +60,7 @@ export const productFields = {
       label: "Price",
       hint: "The price per 'unit of measure' you are selling this product for",
       errorMsg: "Needs to be a number greater than or equal to 0",
+      example: "1045.95",
       value: undefined,
       isValid: false,
       required: true
@@ -63,12 +68,14 @@ export const productFields = {
     available: {
       id: "available",
       label: "Available",
-      hint: "The amount of this product you can deliver or have in stock for example. If not required (i.e. never running out of stock) then set this to -1.",
-      errorMsg: "Needs to be value greater than or equal to 0 or can be -1 (signalling infinite supply)",
+      hint:
+        "The amount of this product you can deliver or have in stock for example. If not required (i.e. never running out of stock) then set this to -1.",
+      errorMsg:
+        "Needs to be value greater than or equal to 0 or can be -1 (signalling infinite supply)",
+      example: "101",
       value: undefined,
       isValid: false,
       required: true
     }
   }
-  
-}
+};
