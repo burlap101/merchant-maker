@@ -63,7 +63,12 @@ export const productFields = {
       example: "1045.95",
       value: undefined,
       isValid: false,
-      required: true
+      required: true,
+      step: 0.01,
+      min: 0,
+      specialValues: [
+        -1
+      ]
     },
     available: {
       id: "available",
@@ -75,7 +80,16 @@ export const productFields = {
       example: "101",
       value: undefined,
       isValid: false,
-      required: true
+      required: true,
+      step: 1
+    }
+  },
+  attributes: [],
+  file: {
+    images: {
+      hint: "Attach images relating to your product for display in the store. The first image will be used for catalog or shopfront display purposes."
     }
   }
 };
+
+

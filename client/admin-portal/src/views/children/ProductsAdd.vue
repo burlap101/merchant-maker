@@ -7,7 +7,8 @@
         <router-link to="/products">
           Products
         </router-link>
-           > Add</h2>
+        > Add
+      </h2>
     </div>
     <add-form v-bind:object-type="'product'" v-bind:fields-obj="formFields" />
   </div>

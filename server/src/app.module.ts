@@ -4,15 +4,13 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductsModule } from './products/products.module';
 import config from './localconfig/keys';
-import { MulterModule } from '@nestjs/platform-express';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(config.mongoUri), 
-    MulterModule.register({
-      dest: './media/'
-    }),
-    ProductsModule
+    ProductsModule,
+    FileUploadModule
   ],
   controllers: [AppController],
   providers: [AppService],

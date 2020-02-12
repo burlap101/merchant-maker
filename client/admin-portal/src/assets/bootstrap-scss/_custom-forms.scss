@@ -319,6 +319,13 @@
     box-shadow: $custom-file-focus-box-shadow;
   }
 
+  // &[hover] ~ .custom-file-label,
+  // &:hover ~ .custom-file-label {
+  //   border-color: $custom-file-hover-border-color;
+  //   background-color: $custom-file-hover-background-color;
+  //   cursor: $custom-file-hover-cursor;
+  // }
+
   // Use [disabled] and :disabled to work around https://github.com/twbs/bootstrap/issues/28247
   &[disabled] ~ .custom-file-label,
   &:disabled ~ .custom-file-label {

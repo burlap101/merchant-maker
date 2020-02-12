@@ -629,11 +629,14 @@ $custom-range-thumb-focus-box-shadow-width:  $input-focus-width !default; // For
 $custom-range-thumb-active-bg:               lighten($component-active-bg, 35%) !default;
 $custom-range-thumb-disabled-bg:             $gray-500 !default;
 
-$custom-file-height:                $input-height !default;
-$custom-file-height-inner:          $input-height-inner !default;
-$custom-file-focus-border-color:    $input-focus-border-color !default;
-$custom-file-focus-box-shadow:      $input-focus-box-shadow !default;
-$custom-file-disabled-bg:           $input-disabled-bg !default;
+$custom-file-height:                        $input-height !default;
+$custom-file-height-inner:                  $input-height-inner !default;
+$custom-file-focus-border-color:            $input-focus-border-color !default;
+$custom-file-focus-box-shadow:              $input-focus-box-shadow !default;
+$custom-file-hover-border-color:            $primary !default;
+$custom-file-hover-cursor:                  pointer !default;
+$custom-file-hover-background-color:        $gray-100 !default;
+$custom-file-disabled-bg:                   $input-disabled-bg !default;
 
 $custom-file-padding-y:             $input-padding-y !default;
 $custom-file-padding-x:             $input-padding-x !default;
