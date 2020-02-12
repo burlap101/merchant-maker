@@ -58,3 +58,5 @@ yarn-error.log*
 
 # User
 localconfig
+
+/server/media/
