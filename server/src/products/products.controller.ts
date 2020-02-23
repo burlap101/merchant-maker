@@ -12,12 +12,13 @@ export class ProductsController {
    return this.productsService.findall();
   }
 
-  @Post('add')
+  @Post('add') 
   async create(@Body() createProductDto: CreateProductDto): Promise<Product> {
     return this.productsService.create(createProductDto);
   } 
 
-  @Delete(':id')
-×==    return `this action removes a #${id} product`;
+  @Delete(':id') 
+  delete(@Param() id): String {
+    return `this action removes a #${id} product`;
   }
 }
