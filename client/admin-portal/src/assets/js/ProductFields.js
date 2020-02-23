@@ -66,9 +66,7 @@ export const productFields = {
       required: true,
       step: 0.01,
       min: 0,
-      specialValues: [
-        -1
-      ]
+      specialValues: [-1]
     },
     available: {
       id: "available",
@@ -87,9 +85,8 @@ export const productFields = {
   attributes: [],
   file: {
     images: {
-      hint: "Attach images relating to your product for display in the store. The first image will be used for catalog or shopfront display purposes."
+      hint:
+        "Attach images relating to your product for display in the store. The first image will be used for catalog or shopfront display purposes."
     }
   }
 };
-
-

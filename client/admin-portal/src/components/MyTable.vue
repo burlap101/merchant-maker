@@ -29,7 +29,7 @@
           <td>nec</td>
           <td>odio</td>
           <td>Praesent</td>
-        </tr>
+        </tr>,
         <tr>
           <td>1,003</td>
           <td>libero</td>

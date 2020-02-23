@@ -1,3 +1,5 @@
+import { Category } from '../../categories/interfaces/category.interface';
+
 export interface Product {
   _id: string,
   name: string,
@@ -6,5 +8,7 @@ export interface Product {
   stockCode: string,
   attributes: Object,
   available: number,
-  delete: boolean
+  images: Array<Object>,
+  category: Category,
+  deleted: boolean
 }

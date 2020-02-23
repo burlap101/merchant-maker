@@ -7,5 +7,7 @@ export const ProductSchema = new mongoose.Schema({
   stockCode: String,
   attributes: Object,
   available: Number,
-  delete: Boolean
+  images: [Object],
+  category: String,
+  deleted: Boolean
 })

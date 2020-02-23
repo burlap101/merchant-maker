@@ -18,7 +18,6 @@ export class ProductsController {
   } 
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return `this action removes a #${id} product`;
+×==    return `this action removes a #${id} product`;
   }
 }
