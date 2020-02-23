@@ -1,4 +1,4 @@
-export const productFields = {
+export const ProductFields = {
   /* Define the fields corresponding to text HTML input fields */
   text: {
     name: {

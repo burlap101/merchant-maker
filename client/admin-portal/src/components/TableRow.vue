@@ -1,13 +1,14 @@
 <template>
   <tr>
-    <td>1,001</td>
-    <td>Lorem</td>
-    <td>ipsum</td>
-    <td>dolor</td>
-    <td>sit</td>
+    <td v-for="(value, index) in values" v-bind:key="index">
+      {{ value }}
+    </td>
   </tr>
 </template>
 
 <script>
-export default {};
+export default {
+  name: "table-row",
+  props: ["values"]
+};
 </script>

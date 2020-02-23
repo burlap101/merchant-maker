@@ -16,7 +16,7 @@
 
 <script>
 import AddForm from "../../components/AddForm.vue";
-import { productFields } from "../../assets/js/ProductFields";
+import { ProductFields } from "../../assets/js/ProductFields";
 export default {
   name: "products-add",
   components: {
@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      formFields: productFields
+      formFields: ProductFields
     };
   }
 };
