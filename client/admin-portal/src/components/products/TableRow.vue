@@ -12,3 +12,9 @@ export default {
   props: ["values"]
 };
 </script>
+
+<style scoped>
+td {
+  cursor: pointer;
+}
+</style>

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { Category } from './interfaces/category.interface';
 import { ProposedCategoryDto } from './dto/proposed-category.dto';
@@ -8,8 +8,14 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
-  findall(): Promise<Category[]> {
-    return this.categoriesService.findall();
+  find(@Query("parent") parent): Promise<Category[]> {
+    if (parent === "noparent") {
+      return this.categoriesService.find("parent", "");
+    } else if (parent) {
+      return this.categoriesService.find("parent", parent);
+    } else {
+      return this.categoriesService.find();
+    }
   }
 
   @Post('add')

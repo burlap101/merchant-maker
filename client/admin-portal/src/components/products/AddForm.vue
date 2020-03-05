@@ -1,6 +1,5 @@
 <template>
   <div v-on:keypress.enter="submit">
-    <h4 class="mb-3">Details</h4>
     <div v-if="added" class="alert alert-success" role="alert">
       Record added successfully
     </div>
@@ -8,7 +7,7 @@
       <div class="h5">Errors</div>
       <ol class="">
         <li
-          v-for="(error, index) of errors"
+          v-for="(error, index) in errors"
           class=""
           v-bind:key="'error-' + index"
         >
@@ -16,9 +15,12 @@
         </li>
       </ol>
     </div>
+    <h4 class="my-3">Category</h4>
+    <category-selection v-on:category-object="formData.category = $event" />
     <div class="needs-validation">
+      <h4 class="my-3">Details</h4>
       <div
-        v-for="(field, index) of fieldsObj.text"
+        v-for="(field, index) in fieldsObj.text"
         class="row"
         v-bind:key="'text-field-' + index"
       >
@@ -46,7 +48,7 @@
         </div>
       </div>
       <div
-        v-for="(field, index) of fieldsObj.number"
+        v-for="(field, index) in fieldsObj.number"
         class="row"
         v-bind:key="'number-field-' + index"
       >
@@ -70,7 +72,7 @@
         </div>
       </div>
       <div
-        v-for="(field, index) of fieldsObj.textArea"
+        v-for="(field, index) in fieldsObj.textArea"
         class="row"
         v-bind:key="'number-field-' + index"
       >
@@ -96,7 +98,7 @@
         Images
       </h4>
       <div
-        v-for="(image, index) of images"
+        v-for="(image, index) in images"
         v-bind:key="'image-upload-' + index"
         class="row"
       >
@@ -166,7 +168,7 @@
       </h3>
       <div
         class="row"
-        v-for="(attr, index) of Object.keys(formData.attributes)"
+        v-for="(attr, index) in Object.keys(formData.attributes)"
         v-bind:key="index"
       >
         <label v-bind:for="attr">{{ attr }}</label>
@@ -220,11 +222,15 @@
 
 <script>
 import _ from "lodash";
-import { ProductValidation } from "../assets/js/ProductValidation";
+import { ProductValidation } from "../../assets/js/ProductValidation";
+import CategorySelection from "./CategorySelection.vue";
 
 export default {
   name: "add-form",
   props: ["url", "objectType", "fieldsObj"],
+  components: {
+    CategorySelection
+  },
   data() {
     return {
       formData: {},
@@ -239,10 +245,6 @@ export default {
   },
   methods: {
     submit: async function() {
-      // if (this.isFormValid === undefined) {
-      //   this.errors.push("You have not entered any information yet.")
-      //   return;
-      // }
       if (!this.validateFormData()) {
         return;
       }
@@ -267,6 +269,8 @@ export default {
         );
         this.added = false;
       }
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
     },
     addAttribute: function(attr) {
       let re = /[A-Z+,a-z+]/;
@@ -370,6 +374,12 @@ export default {
           );
         }
       }
+
+      if (!allValid) {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }
+
       return allValid;
     },
     initialiseFormData: async function() {

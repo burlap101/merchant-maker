@@ -10,11 +10,12 @@ export class CategoriesService {
 
   async create(proposedCategory: ProposedCategoryDto): Promise<Category> {
     let parent: Category;
-    if (proposedCategory.parent !== undefined) {
+    console.log(proposedCategory)
+    if (proposedCategory.parent.name) {
+      console.log(proposedCategory.parent);
       parent = await this.create(proposedCategory.parent);
-      console.log(parent);
     }
-    const categories:Category[] = await this.findall();
+    const categories:Category[] = await this.find();
     let catNames = [];
     for (let category of categories) {
       catNames.push(category.name)
@@ -32,7 +33,14 @@ export class CategoriesService {
     }
   }
 
-  async findall(): Promise<Category[]> {
-    return this.categoryModel.find().exec();
+  async find(key?: string, value?: string): Promise<Category[]> {
+    if(!key && !value) {
+      return this.categoryModel.find({}).exec();
+    } else {
+      let query = {};
+      query[key] = value;
+      return this.categoryModel.find(query).exec();
+    }
+    
   }
 }

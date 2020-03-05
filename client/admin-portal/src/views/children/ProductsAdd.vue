@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import AddForm from "../../components/AddForm.vue";
+import AddForm from "../../components/products/AddForm.vue";
 import { ProductFields } from "../../assets/js/ProductFields";
 export default {
   name: "products-add",

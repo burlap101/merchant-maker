@@ -6,6 +6,7 @@ export interface Product {
   description: string,
   price: number,
   stockCode: string,
+  uom: string,
   attributes: Object,
   available: number,
   images: Array<Object>,

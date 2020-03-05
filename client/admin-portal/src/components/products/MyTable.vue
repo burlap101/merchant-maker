@@ -1,5 +1,5 @@
 <template>
-  <div class="table-responsive">
+  <div class="table-responsive mytable">
     <table class="table table-striped table-bordered table-hover">
       <thead>
         <tr>
@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import { ProductFields } from "../assets/js/ProductFields";
-import TableRow from "../components/TableRow.vue";
+import { ProductFields } from "../../assets/js/ProductFields";
+import TableRow from "./TableRow.vue";
 
 export default {
   name: "my-table",
@@ -37,15 +37,15 @@ export default {
     };
   },
   async created() {
-    let cols = ["_id"];
-    let names = ["_id"];
+    let cols = ["#"];
+    let names = [];
     for (let header in ProductFields.text) {
       cols.push(ProductFields.text[header].label);
-      names.push(header)
+      names.push(header);
     }
     for (let header in ProductFields.number) {
       cols.push(ProductFields.number[header].label);
-      names.push(header)
+      names.push(header);
     }
     this.headers = cols;
 
@@ -59,18 +59,23 @@ export default {
     } else {
       this.errors.push("There was a problem retrieving product data.");
     }
+    let i = 0;
     for (let product in productsObj) {
       // console.log(productsObj[product])
-      let renderedRow = [];
+      i++;
+      let renderedRow = [i];
+
       for (let name of names) {
-        console.log(name)
         renderedRow.push(productsObj[product][name]);
-        console.log(renderedRow);
       }
       this.entries.push(renderedRow);
     }
-
-    console.log(names);
   }
 };
 </script>
+
+<style scoped>
+.mytable {
+  font-size: smaller;
+}
+</style>

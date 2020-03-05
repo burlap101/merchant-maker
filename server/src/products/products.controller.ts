@@ -2,10 +2,14 @@ import { Controller, Get, Post, Body, Delete, Param, UseInterceptors } from '@ne
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductsService } from './products.service';
 import { Product } from './interfaces/product.interface';
+import { CategoriesService } from 'src/categories/categories.service';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly categoriesService: CategoriesService
+  ) {}
 
   @Get()
   findAll(): Promise<Product[]> {
@@ -14,6 +18,8 @@ export class ProductsController {
 
   @Post('add') 
   async create(@Body() createProductDto: CreateProductDto): Promise<Product> {
+    const category = this.categoriesService.create(createProductDto.category);
+    console.log(category);
     return this.productsService.create(createProductDto);
   } 
 
