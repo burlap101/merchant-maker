@@ -2,5 +2,8 @@ export interface Category {
   _id: string,
   name: string,
   description: string,
-  parent: Category
+  level: number,
+  treeSize: number,
+  parent?: Category,
+  children?: Category
 }

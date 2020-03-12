@@ -8,7 +8,7 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
-  find(@Query("parent") parent): Promise<Category[]> {
+  find(@Query("parent") parent): Promise<Array<Category[]>> {
     if (parent === "noparent") {
       return this.categoriesService.find("parent", "");
     } else if (parent) {
