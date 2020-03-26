@@ -7,21 +7,24 @@
         <router-link to="/products">
           Products
         </router-link>
-        > Add
+        > Edit
       </h2>
     </div>
-    <add-form v-bind:object-type="'product'" />
+    <edit-form v-bind:id="$route.params.id" />
   </div>
 </template>
 
 <script>
-import AddForm from "../../components/products/AddForm.vue";
+import EditForm from "@/components/products/EditForm.vue";
 
 
 export default {
-  name: "products-add",
+  name: "products-edit",
   components: {
-    AddForm
+    EditForm
+  },
+  created() {
+    console.log("ProductsEdit created")
   }
 };
 </script>

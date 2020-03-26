@@ -3,8 +3,8 @@
     <div class="container">
       <div class="row">
         <categories-bar />
-        <div class="col-6">
-          info goes here
+        <div class="col mt-4">
+          <product-list />
         </div>
       </div>
     </div>
@@ -13,11 +13,13 @@
 
 <script>
 import CategoriesBar from '@/components/CategoriesBar.vue';
+import ProductList from '@/components/ProductList.vue';
 
 export default {
   name: "products-overview",
   components: {
-    CategoriesBar
+    CategoriesBar,
+    ProductList
   }
 }
 </script>

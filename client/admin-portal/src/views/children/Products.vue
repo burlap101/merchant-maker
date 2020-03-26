@@ -9,7 +9,6 @@
           <router-link to="/products/add">
             <button class="btn btn-sm btn-outline-success">+ Add</button>
           </router-link>
-          <button class="btn btn-sm btn-outline-danger">Delete -</button>
         </div>
         <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
           <span data-feather="calendar"></span>
@@ -17,7 +16,7 @@
         </button>
       </div>
     </div>
-    <my-table v-bind:apiUrl="apiUrl" />
+    <my-table />
   </div>
 </template>
 
@@ -28,11 +27,6 @@ export default {
   name: "products",
   components: {
     MyTable
-  },
-  data() {
-    return {
-      apiUrl: "products"
-    };
   }
 };
 </script>

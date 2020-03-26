@@ -8,14 +8,17 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
-  find(@Query("parent") parent): Promise<Array<Category[]>> {
-    if (parent === "noparent") {
-      return this.categoriesService.find("parent", "");
-    } else if (parent) {
-      return this.categoriesService.find("parent", parent);
+  find(@Query("hasParent") hasParent): Promise<Category[]> {
+    if (hasParent !== undefined) {
+      return this.categoriesService.find("hasParent", hasParent);
     } else {
       return this.categoriesService.find();
     }
+  }
+
+  @Get('nested')
+  findNested(): Promise<Category[]> {
+    return this.categoriesService.nestAllChildren();
   }
 
   @Post('add')

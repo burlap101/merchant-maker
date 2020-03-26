@@ -72,13 +72,13 @@
         </div>
       </div>
     </div>
-    <button
+    <!-- <button
       class="btn btn-outline-success my-2"
       v-if="hasNewCategory"
       v-on:click="addAdditional"
     >
       + Additional Category
-    </button>
+    </button> -->
   </div>
 </template>
 
@@ -87,49 +87,53 @@ import _ from "lodash";
 
 export default {
   name: "category-selection",
+  props: ["parentCategorySelected"],
   data() {
     return {
       errors: [],
       hasNewCategory: false,
       newCategorySelected: false,
       categoriesArray: [],
-      categorySelected: {},
       newCategory: {
         name: "",
         description: ""
-      }
+      },
+      categorySelected: {}
     };
+  },
+  watch: {
+    parentCategorySelected: function (obj) {
+      const tmp = _.cloneDeep(obj);
+      this.categoriesArray = [];
+      for(let i in tmp) {
+        this.categoriesArray.push([]);
+        this.categoriesArray[i].push(tmp[i]);
+        let t2 = {};
+        t2[i] = 0;
+        this.$set(this.categorySelected, i, 0);
+      }
+    }
   },
   methods: {
     initialise: async function() {
-      this.categoriesArray = [];
       this.categorySelected = {};
+      this.categoriesArray = [];
       this.hasNewCategory = false;
-      let res = await fetch("/categories?parent=noparent");
-      if (!res.ok) {
+      let res = await fetch("/categories?hasParent=false");
+      if (!res.ok && res.status != 304) {
         this.errors.push(
           "There was an error collecting the list of categories."
         );
       } else {
         this.categoriesArray.push(await res.json());
+        this.$emit("reset-categories");
       }
     },
     categorySelect: async function(lvl) {
       this.errors = [];
-      const categoryIndex = parseInt(this.categorySelected[lvl]);
-      let res = await fetch(
-        "/categories?parent=" + this.categoriesArray[lvl][categoryIndex]._id
-      );
-      if (!res.ok && res.status != 304) {
-        console.log(res.status);
-        this.errors.push(
-          "There was a problem retrieving the next level of categories."
-        );
-      } else {
-        let nextCategories = await res.json();
-        this.categoriesArray.push(nextCategories);
-        this.$emit("category-object", this.objectifyCategories());
-      }
+      let nextCategories = this.categoriesArray[lvl][this.categorySelected[lvl]].children;
+      this.categoriesArray.push(nextCategories);
+      this.$emit("category-object", this.objectifyCategories());
     },
     createNew: async function(lvl) {
       let re = /[A-Za-z]/;
@@ -147,6 +151,7 @@ export default {
         this.newCategory.description = "";
         this.hasNewCategory = true;
         this.$emit("category-object", this.objectifyCategories());
+        this.categoriesArray.push([]);
       } else {
         this.errors.push("There was an issue creating the new category");
       }
@@ -188,18 +193,21 @@ export default {
           tempCategory = tempCategory.parent;
         }
       }
-      console.log(tempCategories);
       return tempCategories;
     }
   },
   async created() {
-    this.categoriesArray = [];
-    this.categorySelected = {};
-    let res = await fetch("/categories?parent=noparent");
-    if (!res.ok) {
-      this.errors.push("There was an error collecting the list of categories.");
+    if (this.parentCategorySelected) {
+      const tmp = _.cloneDeep(this.parentCategorySelected);
+      for(let i in tmp) {
+        this.categoriesArray.push([]);
+        this.categoriesArray[i].push(tmp[i]);
+        let t2 = {};
+        t2[i] = 0;
+        this.$set(this.categorySelected, 0, 0);
+      }
     } else {
-      this.categoriesArray.push(await res.json());
+      await this.initialise();
     }
   }
 };

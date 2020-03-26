@@ -1,7 +1,49 @@
 <template>
   <div v-on:keypress.enter="submit">
+    <div v-if="confirmDestroy">
+      <transition name="modal">
+        <div class="modal-mask">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Are you sure?</h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  v-on:click="confirmDestroy=false"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>This will destroy the record and can't be undone.</p>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                  v-on:click="confirmDestroy=false"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  v-on:click="destroyRecord()"
+                >
+                  Destroy
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </div>
     <div v-if="added" class="alert alert-success" role="alert">
-      Record added successfully
+      Record updated successfully
     </div>
     <div v-if="errors.length > 0" class="alert alert-danger" role="alert">
       <div class="h5">Errors</div>
@@ -15,10 +57,17 @@
         </li>
       </ol>
     </div>
+    <div class="row my-2">
+      <div class="col-md-6">
+        <button class="btn btn-danger" v-on:click="confirmDestroy = true">
+          Destroy Record
+        </button>
+      </div>
+    </div>
     <h4 class="my-3">Category</h4>
     <category-selection
       v-on:category-object="formData.category = $event"
-      v-bind:categories-selected="{}"
+      v-bind:parent-category-selected="categoriesSelected"
       v-on:reset-categories="formData.category = {}"
     />
     <div class="needs-validation">
@@ -99,8 +148,8 @@
         </div>
       </div>
       <image-upload
-        v-bind:images="images"
-        v-on:new-image="formData.images.push(image)"
+        v-bind:images="formData.images"
+        v-on:new-image="formData.images.push($event)"
       />
       <additional-attributes
         v-bind:attributes="formData.attributes"
@@ -122,7 +171,8 @@ import AdditionalAttributes from "./AdditionalAttributes.vue";
 import ImageUpload from "./ImageUpload.vue";
 
 export default {
-  name: "add-form",
+  name: "edit-form",
+  props: ["id"],
   components: {
     CategorySelection,
     AdditionalAttributes,
@@ -131,15 +181,19 @@ export default {
   data() {
     return {
       formData: {
-        category: {}
+        category: {},
+        attributes: {}
       },
       errors: [],
       attrName: "",
+      isSaving: false,
       added: false,
       currentImageFileName: "",
       images: [],
       isFormValid: undefined,
+      categoriesSelected: {},
       fieldsObj: ProductFields,
+      confirmDestroy: false
     };
   },
   methods: {
@@ -148,9 +202,7 @@ export default {
         return;
       }
 
-      // this.formData.images = this.images;
-
-      let res = await fetch("/products/add", {
+      let res = await fetch("/products/update/" + this.id, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -161,7 +213,7 @@ export default {
       if (res.ok) {
         this.added = true;
         this.errors = [];
-        await this.initialiseFormData();
+        // await this.initialiseFormData();
       } else {
         this.errors.push(
           "There was a problem: (" + res.status + ") " + res.statusText
@@ -171,6 +223,7 @@ export default {
       document.body.scrollTop = 0;
       document.documentElement.scrollTop = 0;
     },
+
     textFieldValidation: function(fieldObj) {
       if (fieldObj.re.test(fieldObj.value)) {
         fieldObj.isValid = true;
@@ -184,10 +237,30 @@ export default {
         fieldObj.value.length < fieldObj.maxLength
       ) {
         fieldObj.isValid = true;
-        // this.isFormValid = undefined;
       } else {
         fieldObj.isValid = false;
       }
+    },
+    uploadImageFile: async function(fieldName, event) {
+      event.preventDefault();
+      console.log(event);
+      if (!event.target.files[0]) return;
+      this.isSaving = true;
+      let fd = new FormData();
+      fd.append("image", event.target.files[0]);
+      let res = await fetch("/file-upload/image", {
+        method: "POST",
+        body: fd
+      });
+
+      if (!res.ok) {
+        this.errors.push(
+          "There was a problem: (" + res.status + ") " + res.statusText
+        );
+      } else {
+        this.images.push(await res.json());
+      }
+      this.isSaving = false;
     },
     validateFormData: function() {
       const textFields = this.fieldsObj.text;
@@ -258,10 +331,62 @@ export default {
         }
       }
       this.formData.attributes = {};
+    },
+    deObjectifyCategories: async function(categoryObj, lvl = 0) {
+      let maxLevels = lvl;
+      if (categoryObj.parent) {
+        maxLevels = Math.max(
+          lvl,
+          await this.deObjectifyCategories(categoryObj.parent, lvl + 1)
+        );
+      }
+      this.$set(this.categoriesSelected, maxLevels - lvl, categoryObj);
+      return maxLevels;
+    },
+    destroyRecord: async function() {
+      const res = await fetch("/products/delete/" + this.id, {
+        method: "DELETE"
+      });
+      if (res.ok) {
+        this.$router.push("/products");
+      } else {
+        this.errors.push(
+          "There was an issue with attempting to delete this record."
+        );
+      }
     }
   },
   async created() {
-    await this.initialiseFormData();
+    console.log("editForm created");
+    let res = await fetch("/products/" + this.id);
+    if (res.ok) {
+      this.formData = Object.assign({}, this.formData, await res.json());
+      this.categoriesSelected = Object.assign(
+        {},
+        this.categoriesSelected,
+        await this.deObjectifyCategories(this.formData.category)
+      );
+      console.log("categoriesSelected objectified");
+    } else {
+      this.errors.push("There was an issue retrieving the requested record.");
+    }
   }
 };
 </script>
+
+<style scoped>
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: table;
+  transition: opacity 0.3s ease;
+}
+.modal-enter {
+  opacity: 0;
+}
+</style>

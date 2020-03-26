@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Delete, Param, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
 import { Product } from './interfaces/product.interface';
 import { CategoriesService } from 'src/categories/categories.service';
@@ -16,15 +17,25 @@ export class ProductsController {
    return this.productsService.findall();
   }
 
+  @Get(':id')
+  findOne(@Param() params): Promise<Product[]> {
+    return this.productsService.findOneById(params.id);
+  }
+
   @Post('add') 
   async create(@Body() createProductDto: CreateProductDto): Promise<Product> {
-    const category = this.categoriesService.create(createProductDto.category);
-    console.log(category);
+    this.categoriesService.create(createProductDto.category);
     return this.productsService.create(createProductDto);
-  } 
+  }
 
-  @Delete(':id') 
-  delete(@Param() id): String {
-    return `this action removes a #${id} product`;
+  @Post('update/:id')
+  async update(@Param() params, @Body() updateProductDto: UpdateProductDto): Promise<Product> {
+    this.categoriesService.create(updateProductDto.category);
+    return this.productsService.update(params.id, updateProductDto)
+  }
+
+  @Delete('delete/:id') 
+  async deleteOneById(@Param() params): Promise<Product> {
+    return this.productsService.findOneByIdAndDelete(params.id);
   }
 }

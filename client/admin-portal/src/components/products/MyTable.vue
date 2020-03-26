@@ -13,6 +13,7 @@
           v-for="(entry, index) in entries"
           v-bind:key="index"
           v-bind:values="Object.values(entry)"
+          v-bind:id="ids[index]"
         />
       </tbody>
     </table>
@@ -25,7 +26,6 @@ import TableRow from "./TableRow.vue";
 
 export default {
   name: "my-table",
-  props: ["apiUrl"],
   components: {
     TableRow
   },
@@ -33,6 +33,7 @@ export default {
     return {
       headers: [],
       entries: [],
+      ids: [],
       errors: []
     };
   },
@@ -64,6 +65,7 @@ export default {
       // console.log(productsObj[product])
       i++;
       let renderedRow = [i];
+      this.ids.push(productsObj[product]._id);
 
       for (let name of names) {
         renderedRow.push(productsObj[product][name]);

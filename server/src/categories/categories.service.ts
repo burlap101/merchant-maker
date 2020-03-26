@@ -8,57 +8,88 @@ import { ProposedCategoryDto } from './dto/proposed-category.dto';
 export class CategoriesService {
   constructor(@InjectModel('Category') private readonly categoryModel: Model<Category>) {}
 
-  async create(proposedCategory: ProposedCategoryDto, lvl = 0): Promise<Category> {
-    let parent: Category;
-    let hasParent = false;
-    if (proposedCategory.parent.name) {
-      let nextLvl = lvl + 1;
-      parent = await this.create(proposedCategory.parent, nextLvl);
-      hasParent = true;
-    }
-    const existingCategories = await this.find("name", proposedCategory.name);
+  async create(proposedCategory: ProposedCategoryDto, child?: Category, lvl = 0): Promise<Category> {
+    
+    const existingCategories = await this.find("name", proposedCategory.name );
+    // console.log(existingCategories)
     // let catNames = [];
     // for (let category of categories[lvl]) {
     //   catNames.push(category.name)
     // }
     // let existingCategoryIndex = catNames.indexOf(proposedCategory.name);
-    if (!existingCategories[lvl]) {
+    if (existingCategories.length == 0 && !child) {
       const createdCategory = new this.categoryModel({
         name: proposedCategory.name,
         description: proposedCategory.description,
-        parent: parent ? parent._id : "",
-        level: hasParent ? parent.treeSize - lvl : 0,
-        treeSize: hasParent ? parent.treeSize : lvl
+        hasParent: proposedCategory.parent.name ? true : false,
+        children: []
       });
-      return createdCategory.save();
-    } else {
-      return existingCategories[lvl][0];
+      let parent: Category;
+      let newChild = await createdCategory.save();
+      if (proposedCategory.parent.name) {
+        parent = await this.create(proposedCategory.parent, newChild);
+      }
+      return newChild;
+    } else if (existingCategories.length > 0 && !child) {
+      return existingCategories[0]
+    } else if (existingCategories.length > 0 && child) {
+      existingCategories[0].children.push(child);
+      return this.update(existingCategories[0]._id, existingCategories[0]);
+    } else if (existingCategories.length == 0 && child) {
+      const createdCategory = new this.categoryModel({
+        name: proposedCategory.name,
+        description: proposedCategory.description,
+        hasParent: proposedCategory.parent.name ? true : false,
+        children: [child]
+      });
+      let parent: Category;
+      let newChild = await createdCategory.save();
+      if (proposedCategory.parent.name) {
+        parent = await this.create(proposedCategory.parent, newChild);
+      }
+      return newChild;
     }
   }
 
-  async find(key?: string, value?: string): Promise<Array<Category[]>> {
+  async update(id: string, newCategory: Category): Promise<Category>{
+    return this.categoryModel.findOneAndReplace({_id: id}, newCategory).exec();
+  }
+
+  async find(key?: string, value?: any): Promise<Category[]> {
+    // console.log("key:", key, 'value:', value);
     if(!key && !value) {
-      let result = [];
       if (!this.categoryModel.find().exec()) {
-        return [[]];
+        return [];
       }
-      let allEntries = await this.categoryModel.find({}).sort({level: 'desc'}).exec();
-      for (let lvl = 0; lvl <= allEntries[0].level; lvl++) {
-        result.push(await this.categoryModel.find({level: lvl}).exec());
-      }
-      return result;
+      let allEntries = await this.categoryModel.find({}).sort({'name' : 'asc'}).exec();
+      return allEntries;
     } else {
-      let result = [];
-      let levels = this.categoryModel.find({}).sort({ level: 'desc' }).exec();
-      if (!levels) {
-        return this.categoryModel.find({key: value}).exec();
+      if (value === "false") {
+        value = false;
+      } else if (value === "true") {
+        value = true;
       }
-      for (let lvl = 0; lvl <= levels[0]; lvl++) {
-        result.push(this.categoryModel.find({ level: lvl, key: value }).exec());
+      let filteredEntries: Category[];
+      if (key==="hasParent") {
+        filteredEntries = await this.categoryModel.find({ "hasParent": value }).sort({ 'name': 'asc' }).exec();
+      } else {
+        let q = {}
+        q[key] = value;
+        filteredEntries = await this.categoryModel.find(q).sort({ 'name': 'asc' }).exec();
       }
-      return result;
+      return filteredEntries;
     }
     
+  }
+
+  async nestAllChildren(): Promise<Category[]> {
+    let parents = await this.categoryModel.find({hasParent: false});
+    for(let parent of parents) {
+      for(let child of parent.children) {
+        console.log("Nested Query:", parent.children.id(child._id));
+      }
+    }
+    return [];
   }
   
 }

@@ -9,23 +9,43 @@ $primary:#083358;
 $secondary:#F67280;
 $success:#0074E4;
 $danger:#FF4057;
-$info:#74DBEF;
+$info:#76dbef;
 $warning:#FC3C3C;
 $light:#F2F2F0;
 $dark:#072247;
 $dark-hover: #254065;
 $primary-hover: #285378;
+$info-hover: #46abbf;
 
 @import "bootstrap";
 
 
 // Add SASS theme customizations here..
 
-.my-list-item {
+.my-list-item-primary {
   background-color: $primary;
   color: #fff;
   &:hover {
     background-color: $primary-hover;
     cursor: pointer;
   }
+}
+
+.my-list-item-info {
+  background-color: $info;
+  color: $primary;
+  &:hover {
+    background-color: $info-hover;
+    cursor: pointer;
+  }
+}
+
+.my-list-group-primary {
+  background-color: $primary;
+  color: #fff;
+}
+
+.my-list-group-info {
+  background-color: $info;
+  color: $primary;
 }

@@ -1,12 +1,19 @@
-import { Controller, Post, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, Get, Param, Res } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { editFileName } from './utils/file-upload.utils';
 
 
 @Controller('file-upload')
 export class FileUploadController {
 
   @Post('image')
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('image', {
+    storage: diskStorage({
+      destination: './media/',
+      filename: editFileName
+    })
+  }))
   uploadFile(@UploadedFile() file) {
     console.log(file);
     return {
