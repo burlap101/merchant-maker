@@ -1,10 +1,15 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Get, Param, Res, UseGuards, Post, Request} from '@nestjs/common';
 import { AppService } from './app.service';
-import { join } from 'path';
+import { LocalAuthGuard } from './auth/local-auth.guard';
+import { AuthService } from './auth/auth.service';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private authService: AuthService
+  ) {}
 
   @Get()
   getHello(): string {
@@ -16,8 +21,15 @@ export class AppController {
     return res.sendFile(imgId, { root: './media' })
   }
 
-  // @Get('image/:imgpath')
-  // getImageFile(@Param('imgpath') image, @Res() res) {
-  //   return res.sendFile(image, { root: './media' })
-  // }
+  @UseGuards(LocalAuthGuard)
+  @Post('auth/login')
+  async login(@Request() req) {
+    return this.authService.login(req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
+  }
 }

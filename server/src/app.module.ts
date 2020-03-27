@@ -6,13 +6,17 @@ import { ProductsModule } from './products/products.module';
 import config from './localconfig/keys';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { CategoriesModule } from './categories/categories.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(config.mongoUri), 
     ProductsModule,
     FileUploadModule,
-    CategoriesModule
+    CategoriesModule,
+    AuthModule,
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],

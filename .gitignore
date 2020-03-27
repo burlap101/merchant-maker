@@ -60,3 +60,5 @@ yarn-error.log*
 localconfig
 
 /server/media/
+
+auth/constants.ts
