@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, UseGuards } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { Category } from './interfaces/category.interface';
 import { ProposedCategoryDto } from './dto/proposed-category.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('categories')
 export class CategoriesController {
@@ -21,6 +22,7 @@ export class CategoriesController {
     return this.categoriesService.nestAllChildren();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('add')
   async create(@Body() proposedCategoryDto: ProposedCategoryDto): Promise<Category> {
     return this.categoriesService.create(proposedCategoryDto);
