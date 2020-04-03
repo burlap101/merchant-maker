@@ -58,7 +58,6 @@ yarn-error.log*
 
 # User
 localconfig
-
 /server/media/
-
 auth/constants.ts
+venv/

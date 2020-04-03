@@ -8,13 +8,14 @@
       height="72"
     />
     <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail" class="sr-only">Email address</label>
+    <div class="alert-danger" v-for="(error, index) in errors" v-bind:key="index">{{ errors[index].statusCode }}: {{ error }}</div>
+    <label for="inputUName" class="sr-only">Username</label>
     <input
-      v-model="email"
-      type="email"
-      id="inputEmail"
+      v-model="username"
+      type="text"
+      id="inputUName"
       class="form-control"
-      placeholder="Email address"
+      placeholder="Username"
       required
       autofocus
     />
@@ -33,7 +34,7 @@
         Remember me
       </label>
     </div>
-    <button class="btn btn-lg btn-primary btn-block">Sign in</button>
+    <button class="btn btn-lg btn-primary btn-block" v-on:click="submit()">Sign in</button>
     <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
   </div>
 </template>
@@ -43,10 +44,33 @@ export default {
   name: "login-form",
   data() {
     return {
-      email: "",
+      username: "",
       password: "",
-      rememberMe: false
+      rememberMe: false,
+      errors: []
     };
+  },
+  methods: {
+    submit: async function() {
+      let res = await fetch("/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "username": this.username,
+          "password": this.password
+        })
+      })
+
+      if(res.ok) {
+        this.$router.push("/products");
+      } else {
+        let error = res;
+        console.log(error);
+        this.errors.push("login failed: " + error.body);
+      }
+    }
   }
 };
 </script>
