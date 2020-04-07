@@ -8,7 +8,7 @@
       height="72"
     />
     <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <div class="alert-danger" v-for="(error, index) in errors" v-bind:key="index">{{ errors[index].statusCode }}: {{ error }}</div>
+    <div class="alert-danger" v-for="(error, index) in errors" v-bind:key="index">{{ error.status }}: {{ error.statusText }}</div>
     <label for="inputUName" class="sr-only">Username</label>
     <input
       v-model="username"
