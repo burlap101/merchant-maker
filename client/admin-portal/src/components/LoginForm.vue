@@ -64,6 +64,7 @@ export default {
       })
 
       if(res.ok) {
+        sessionStorage.setItem("username", this.username);
         this.$router.push("/products");
       } else {
         let error = res;

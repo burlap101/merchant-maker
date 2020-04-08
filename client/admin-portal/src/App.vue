@@ -9,6 +9,25 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: "app",
+  async created() {
+    let username = sessionStorage.username;
+    if(!username) {
+      this.$router.push("/login");
+      return;
+    }
+
+    let res = await fetch("/users/profile/" + username);
+    if(!res.ok) {
+      this.$router.push("/login");
+      return;
+    }
+  }
+}
+</script>
+
 <style>
 body {
   font-size: 0.875rem;

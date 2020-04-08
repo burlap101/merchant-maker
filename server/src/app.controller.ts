@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res, UseGuards, Post, Request} from '@nestjs/common';
+import { Controller, Get, Param, Res, UseGuards, Post, Request, Response} from '@nestjs/common';
 import { AppService } from './app.service';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
@@ -23,8 +23,13 @@ export class AppController {
 
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(@Request() req, @Response() res) {
+    let token = await this.authService.login(req.user);
+    res.set("Set-cookie", "jwt=" + token + "; path=/; HttpOnly;")
+    res.send({
+      success: true,
+      token
+    })
   }
 
   @UseGuards(JwtAuthGuard)

@@ -7,7 +7,13 @@ import keys from '../localconfig/keys';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([(req) => {
+        var token = null;
+        if (req && req.cookies) {
+          token = req.cookies['jwt']
+        }
+        return token;
+      }]),
       ignoreExpiration: false,
       secretOrKey: keys.cryptConsts.secret,
     });

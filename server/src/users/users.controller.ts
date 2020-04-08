@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Param, Request, HttpException, HttpStatus} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -14,5 +14,16 @@ export class UsersController {
   @Post('create')
   async create(@Body() createUserDto: CreateUserDto): Promise<User | undefined> {
     return this.usersService.createUser(createUserDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile/:username')
+  async getProfile(@Param() params, @Request() req): Promise<User | undefined> {
+    console.log(req.user);
+    if(params.username == req.user.username) {
+      return this.usersService.findOne(params.username);
+    } else {
+      throw new HttpException("Forbidden", HttpStatus.FORBIDDEN);
+    }
   }
 }

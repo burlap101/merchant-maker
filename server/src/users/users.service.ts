@@ -13,7 +13,7 @@ export class UsersService {
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
   async findOne(username: string): Promise<User | undefined> {
-    return this.userModel.findOne({ username: username }).exec();
+    return this.userModel.findOne({ username: username }, "username").exec();
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User | undefined> {
