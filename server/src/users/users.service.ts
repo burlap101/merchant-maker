@@ -13,17 +13,23 @@ export class UsersService {
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
   async findOne(username: string): Promise<User | undefined> {
-    return this.userModel.findOne({ username: username }, "username").exec();
+    return this.userModel.findOne({ username: username }).exec();
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User | undefined> {
     const hash = bcrypt.hashSync(createUserDto.password, 10);
     let newUser = {
       username: createUserDto.username,
-      password: hash
+      password: hash,
+      role: createUserDto.role
     }
-    const createdUser = new this.userModel(newUser);
-    return createdUser.save();
+    const createdUser = await new this.userModel(newUser).save();
+    console.log(createdUser);
+    return { 
+      _id: createdUser._id,
+      username: createdUser.username,
+      role: createdUser.role
+    }
   }
 
 }

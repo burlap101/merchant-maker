@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from './interfaces/user.interface';
 import { Roles } from './roles.decorator';
+import { RolesGuard } from './roles.guard';
 
 @Controller('users')
 export class UsersController {
@@ -11,14 +12,14 @@ export class UsersController {
     private readonly usersService: UsersService
   ) {}
 
-  @UseGuards(JwtAuthGuard)
+  @Roles('superuser') 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('create')
   async create(@Body() createUserDto: CreateUserDto): Promise<User | undefined> {
     return this.usersService.createUser(createUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Roles('admin') 
   @Get('profile/:username')
   async getProfile(@Param() params, @Request() req): Promise<User | undefined> {
     console.log(req.user);

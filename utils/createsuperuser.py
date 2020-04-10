@@ -22,7 +22,7 @@ if (password == getpass("Confirm password: ")):
   userid = db.users.insert_one({
     "username": username,
     "password": hashed.decode(),
-    "group": "superuser"
+    "role": "superuser"
   }).inserted_id
 else:
   raise ValueError("Passwords did not match")

@@ -1,6 +1,6 @@
 export interface User {
   _id: string,
   username: string,
-  password: string,
-  scope: string
+  password?: string,
+  role: string
 }
