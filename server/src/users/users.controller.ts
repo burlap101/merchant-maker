@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from './interfaces/user.interface';
+import { Roles } from './roles.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -17,6 +18,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Roles('admin') 
   @Get('profile/:username')
   async getProfile(@Param() params, @Request() req): Promise<User | undefined> {
     console.log(req.user);
