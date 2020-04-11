@@ -3,8 +3,8 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from './interfaces/user.interface';
-import { Roles } from './roles.decorator';
-import { RolesGuard } from './roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 
 @Controller('users')
 export class UsersController {
@@ -19,10 +19,10 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
-  @Roles('user')
+  @Roles('superuser', 'admin', 'user')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('profile/:username')
-  async getProfile(@Param() params, @Request() req): Promise<User | undefined> {
+  async getMyProfile(@Param() params, @Request() req): Promise<User | undefined> {
     console.log(req.user);
     if(params.username == req.user.username) {
       return this.usersService.findOne(params.username);

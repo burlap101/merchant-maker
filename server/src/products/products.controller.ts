@@ -5,6 +5,8 @@ import { ProductsService } from './products.service';
 import { Product } from './interfaces/product.interface';
 import { CategoriesService } from 'src/categories/categories.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('products')
 export class ProductsController {
@@ -12,31 +14,37 @@ export class ProductsController {
     private readonly productsService: ProductsService,
     private readonly categoriesService: CategoriesService
   ) {}
-
+  
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   findAll(): Promise<Product[]> {
    return this.productsService.findall();
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   findOne(@Param() params): Promise<Product[]> {
     return this.productsService.findOneById(params.id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles('admin', 'superuser')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('add') 
   async create(@Body() createProductDto: CreateProductDto): Promise<Product> {
     this.categoriesService.create(createProductDto.category);
     return this.productsService.create(createProductDto);
   }
-  @UseGuards(JwtAuthGuard)
+
+  @Roles('admin', 'superuser')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('update/:id')
   async update(@Param() params, @Body() updateProductDto: UpdateProductDto): Promise<Product> {
     this.categoriesService.create(updateProductDto.category);
     return this.productsService.update(params.id, updateProductDto)
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles('superuser')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete('delete/:id') 
   async deleteOneById(@Param() params): Promise<Product> {
     return this.productsService.findOneByIdAndDelete(params.id);

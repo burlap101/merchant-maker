@@ -3,11 +3,14 @@ import { CategoriesService } from './categories.service';
 import { Category } from './interfaces/category.interface';
 import { ProposedCategoryDto } from './dto/proposed-category.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   find(@Query("hasParent") hasParent): Promise<Category[]> {
     if (hasParent !== undefined) {
@@ -17,12 +20,14 @@ export class CategoriesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('nested')
   findNested(): Promise<Category[]> {
     return this.categoriesService.nestAllChildren();
   }
-
-  @UseGuards(JwtAuthGuard)
+  
+  @Roles('admin', 'superuser')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('add')
   async create(@Body() proposedCategoryDto: ProposedCategoryDto): Promise<Category> {
     return this.categoriesService.create(proposedCategoryDto);
