@@ -19,7 +19,6 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
-  @Roles('superuser', 'admin', 'user')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('profile/:username')
   async getMyProfile(@Param() params, @Request() req): Promise<User | undefined> {
