@@ -11,4 +11,9 @@ export class ShoppingCartService {
     const createdCart = new this.shoppingCartModel();
     return createdCart.save();
   }
+
+  async createUserCart(userId: string): Promise<ShoppingCart> {
+    const createdCart = new this.shoppingCartModel({ "userId": userId });
+    return createdCart.save();
+  }
 }
