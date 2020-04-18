@@ -42,9 +42,10 @@ export class ShoppingCartService {
    * @return {Promise<ShoppingCart>} Returns a copy of the udpated shopping cart
    * */
   async assignUserToCart(cartId: string, userId: string): Promise<ShoppingCart> {
-    let cart = this.shoppingCartModel.find({ "_id": cartId });
+    let cart = await this.shoppingCartModel.find({ "_id": cartId }).exec();
     cart.userId = userId;
-    return this.shoppingCartModel.replaceOne({ "_id": cartId }, cart).exec();
+    console.log(cart, cartId);
+    return this.shoppingCartModel.findOneAndReplace({ "_id": cartId }, cart).exec();
   }
 
   async destroyCart(cartId: string): Promise<ShoppingCart> {

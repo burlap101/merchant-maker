@@ -5,11 +5,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ShoppingCartSchema } from './schemas/shopping-cart.schema';
 import { ShoppingCartMiddleware } from './middleware/shopping-cart.middleware';
 import { JwtModule } from '@nestjs/jwt';
+import keys from 'src/localconfig/keys';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'ShoppingCart', schema: ShoppingCartSchema }]),
-    JwtModule
+    JwtModule.register({
+      secret: keys.cryptConsts.secret,
+      signOptions: { expiresIn: '7d' },
+    })
   ],
   controllers: [ShoppingCartController],
   providers: [ShoppingCartService]

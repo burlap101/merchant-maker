@@ -15,9 +15,10 @@ export class ShoppingCartMiddleware implements NestMiddleware {
       const newCart = await this.shoppingCartService.createEmptyCart();
       res.cookie("mm-cartid", newCart._id, { httpOnly: true });
       req.cartid = newCart._id;
-    } else if (req.cookies['jwt']) {
+    } else if (req.cookies['jwt'] && !req.cookies['mm-cartid']) {
       let userId = this.jwtService.decode(req.cookies['jwt'])["_id"];
       const newCart = await this.shoppingCartService.createUserCart(userId);
+      res.cookie("mm-cartid", newCart._id, { httpOnly: true});
       req.cartid = newCart._id
     } else {
       req.cartid = req.cookies['mm-cartid'];
