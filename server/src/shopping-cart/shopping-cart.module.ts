@@ -4,10 +4,12 @@ import { ShoppingCartService } from './shopping-cart.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ShoppingCartSchema } from './schemas/shopping-cart.schema';
 import { ShoppingCartMiddleware } from './middleware/shopping-cart.middleware';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'ShoppingCart', schema: ShoppingCartSchema }])
+    MongooseModule.forFeature([{ name: 'ShoppingCart', schema: ShoppingCartSchema }]),
+    JwtModule
   ],
   controllers: [ShoppingCartController],
   providers: [ShoppingCartService]
