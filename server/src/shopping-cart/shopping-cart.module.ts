@@ -6,6 +6,7 @@ import { ShoppingCartSchema } from './schemas/shopping-cart.schema';
 import { ShoppingCartMiddleware } from './middleware/shopping-cart.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import keys from 'src/localconfig/keys';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import keys from 'src/localconfig/keys';
     JwtModule.register({
       secret: keys.cryptConsts.secret,
       signOptions: { expiresIn: '7d' },
-    })
+    }),
+    AuthModule
   ],
   controllers: [ShoppingCartController],
   providers: [ShoppingCartService]
