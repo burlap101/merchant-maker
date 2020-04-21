@@ -1,0 +1,1 @@
+../../../shopfront/src/components/Navbar.vue

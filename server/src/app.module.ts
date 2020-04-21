@@ -9,6 +9,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ShoppingCartModule } from './shopping-cart/shopping-cart.module';
+import { OrdersModule } from './orders/orders.module';
 
 
 @Module({
@@ -19,7 +20,8 @@ import { ShoppingCartModule } from './shopping-cart/shopping-cart.module';
     CategoriesModule,
     AuthModule,
     UsersModule,
-    ShoppingCartModule
+    ShoppingCartModule,
+    OrdersModule
   ],
   controllers: [AppController],
   providers: [AppService],

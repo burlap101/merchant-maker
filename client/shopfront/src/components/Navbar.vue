@@ -141,8 +141,8 @@
 </template>
 
 <script>
-import { CourseService } from "@/assets/js/CourseService";
-import { ShoppingCartService } from "@/assets/js/ShoppingCartService";
+import { CourseService } from "../../../shopfront/src/assets/js/CourseService";
+import { ShoppingCartService } from "../../../shopfront/src/assets/js/ShoppingCartService";
 
 export default {
   name: "Navbar",
