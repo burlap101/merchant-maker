@@ -12,6 +12,7 @@ import { ProcessOrderDto } from 'src/orders/dto/process-order.dto';
 import { Order } from 'src/orders/interfaces/order.interface';
 import { CheckoutDto } from './dto/checkout.dto';
 
+
 @Controller('shopping-cart')
 export class ShoppingCartController {
   constructor(
@@ -70,8 +71,18 @@ export class ShoppingCartController {
     if(cartObj.cart.userid) {
       cartObj = {...cartObj, ...{ "username": cartObj.cart.userid }};
     }
+
     let processOrderDto = { ...checkoutDto, ...cartObj };
     return this.ordersService.processOrder(processOrderDto);
+  }
+
+  @Get('secret')
+  async createIntentAndRetrieveSecret(@Request() req): Promise<Object> {
+    const cart = await this.shoppingCartService.getCart(req.cartid);
+    const paymentIntent = this.shoppingCartService.createPaymentIntent(cart.total, "aud");
+    let secretObj = {};
+    secretObj["secret"] = (await paymentIntent).client_secret
+    return secretObj;
   }
 
 }

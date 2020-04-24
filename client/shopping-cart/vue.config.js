@@ -1,22 +1,22 @@
 module.exports = {
   devServer: {
     proxy: {
-      '/api': {
+      "/api": {
         target: "http://localhost:8000"
       },
-      '/categories': {
+      "/categories": {
         target: "http://localhost:3000"
       },
-      '/products': {
+      "/products": {
         target: "http://localhost:3000"
       },
-      '/media': {
+      "/media": {
         target: "http://localhost:3000"
       },
-      '/file-upload': {
+      "/file-upload": {
         target: "http://localhost:3000"
       },
-      '/shopping-cart': {
+      "/shopping-cart": {
         target: "http://localhost:3000"
       }
     }

@@ -5,6 +5,7 @@ export interface ShoppingCart {
   userid?: string,
   items: [{
     product: Product,
-    qty: Number
-  }]
+    qty: number
+  }],
+  total: number
 }
