@@ -229,8 +229,7 @@ export default {
   async mounted() {
     let stripe = await loadStripe(keys.stripePublicKey);
     let elements = stripe.elements();
-    let card = undefined;
-    card = elements.create("card", { style: { base: { color: "#32325d" } } });
+    let card = elements.create("card", { style: { base: { color: "#32325d" } } });
     card.mount(this.$refs['card-element']);
     card.addEventListener("change", ({ error }) => {
       if (error) {
