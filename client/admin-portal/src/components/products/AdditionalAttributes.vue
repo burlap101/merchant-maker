@@ -36,7 +36,7 @@
     </div>
     <div class="d-flex justify-content-between align-items-end">
       <div class="">
-        <div class="text-muted">(New Category Name) </div>
+        <div class="text-muted">(New Category Name)</div>
         <input
           type="text"
           class="form-control"
@@ -53,7 +53,6 @@
           + Add
         </button>
       </div>
-      
     </div>
   </div>
 </template>
@@ -80,5 +79,5 @@ export default {
       this.$forceUpdate();
     }
   }
-}
+};
 </script>

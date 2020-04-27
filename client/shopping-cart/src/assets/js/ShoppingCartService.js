@@ -1,53 +1,79 @@
-export class ShoppingCartService {
 
-  async static findMyCart() {
-    try {
-      let url = "/shopping-cart";
-      let res = await fetch(url);
-      if (res.ok) {
-        return res.json(); 
-      } else {
-        throw
+export default class ShoppingCartService {
+
+  static async findMyCart() {
+    let url = "/shopping-cart";
+    let res = await fetch(url);
+    if (res.ok) {
+      return res.json(); 
+    } else {
+      let message = undefined;
+      try {
+        message = (await res.json()).message;
+      } catch (err) {
+        throw Error("There was a problem communicating with the server. Please try again later.");
       }
-      
-    } catch (err) {
-      throw err("there was a problem retrieving your cart.");
+      throw Error(message + ' - Code: ' + res.status);
     }
   }
 
-  async static assignUserToCart() {
-    try {
-      let url = "/shopping-cart/assign-user-to-cart";
-      return new Promise(async function() {
-        await fetch(url, {
-          method: "POST"
-        })
-      });
-    } catch (err) {
-      throw err("There was a problem assigning your username to a cart.");
+  static async assignUserToCart() {
+    let url = "/shopping-cart/assign-user-to-cart";
+    let res = await fetch(url, {
+      method: "POST"
+    });
+    if (res.ok) {
+      return res.json();
+    } else {
+      const message = (await res.json()).message;
+      throw Error(message + ' - Code: ' + res.status);
     }
   }
 
-  async static deleteOne(id) {
-    try {
-      let url = `/shopping-cart/delete/${id}`;
-      return new Promise(async function() {
-        await fetch(url, {
-          method: "DELETE"
-        })
-      })
-    } catch (err) {
-      throw err("There was a problem attempting to delete this cart.");
+  static async deleteOne(id) {
+    let url = `/shopping-cart/delete/${id}`;
+    let res = await fetch(url, {
+      method: "DELETE"
+    });
+    if (res.ok) {
+      return res.json();
+    } else {
+      let message = undefined;
+      try {
+        message = (await res.json()).message;
+      } catch(err) {
+        throw Error("There was a problem communicating with the server. Please try again later.");
+      }
+      throw Error(message + ' - Code: ' + res.status);
     }
   }
 
-  async static addToCart(itemDetails) {
-    try {
-      let url = "/shopping-cart/add-to-cart"
-      return new Promise(async function() {
-        await fetch(url, )
-      })
+  static async addToCart(itemDetails) {
+    let url = "/shopping-cart/add-to-cart"
+    let res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(itemDetails)
+    });
+
+    if (res.ok) {
+      return res.json();
+    } else {
+      const message = (await res.json()).message;
+      throw Error(message + ' - Code: ' + res.status);
     }
   }
 
+  static async paymentIntentSecret() {
+    let url = "/shopping-cart/secret";
+    let res = await fetch(url);
+    if (res.ok) {
+      return res.json();
+    } else {
+      const message = (await res.json()).message;
+      throw Error(message + ' - Code: ' + res.status);
+    }
+  }
 }

@@ -12,7 +12,7 @@
                   class="close"
                   data-dismiss="modal"
                   aria-label="Close"
-                  v-on:click="confirmDestroy=false"
+                  v-on:click="confirmDestroy = false"
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -25,7 +25,7 @@
                   type="button"
                   class="btn btn-secondary"
                   data-dismiss="modal"
-                  v-on:click="confirmDestroy=false"
+                  v-on:click="confirmDestroy = false"
                 >
                   Cancel
                 </button>
@@ -243,7 +243,6 @@ export default {
     },
     uploadImageFile: async function(fieldName, event) {
       event.preventDefault();
-      console.log(event);
       if (!event.target.files[0]) return;
       this.isSaving = true;
       let fd = new FormData();
@@ -357,7 +356,6 @@ export default {
     }
   },
   async created() {
-    console.log("editForm created");
     let res = await fetch("/products/" + this.id);
     if (res.ok) {
       this.formData = Object.assign({}, this.formData, await res.json());
@@ -366,7 +364,6 @@ export default {
         this.categoriesSelected,
         await this.deObjectifyCategories(this.formData.category)
       );
-      console.log("categoriesSelected objectified");
     } else {
       this.errors.push("There was an issue retrieving the requested record.");
     }

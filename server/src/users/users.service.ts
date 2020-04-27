@@ -24,7 +24,6 @@ export class UsersService {
       role: createUserDto.role
     }
     const createdUser = await new this.userModel(newUser).save();
-    console.log(createdUser);
     return { 
       _id: createdUser._id,
       username: createdUser.username,

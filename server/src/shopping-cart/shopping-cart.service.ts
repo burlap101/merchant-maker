@@ -42,7 +42,6 @@ export class ShoppingCartService {
   async assignUserToCart(cartId: string, userId: string): Promise<ShoppingCart> {
     let cart = await this.shoppingCartModel.findOne({ _id: cartId }).exec();
     cart.userId = userId;
-    console.log(cart, cartId);
     return this.shoppingCartModel.replaceOne({ _id: cartId }, cart);
   }
 
@@ -60,7 +59,6 @@ export class ShoppingCartService {
   }
 
   async addItemToCart(cartId: string, product: Product, qty: number): Promise<ShoppingCart> {
-    console.log("cartId:", cartId);
     let cart = await this.shoppingCartModel.findOne({_id: cartId}).exec();
     cart.items.push({
       "product": product,
@@ -84,7 +82,6 @@ export class ShoppingCartService {
   }
 
   async createPaymentIntent(amount: number, currency = "aud"): Promise<Stripe.PaymentIntent> {
-    console.log((amount * 100).toFixed(0))
     return stripe.paymentIntents.create({
       "amount": parseInt((amount*100).toFixed(0)),
       "currency": currency

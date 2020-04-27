@@ -102,10 +102,10 @@ export default {
     };
   },
   watch: {
-    parentCategorySelected: function (obj) {
+    parentCategorySelected: function(obj) {
       const tmp = _.cloneDeep(obj);
       this.categoriesArray = [];
-      for(let i in tmp) {
+      for (let i in tmp) {
         this.categoriesArray.push([]);
         this.categoriesArray[i].push(tmp[i]);
         let t2 = {};
@@ -131,7 +131,8 @@ export default {
     },
     categorySelect: async function(lvl) {
       this.errors = [];
-      let nextCategories = this.categoriesArray[lvl][this.categorySelected[lvl]].children;
+      let nextCategories = this.categoriesArray[lvl][this.categorySelected[lvl]]
+        .children;
       this.categoriesArray.push(nextCategories);
       this.$emit("category-object", this.objectifyCategories());
     },
@@ -199,7 +200,7 @@ export default {
   async created() {
     if (this.parentCategorySelected) {
       const tmp = _.cloneDeep(this.parentCategorySelected);
-      for(let i in tmp) {
+      for (let i in tmp) {
         this.categoriesArray.push([]);
         this.categoriesArray[i].push(tmp[i]);
         let t2 = {};

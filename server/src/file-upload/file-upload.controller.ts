@@ -20,7 +20,6 @@ export class FileUploadController {
     })
   }))
   uploadFile(@UploadedFile() file) {
-    console.log(file);
     return {
       fieldname: file.fieldname,
       originalname: file.originalname,

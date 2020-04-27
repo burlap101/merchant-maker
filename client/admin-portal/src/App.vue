@@ -1,11 +1,6 @@
 <template>
   <div id="app">
     <router-view />
-    <footer id="nav" class="text-center">
-      <router-link to="/about">About</router-link> |
-      <router-link to="/login">Login</router-link> |
-      <router-link to="/">Home</router-link>
-    </footer>
   </div>
 </template>
 
@@ -14,18 +9,18 @@ export default {
   name: "app",
   async created() {
     let username = sessionStorage.username;
-    if(!username) {
+    if (!username) {
       this.$router.push("/login");
       return;
     }
 
     let res = await fetch("/users/profile/" + username);
-    if(!res.ok) {
+    if (!res.ok) {
       this.$router.push("/login");
       return;
     }
   }
-}
+};
 </script>
 
 <style>
@@ -126,13 +121,6 @@ body {
 .border-bottom {
   border-bottom: 1px solid #e5e5e5;
 }
-/* #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-} */
 
 #nav {
   padding: 30px;

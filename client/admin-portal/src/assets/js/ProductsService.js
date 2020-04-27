@@ -1,4 +1,4 @@
-export class ProductsService {
+export default class ProductsService {
   static addProduct(productDetails) {
     let url = "/products/add";
     return new Promise(async function() {
@@ -15,14 +15,16 @@ export class ProductsService {
       }
     });
   }
-  
+
   static findAll() {
     let url = "/products";
     return new Promise(async function() {
       try {
         await fetch(url);
       } catch (err) {
-        throw err("An error occurred attempting to retrieve the full list of products.");
+        throw err(
+          "An error occurred attempting to retrieve the full list of products."
+        );
       }
     });
   }
@@ -32,9 +34,9 @@ export class ProductsService {
       let url = "/products/" + id;
       return new Promise(async function() {
         await fetch(url);
-      })
+      });
     } catch (err) {
-      throw err("There was a problem retrieving the product.")
+      throw err("There was a problem retrieving the product.");
     }
   }
 
@@ -49,7 +51,7 @@ export class ProductsService {
           },
           body: JSON.stringify(productDetails)
         });
-      })
+      });
     } catch (err) {
       throw err("There was a problem attempting to update the product.");
     }
@@ -62,7 +64,7 @@ export class ProductsService {
         await fetch(url, {
           method: "DELETE"
         });
-      })
+      });
     } catch (err) {
       throw err("There was a problem attempting to delete the product.");
     }

@@ -48,7 +48,6 @@ export class ShoppingCartController {
 
   @Post('add-to-cart')
   async addToCart(@Request() req, @Body() addToCartDto: AddToCartDto): Promise<ShoppingCart> {
-    console.log(req.cartid);
     return this.shoppingCartService.addItemToCart(
       req.cartid,
       addToCartDto.product,

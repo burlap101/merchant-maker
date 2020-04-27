@@ -11,12 +11,7 @@ export class CategoriesService {
   async create(proposedCategory: ProposedCategoryDto, child?: Category, lvl = 0): Promise<Category> {
     
     const existingCategories = await this.find("name", proposedCategory.name );
-    // console.log(existingCategories)
-    // let catNames = [];
-    // for (let category of categories[lvl]) {
-    //   catNames.push(category.name)
-    // }
-    // let existingCategoryIndex = catNames.indexOf(proposedCategory.name);
+
     if (existingCategories.length == 0 && !child) {
       const createdCategory = new this.categoryModel({
         name: proposedCategory.name,
@@ -56,7 +51,6 @@ export class CategoriesService {
   }
 
   async find(key?: string, value?: any): Promise<Category[]> {
-    // console.log("key:", key, 'value:', value);
     if(!key && !value) {
       if (!this.categoryModel.find().exec()) {
         return [];
@@ -79,17 +73,6 @@ export class CategoriesService {
       }
       return filteredEntries;
     }
-    
-  }
-
-  async nestAllChildren(): Promise<Category[]> {
-    let parents = await this.categoryModel.find({hasParent: false});
-    for(let parent of parents) {
-      for(let child of parent.children) {
-        console.log("Nested Query:", parent.children.id(child._id));
-      }
-    }
-    return [];
   }
   
 }

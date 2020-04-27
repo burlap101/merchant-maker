@@ -17,14 +17,10 @@
 <script>
 import EditForm from "@/components/products/EditForm.vue";
 
-
 export default {
   name: "products-edit",
   components: {
     EditForm
-  },
-  created() {
-    console.log("ProductsEdit created")
   }
 };
 </script>

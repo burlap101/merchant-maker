@@ -1,6 +1,10 @@
 <template>
   <tr>
-    <td v-for="(value, index) in values" v-bind:key="index" v-on:click="rowSelected">
+    <td
+      v-for="(value, index) in values"
+      v-bind:key="index"
+      v-on:click="rowSelected"
+    >
       {{ value }}
     </td>
   </tr>
@@ -12,7 +16,7 @@ export default {
   props: ["values", "id"],
   methods: {
     rowSelected: async function() {
-      this.$router.push('/products/edit/' + this.id);
+      this.$router.push("/products/edit/" + this.id);
     }
   }
 };

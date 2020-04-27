@@ -19,12 +19,6 @@ export class CategoriesController {
       return this.categoriesService.find();
     }
   }
-
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Get('nested')
-  findNested(): Promise<Category[]> {
-    return this.categoriesService.nestAllChildren();
-  }
   
   @Roles('admin', 'superuser')
   @UseGuards(JwtAuthGuard, RolesGuard)

@@ -5,60 +5,9 @@
         <h2>Checkout</h2>
       </div>
     </div>
-    <!-- {% if error %}
-    <div id="invalid-alert-value-error" class="alert alert-danger" role="alert">
-      There was an issue processing your booking, please take the time to review all fields and try again. <br />
-      Alternatively please don't hesitate to <a href="{% url 'course_enquiry' %}">contact us.</a>
-    </div>
-    {% endif %}
-    {% if card_error %}
-    <div class="alert alert-danger" role="alert">
-      There was an issue processing your chosen card. {{card_error.message}} <br />
-      {{card_error.recommended_action}} <br />
-      To arrange alternative payment options please don't hesitate to <a href="{% url 'course_enquiry' %}">contact us.</a>
-    </div>
-    {% endif %} -->
     <div class="row">
       <div class="col-md-4 order-md-2 mb-4">
-        <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-muted">Your cart</span>
-          <span class="badge badge-secondary badge-pill"
-            >{{ products.length + trainingSessions.length }}
-            <a href="/shopping-cart"><i class="fas fa-edit"></i></a
-          ></span>
-        </h4>
-        <ul class="list-group mb-3">
-          <li
-            v-for="(item, index) in trainingSessions"
-            v-bind:key="index"
-            class="list-group-item d-flex justify-content-between lh-condensed"
-          >
-            <div>
-              <h6 class="my-0">
-                {{ item.course.course_code }} for {{ item.qty }} students
-              </h6>
-              <small class="text-muted"
-                >{{ item.course.title }} at
-                {{ item.training_session.location }},
-                {{ item.training_session.session_date }}</small
-              >
-            </div>
-            <span class="text-muted">${{ item.total_cost.toFixed(2) }}</span>
-          </li>
-          <!-- {% for item in cart %}
-              <li class="list-group-item d-flex justify-content-between lh-condensed">
-                <div>
-                  <h6 class="my-0">{{item.course.course_code}} for {{item.qty}} students</h6>
-                  <small class="text-muted">{{item.course.title}} at {{item.training_session.location}}, {{item.training_session.session_date}}</small>
-                </div>
-                <span class="text-muted">${{item.total_cost|floatformat:2}}</span>
-              </li>
-          {% endfor %} -->
-          <li class="list-group-item d-flex justify-content-between">
-            <span>Total (AUD)</span>
-            <strong>${{ grandTotal }}</strong>
-          </li>
-        </ul>
+        
 
         <form class="card p-2">
           <div class="input-group">
@@ -79,13 +28,16 @@
         >
           {{ index+1 }}. {{ error }}
         </div>
-        <form id="payment-form">
+        <div class="alert alert-success" v-if="paymentSuccess">
+          Payment Successful
+        </div>
+        <div id="payment-form">
           <div
             class="mb-3"
-            v-for="(fieldname, index) in Object.keys(formFields)"
+            v-for="(fieldname, index) of Object.keys(formFields)"
             v-bind:key="index"
           >
-            <div v-if="Object.keys(formFields[fieldname])==0">
+            <div v-if="!fieldname.toLowerCase().includes('address')">
               <label v-bind:for="fieldname" class="">{{
                 fieldname
               }}</label>
@@ -97,6 +49,78 @@
               />
             </div>
           </div>
+          <div v-if="products.length > 0">
+            <div class="h5 text-muted mt-4 mb-3">
+              Shipping Address
+            </div>
+            <div
+              class="mb-3"
+              v-for="(fieldname, index) of Object.keys(formFields.shippingAddress)"
+              v-bind:key="index"
+            >
+              <label v-bind:for="fieldname" class="">{{
+                fieldname
+              }}</label>
+              <input
+                v-bind:id="fieldname"
+                type="text"
+                class="form-control"
+                v-model="formFields.shippingAddress[fieldname]"
+              />
+            </div>
+            <div class="h5 text-muted mt-4 mb-3">
+              Billing Address
+            </div>
+            <div
+              class="mb-3 custom-control custom-checkbox"
+            >
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                id="save-info"
+                v-model="isSameAddress"
+                v-bind:checked="isSameAddress"
+              />
+              <label class="custom-control-label" for="save-info">Same as shipping</label>
+            </div>
+            <div v-if="!isSameAddress">
+              <div
+                class="mb-3"
+                v-for="(fieldname, index) of Object.keys(formFields.billingAddress)"
+                v-bind:key="index"
+              >
+                <label v-bind:for="fieldname" class="">{{
+                  fieldname
+                }}</label>
+                <input
+                  v-bind:id="fieldname"
+                  type="text"
+                  class="form-control"
+                  v-model="formFields.billingAddress[fieldname]"
+                />
+              </div>
+            </div>
+          </div> <!-- End of Addresses -->
+            
+            <!-- <div class="text-muted mt-5 mb-3">
+              {{fieldname}}
+            </div>
+            <div
+              class="mb-3"
+              v-for="(childFieldname, index) in Object.keys(formFields[fieldname])"
+              v-bind:key="index"
+            >
+              <label v-bind:for="childFieldname" class="">{{
+                childFieldname
+              }}</label>
+              <input
+                v-bind:id="childFieldname"
+                type="text"
+                class="form-control"
+                v-model="formFields[fieldname][childFieldname]"
+              />
+            </div> -->
+            
           <div
             v-if="trainingSessions.length > 0"
             class="mb-3 custom-control custom-checkbox"
@@ -112,12 +136,13 @@
               competencies?</label
             >
           </div>
-          <h4 class="mb-3 text-muted">Payment Method</h4>
+          <h4 class="mb-3 mt-5 text-muted">Payment Method</h4>
           <div class="mb-3 custom-control custom-checkbox">
             <input
               type="checkbox"
               class="custom-control-input"
               id="cc-payment-selected"
+              v-bind:checked="ccPaymentSelected"
             />
             <label class="custom-control-label" for="cc-payment-selected"
               >Credit or Debit Card</label
@@ -150,14 +175,15 @@
             </div>
             <button
               id="submit-payment-btn"
-              type="submit"
               class="btn btn-primary mt-3"
+              v-bind:disabled="paymentProcessing"
+              v-on:click="submit"
             >
               Submit Payment
             </button>
           </div>
-        </form>
-        <div id="payment-submitted-spinner" class="d-none">
+        </div>
+        <div v-if="paymentProcessing" id="payment-submitted-spinner" class="">
           <div class="spinner-border text-primary mt-3" role="status">
             <span class="sr-only">Loading...</span>
           </div>
@@ -170,11 +196,11 @@
 <script>
 import { loadStripe } from "@stripe/stripe-js";
 import keys from "../../assets/localconfig/keys";
-
-const states = ["NSW", "QLD", "ACT", "VIC", "NT", "SA", "WA", "TAS"];
+import shoppingCartService from "../../assets/js/ShoppingCartService";
 
 export default {
   name: "checkout",
+
   data() {
     return {
       errors: [],
@@ -199,36 +225,60 @@ export default {
           state: ""
         }
       },
-      states: states
+      card: undefined,
+      paymentProcessing: false,
+      paymentSuccess: false,
+      states: states,
+      stripe: undefined,
+      clientSecret: "",
+      isSameAddress: false
     };
   },
-  computed: {
-    grandTotal: function() {
-      let result = 0;
-      for (let item of this.trainingSessions) {
-        result += item.total_cost;
-      }
-      return result;
-    }
-  },
+
   methods: {
     submit: async function() {
-      console.log("submit pressed");
+      this.paymentProcessing = true;
+      let result = await this.stripe.confirmCardPayment(this.clientSecret, {
+        payment_method: {
+          card: this.card,
+          billing_details: {
+            name: this.formFields.name
+          }
+        }
+      });
+      if(result.error) {
+        this.errors.push("There was a problem processing your payment. Please try again.");
+      } else if (result.paymentIntent.status === "succeeded") {
+        for (let field in this.formFields) {
+          console.log("Here");
+          if(Object.keys(this.formFields[field]) > 0) {
+            for(let childField in this.formFields[field]) {
+              this.formFields[field][childField] = "";
+              console.log(childField);
+            }
+          } else {
+            this.formFields[field] = "";
+          }
+        }
+        this.paymentSuccess = true;
+      }
+      this.paymentProcessing = false;
     }
   },
+
   async created() {
-    let res = await fetch('/shopping-cart/secret');
-    if (res.ok) {
-      console.log(res)
-      this.clientSecret = (await res.json()).secret;
-      console.log(this.clientSecret);
-    } else {
-      this.errors.push("There was an error retrieving your cart.")
+    try {
+      this.products = (await shoppingCartService.findMyCart()).items;
+      this.clientSecret = (await shoppingCartService.paymentIntentSecret()).secret;
+    } catch(err) { 
+      this.errors.push(err.message);
+      throw err;
     }
   },
+
   async mounted() {
-    let stripe = await loadStripe(keys.stripePublicKey);
-    let elements = stripe.elements();
+    this.stripe = await loadStripe(keys.stripePublicKey);
+    let elements = this.stripe.elements();
     let card = elements.create("card", { style: { base: { color: "#32325d" } } });
     card.mount(this.$refs['card-element']);
     card.addEventListener("change", ({ error }) => {
@@ -236,6 +286,7 @@ export default {
         this.errors.push(error.message);
       } else {
         this.errors = [];
+        this.card = card;
       }
     });
   }

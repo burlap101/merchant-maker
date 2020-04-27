@@ -22,7 +22,6 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('profile/:username')
   async getMyProfile(@Param() params, @Request() req): Promise<User | undefined> {
-    console.log(req.user);
     if(params.username == req.user.username) {
       return this.usersService.findOne(params.username);
     } else {

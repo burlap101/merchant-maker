@@ -139,7 +139,7 @@ export default {
       currentImageFileName: "",
       images: [],
       isFormValid: undefined,
-      fieldsObj: ProductFields,
+      fieldsObj: ProductFields
     };
   },
   methods: {

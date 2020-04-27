@@ -17,18 +17,7 @@
           disabled
           v-bind:value="image.originalname"
         />
-        <!-- <label for="product-image" class="custom-file-label text-muted mx-3">
-          {{ image.originalname }}
-        </label> -->
       </div>
-      <!-- <div class="col-md-6">
-        <button
-          v-on:click="addImageField(attrName)"
-          class="btn btn-outline-success"
-        >
-          + Add
-        </button>
-      </div> -->
     </div>
     <div class="row container">
       <div class="col-md-6 my-pointer">
@@ -48,19 +37,10 @@
         >
           Choose image
         </label>
-        <label
-          v-else
-          for="product-image"
-          class="custom-file-label text-muted"
-        >
+        <label v-else for="product-image" class="custom-file-label text-muted">
           {{ currentImageFileName }}
         </label>
       </div>
-      <!-- <div class="col-md-6">
-        <button class="btn btn-outline-success">
-          + Add
-        </button>
-      </div> -->
     </div>
   </div>
 </template>
@@ -73,12 +53,11 @@ export default {
     return {
       isSaving: false,
       currentImageFileName: ""
-    }
+    };
   },
   methods: {
     uploadImageFile: async function(fieldName, event) {
       event.preventDefault();
-      console.log(event);
       if (!event.target.files[0]) return;
       this.isSaving = true;
       let fd = new FormData();
@@ -93,12 +72,12 @@ export default {
           "There was a problem: (" + res.status + ") " + res.statusText
         );
       } else {
-        let imageObj = await res.json()
+        let imageObj = await res.json();
         this.images.push(imageObj);
-        this.$emit("image-uploaded", imageObj)
+        this.$emit("image-uploaded", imageObj);
       }
       this.isSaving = false;
-    },
+    }
   }
-}
+};
 </script>

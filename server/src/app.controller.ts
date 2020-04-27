@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res, UseGuards, Post, Request, Response} from '@nestjs/common';
+import { Controller, Get, Param, Res, UseGuards, Post, Request, Response, Render} from '@nestjs/common';
 import { AppService } from './app.service';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
@@ -36,5 +36,11 @@ export class AppController {
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
+  }
+
+  @Get('admin')
+  @Render('admin')
+  adminPortal() {
+    return {}
   }
 }
