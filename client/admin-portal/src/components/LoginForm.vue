@@ -76,7 +76,6 @@ export default {
         this.$router.push("/products");
       } else {
         let error = res;
-        console.log(error);
         this.errors.push("login failed: " + error.body);
       }
     }
