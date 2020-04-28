@@ -1,7 +1,7 @@
 module.exports = {
-  outputDir: "../../server/dist/public/admin",
+  outputDir: "../../server/dist/public/admin-portal",
   indexPath: "../../views/admin.hbs",
-  publicPath: "/admin",
+  publicPath: "/admin-portal",
   devServer: {
     proxy: "http://localhost:3000"
   }

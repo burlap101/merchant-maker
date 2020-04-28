@@ -38,7 +38,7 @@ export class AppController {
     return req.user;
   }
 
-  @Get('admin')
+  @Get('admin-portal')
   @Render('admin')
   adminPortal() {
     return {}
