@@ -43,9 +43,9 @@ export class AppController {
     return req.user;
   }
 
-  // @Get('portal')
-  // @Render('portal')
-  // adminPortal() {
-  //   return {}
-  // }
+  @Get('portal')
+  @Render('portal')
+  adminPortal() {
+    return {};
+  }
 }
