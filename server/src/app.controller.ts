@@ -16,6 +16,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  @Get('test-location')
+  getTestMessage(): string {
+    return "This is a test message";
+  }
+
   @Get('media/:imgId')
   getImage(@Param('imgId') imgId, @Res() res) {
     return res.sendFile(imgId, { root: './media' })
