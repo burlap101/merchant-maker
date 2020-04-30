@@ -55,4 +55,12 @@ const router = new VueRouter({
   routes
 });
 
+router.beforeEach((to, from, next) => {
+  if (from.path.startsWith("/store")) {
+    next("/store" + to.path);
+  } else {
+    next();
+  }
+});
+
 export default router;
