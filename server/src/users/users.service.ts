@@ -9,11 +9,11 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UsersService {
 
-  firstTimeUser = true;
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
   async findOne(username: string): Promise<User | undefined> {
-    return this.userModel.findOne({ username: username }).exec();
+    const user = await this.userModel.findOne({ "username": username }).exec();
+    return user;
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User | undefined> {
