@@ -85,7 +85,9 @@
 <script>
 import _ from "lodash";
 
-const baseUrl = (window.location.hostname == "yambagraftonfirstaid.com.au") ? "/store" : "";
+const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
+  ? "/store"
+  : "";
 export default {
   name: "category-selection",
   props: ["parentCategorySelected"],

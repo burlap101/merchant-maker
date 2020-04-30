@@ -5,7 +5,9 @@
 </template>
 
 <script>
-const baseUrl = (window.location.hostname == "yambagraftonfirstaid.com.au") ? "/store" : "";
+const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
+  ? "/store"
+  : "";
 
 export default {
   name: "app",
