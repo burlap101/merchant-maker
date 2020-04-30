@@ -121,7 +121,7 @@ import CategorySelection from "./CategorySelection.vue";
 import AdditionalAttributes from "./AdditionalAttributes.vue";
 import ImageUpload from "./ImageUpload.vue";
 
-const baseUrl = process.env.MMPATH || "";
+const baseUrl = (window.location.hostname == "yambagraftonfirstaid.com.au") ? "/store" : "";
 export default {
   name: "add-form",
   components: {

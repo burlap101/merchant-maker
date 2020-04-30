@@ -24,7 +24,7 @@
 import { ProductFields } from "../../assets/js/ProductFields";
 import TableRow from "./TableRow.vue";
 
-const baseUrl = process.env.MMPATH || "";
+const baseUrl = (window.location.hostname == "yambagraftonfirstaid.com.au") ? "/store" : "";
 
 export default {
   name: "my-table",

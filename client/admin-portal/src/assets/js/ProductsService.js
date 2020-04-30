@@ -1,4 +1,4 @@
-const baseUrl = (process.env.MMPATH || "") + "/products";
+const baseUrl = (window.location.hostname == "yambagraftonfirstaid.com.au") ? "/store" : "";
 
 export default class ProductsService {
   static addProduct(productDetails) {

@@ -48,7 +48,7 @@
 </template>
 
 <script>
-const baseUrl = process.env.MMPATH || "";
+const baseUrl = (window.location.hostname == "yambagraftonfirstaid.com.au") ? "/store" : "";
 export default {
   name: "login-form",
   data() {
