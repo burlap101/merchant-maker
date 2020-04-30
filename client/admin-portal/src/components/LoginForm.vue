@@ -48,6 +48,7 @@
 </template>
 
 <script>
+const baseUrl = process.env.MMPATH || "";
 export default {
   name: "login-form",
   data() {
@@ -60,7 +61,7 @@ export default {
   },
   methods: {
     submit: async function() {
-      let res = await fetch("/auth/login", {
+      let res = await fetch(baseUrl + "/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

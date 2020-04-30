@@ -121,6 +121,7 @@ import CategorySelection from "./CategorySelection.vue";
 import AdditionalAttributes from "./AdditionalAttributes.vue";
 import ImageUpload from "./ImageUpload.vue";
 
+const baseUrl = process.env.MMPATH || "";
 export default {
   name: "add-form",
   components: {
@@ -150,7 +151,7 @@ export default {
 
       // this.formData.images = this.images;
 
-      let res = await fetch("/products/add", {
+      let res = await fetch(baseUrl + "/products/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

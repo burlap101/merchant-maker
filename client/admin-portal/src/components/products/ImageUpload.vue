@@ -46,6 +46,7 @@
 </template>
 
 <script>
+const baseUrl = process.env.MMPATH || "";
 export default {
   name: "image-upload",
   props: ["images"],
@@ -62,7 +63,7 @@ export default {
       this.isSaving = true;
       let fd = new FormData();
       fd.append("image", event.target.files[0]);
-      let res = await fetch("/file-upload/image", {
+      let res = await fetch(baseUrl + "/file-upload/image", {
         method: "POST",
         body: fd
       });

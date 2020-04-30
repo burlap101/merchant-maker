@@ -24,6 +24,8 @@
 import { ProductFields } from "../../assets/js/ProductFields";
 import TableRow from "./TableRow.vue";
 
+const baseUrl = process.env.MMPATH || "";
+
 export default {
   name: "my-table",
   components: {
@@ -50,7 +52,7 @@ export default {
     }
     this.headers = cols;
 
-    let response = await fetch("/products");
+    let response = await fetch(baseUrl + "/products");
 
     let productsObj = {};
 

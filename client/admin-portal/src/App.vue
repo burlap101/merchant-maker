@@ -5,6 +5,8 @@
 </template>
 
 <script>
+const baseUrl = process.env.MMPATH || "";
+
 export default {
   name: "app",
   async created() {
@@ -14,7 +16,7 @@ export default {
       return;
     }
 
-    let res = await fetch("/users/profile/" + username);
+    let res = await fetch(baseUrl + "/users/profile/" + username);
     if (!res.ok) {
       this.$router.push("/login");
       return;

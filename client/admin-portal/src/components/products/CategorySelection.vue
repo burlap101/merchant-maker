@@ -85,6 +85,7 @@
 <script>
 import _ from "lodash";
 
+const baseUrl = process.env.MMPATH || "";
 export default {
   name: "category-selection",
   props: ["parentCategorySelected"],
@@ -119,7 +120,7 @@ export default {
       this.categorySelected = {};
       this.categoriesArray = [];
       this.hasNewCategory = false;
-      let res = await fetch("/categories?hasParent=false");
+      let res = await fetch(baseUrl + "/categories?hasParent=false");
       if (!res.ok && res.status != 304) {
         this.errors.push(
           "There was an error collecting the list of categories."

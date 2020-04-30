@@ -170,6 +170,8 @@ import CategorySelection from "./CategorySelection.vue";
 import AdditionalAttributes from "./AdditionalAttributes.vue";
 import ImageUpload from "./ImageUpload.vue";
 
+const baseUrl = process.env.MMPATH || "";
+
 export default {
   name: "edit-form",
   props: ["id"],
@@ -202,7 +204,7 @@ export default {
         return;
       }
 
-      let res = await fetch("/products/update/" + this.id, {
+      let res = await fetch(baseUrl + "/products/update/" + this.id, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -247,7 +249,7 @@ export default {
       this.isSaving = true;
       let fd = new FormData();
       fd.append("image", event.target.files[0]);
-      let res = await fetch("/file-upload/image", {
+      let res = await fetch(baseUrl + "/file-upload/image", {
         method: "POST",
         body: fd
       });
@@ -343,7 +345,7 @@ export default {
       return maxLevels;
     },
     destroyRecord: async function() {
-      const res = await fetch("/products/delete/" + this.id, {
+      const res = await fetch(baseUrl + "/products/delete/" + this.id, {
         method: "DELETE"
       });
       if (res.ok) {
@@ -356,7 +358,7 @@ export default {
     }
   },
   async created() {
-    let res = await fetch("/products/" + this.id);
+    let res = await fetch(baseUrl + "/products/" + this.id);
     if (res.ok) {
       this.formData = Object.assign({}, this.formData, await res.json());
       this.categoriesSelected = Object.assign(

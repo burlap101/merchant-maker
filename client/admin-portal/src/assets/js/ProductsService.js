@@ -1,6 +1,8 @@
+const baseUrl = (process.env.MMPATH || "") + "/products";
+
 export default class ProductsService {
   static addProduct(productDetails) {
-    let url = "/products/add";
+    let url = baseUrl + "/add";
     return new Promise(async function() {
       try {
         await fetch(url, {
@@ -17,7 +19,7 @@ export default class ProductsService {
   }
 
   static findAll() {
-    let url = "/products";
+    let url = baseUrl;
     return new Promise(async function() {
       try {
         await fetch(url);
@@ -31,7 +33,7 @@ export default class ProductsService {
 
   static findOne(id) {
     try {
-      let url = "/products/" + id;
+      let url = baseUrl + "/" + id;
       return new Promise(async function() {
         await fetch(url);
       });
@@ -42,7 +44,7 @@ export default class ProductsService {
 
   static update(id, productDetails) {
     try {
-      let url = `/products/${id}`;
+      let url = baseUrl + "/" + id;
       return new Promise(async function() {
         await fetch(url, {
           method: "POST",
@@ -59,7 +61,7 @@ export default class ProductsService {
 
   static deleteOne(id) {
     try {
-      let url = `/products/${id}`;
+      let url = baseUrl + "/" + id;
       return new Promise(async function() {
         await fetch(url, {
           method: "DELETE"
