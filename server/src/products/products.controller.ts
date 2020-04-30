@@ -8,7 +8,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 
-@Controller('products')
+@Controller('api/products')
 export class ProductsController {
   constructor(
     private readonly productsService: ProductsService,

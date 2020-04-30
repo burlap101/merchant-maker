@@ -117,6 +117,7 @@
 import _ from "lodash";
 import { ProductValidation } from "../../assets/js/ProductValidation";
 import { ProductFields } from "@/assets/js/ProductFields";
+import { ProductsService } from "../../assets/js/ProductsService";
 import CategorySelection from "./CategorySelection.vue";
 import AdditionalAttributes from "./AdditionalAttributes.vue";
 import ImageUpload from "./ImageUpload.vue";
@@ -161,13 +162,14 @@ export default {
         body: JSON.stringify(this.formData)
       });
 
-      if (res.ok) {
+      try {
+        ProductsService.addProduct(this.formData);
         this.added = true;
         this.errors = [];
         await this.initialiseFormData();
-      } else {
+      } catch (err) {
         this.errors.push(
-          "There was a problem: (" + res.status + ") " + res.statusText
+          err.message
         );
         this.added = false;
       }

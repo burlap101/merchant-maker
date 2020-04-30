@@ -166,6 +166,7 @@
 import _ from "lodash";
 import { ProductValidation } from "../../assets/js/ProductValidation";
 import { ProductFields } from "@/assets/js/ProductFields";
+import { ProductsService } from "../../assets/js/ProductsService";
 import CategorySelection from "./CategorySelection.vue";
 import AdditionalAttributes from "./AdditionalAttributes.vue";
 import ImageUpload from "./ImageUpload.vue";

@@ -1,76 +1,101 @@
 const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
-  ? "/store"
+  ? "/store/products/api"
   : "";
 
+const noResponseMessage = "There was a problem communicating with the server. Please contact your administrator.";
+
 export default class ProductsService {
-  static addProduct(productDetails) {
+  static async addProduct(productDetails) {
     let url = baseUrl + "/add";
-    return new Promise(async function() {
-      try {
-        await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(productDetails)
-        });
-      } catch (err) {
-        console.log(err);
-      }
+    let res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(productDetails)
     });
+    if (res.ok) {
+      return res.json();
+    } else {
+      let message = undefined;
+      try {
+        message = (await res.json()).message;
+      } catch (err) {
+        throw Error(noResponseMessage);
+      }
+      throw Error(message + ' - Code: ' + res.status);
+    }
   }
 
-  static findAll() {
+  static async findAll() {
     let url = baseUrl;
-    return new Promise(async function() {
+    let res = await fetch(url);
+    if (res.ok) {
+      return res.json();
+    } else {
+      let message = undefined;
       try {
-        await fetch(url);
+        message = (await res.json()).message;
       } catch (err) {
-        throw err(
-          "An error occurred attempting to retrieve the full list of products."
-        );
+        throw Error(noResponseMessage);
       }
+      throw Error(message + ' - Code: ' + res.status);
+    }
+  }
+
+  static async findOne(id) {
+    let url = baseUrl + "/" + id;
+    let res = await fetch(url);
+    if (res.ok) {
+      return res.json();
+    } else {
+      let message = undefined;
+      try {
+        message = (await res.json()).message;
+      } catch (err) {
+        throw Error("There was a problem communicating with the server. Contact your site's administrator.")
+      }
+      throw Error(message + ' - Code: ' + res.status);
+    }
+  }
+
+  static async update(id, productDetails) {
+    let url = baseUrl + "/" + id;
+    let res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(productDetails)  
     });
-  }
-
-  static findOne(id) {
-    try {
-      let url = baseUrl + "/" + id;
-      return new Promise(async function() {
-        await fetch(url);
-      });
-    } catch (err) {
-      throw err("There was a problem retrieving the product.");
+    if (res.ok) {
+      return res.json();
+    } else {
+      let message = undefined;
+      try {
+        message = (await res.json()).message;
+      } catch (err) {
+        throw Error(noResponseMessage);
+      }
+      throw Error(message + ' - Code: ' + res.status);
     }
   }
 
-  static update(id, productDetails) {
-    try {
-      let url = baseUrl + "/" + id;
-      return new Promise(async function() {
-        await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(productDetails)
-        });
-      });
-    } catch (err) {
-      throw err("There was a problem attempting to update the product.");
-    }
-  }
-
-  static deleteOne(id) {
-    try {
-      let url = baseUrl + "/" + id;
-      return new Promise(async function() {
-        await fetch(url, {
-          method: "DELETE"
-        });
-      });
-    } catch (err) {
-      throw err("There was a problem attempting to delete the product.");
+  static async deleteOne(id) {
+    let url = baseUrl + "/" + id;
+    let res = await fetch(url, {
+      method: "DELETE"
+    });
+    if (res.ok) {
+      return res.json();
+    } else {
+      let message = undefined;
+      try {
+        message = (await res.json()).message;
+      } catch (err) {
+        throw Error(noResponseMessage);
+      }
+      throw Error(message + ' - Code: ' + res.status);
     }
   }
 }

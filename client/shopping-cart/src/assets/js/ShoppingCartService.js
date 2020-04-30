@@ -1,4 +1,4 @@
-
+const baseUrl = window.location.hostname.includes('yambagraftonfirstaid.com.au') ? "/store/shopping-cart" : "";
 export default class ShoppingCartService {
 
   static async findMyCart() {
