@@ -206,23 +206,13 @@ export default {
       if (!this.validateFormData()) {
         return;
       }
-
-      let res = await fetch(baseUrl + "/products/update/" + this.id, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(this.formData)
-      });
-
-      if (res.ok) {
+      try {
+        ProductsService.update(this.formData);
         this.added = true;
         this.errors = [];
-        // await this.initialiseFormData();
-      } else {
-        this.errors.push(
-          "There was a problem: (" + res.status + ") " + res.statusText
-        );
+        await this.initialiseFormData();
+      } catch (err) {
+        this.errors.push(err.message);
         this.added = false;
       }
       document.body.scrollTop = 0;

@@ -46,6 +46,19 @@ export class AppController {
   @Get('portal')
   @Render('portal')
   adminPortal(): Object {
-    return { message: "hello there." }
+    return { message: "hello there." };
   }
+
+  @Get('portal/products')
+  @Render ('portal')
+  portalProducts() {
+    return {};
+  }
+
+  @Get('portal/login')
+  @Render('portal')
+  portalLogin() {
+    return {};
+  }
+
 }

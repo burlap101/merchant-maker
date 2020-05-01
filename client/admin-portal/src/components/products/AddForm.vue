@@ -122,9 +122,6 @@ import CategorySelection from "./CategorySelection.vue";
 import AdditionalAttributes from "./AdditionalAttributes.vue";
 import ImageUpload from "./ImageUpload.vue";
 
-const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
-  ? "/store"
-  : "";
 export default {
   name: "add-form",
   components: {
@@ -153,14 +150,6 @@ export default {
       }
 
       // this.formData.images = this.images;
-
-      let res = await fetch(baseUrl + "/products/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(this.formData)
-      });
 
       try {
         ProductsService.addProduct(this.formData);

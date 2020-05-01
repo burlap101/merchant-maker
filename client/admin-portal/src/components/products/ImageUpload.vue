@@ -46,16 +46,16 @@
 </template>
 
 <script>
-const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
-  ? "/store"
-  : "";
 export default {
   name: "image-upload",
   props: ["images"],
   data() {
     return {
       isSaving: false,
-      currentImageFileName: ""
+      currentImageFileName: "",
+      baseUrl: window.location.hostname.includes("yambagraftonfirstaid.com.au")
+      ? "/store"
+      : ""
     };
   },
   methods: {
@@ -65,7 +65,7 @@ export default {
       this.isSaving = true;
       let fd = new FormData();
       fd.append("image", event.target.files[0]);
-      let res = await fetch(baseUrl + "/file-upload/image", {
+      let res = await fetch( this.baseUrl + "/file-upload/image", {
         method: "POST",
         body: fd
       });
