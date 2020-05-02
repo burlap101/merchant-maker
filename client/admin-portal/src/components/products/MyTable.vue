@@ -22,11 +22,8 @@
 
 <script>
 import { ProductFields } from "../../assets/js/ProductFields";
+import { ProductsService } from "../../assets/js/ProductsService";
 import TableRow from "./TableRow.vue";
-
-const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
-  ? "/store"
-  : "";
 
 export default {
   name: "my-table",
@@ -53,20 +50,18 @@ export default {
       names.push(header);
     }
     this.headers = cols;
-
-    let response = await fetch(baseUrl + "/products");
-
     let productsObj = {};
-
-    if (response.ok) {
-      productsObj = await response.json();
-      // console.log(productsObj);
-    } else {
-      this.errors.push("There was a problem retrieving product data.");
+    try {
+      productsObj = await ProductsService.findAll();
+      this.errors = [];
+    } catch (err) {
+      this.errors.push(err.message);
+      return;
     }
+
     let i = 0;
     for (let product in productsObj) {
-      // console.log(productsObj[product])
+      console.log(productsObj[product])
       i++;
       let renderedRow = [i];
       this.ids.push(productsObj[product]._id);

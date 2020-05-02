@@ -140,8 +140,7 @@ export default {
       currentImageFileName: "",
       images: [],
       isFormValid: undefined,
-      fieldsObj: ProductFields,
-      ProductsService: ProductsService
+      fieldsObj: ProductFields
     };
   },
   methods: {
@@ -153,14 +152,12 @@ export default {
       // this.formData.images = this.images;
 
       try {
-        this.ProductsService.addProduct(this.formData);
+        await ProductsService.addProduct(this.formData);
         this.added = true;
         this.errors = [];
         await this.initialiseFormData();
       } catch (err) {
-        this.errors.push(
-          err.message
-        );
+        this.errors.push(err.message);
         this.added = false;
       }
       document.body.scrollTop = 0;

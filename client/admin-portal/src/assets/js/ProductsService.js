@@ -1,11 +1,13 @@
-const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
-  ? "/store/products/api"
-  : "";
+const baseUrl =
+  window.location.hostname.includes("yambagraftonfirstaid.com.au")
+  ? "/store/api/products"
+  : "/api/products";
 
 const noResponseMessage = "There was a problem communicating with the server. Please contact your administrator.";
 
 export const ProductsService = {
-  addProduct: async function(productDetails) {
+  // eslint-disable-next-line prettier/prettier
+  addProduct: async (productDetails) => {
     let url = baseUrl + "/add";
     let res = await fetch(url, {
       method: "POST",
@@ -14,6 +16,7 @@ export const ProductsService = {
       },
       body: JSON.stringify(productDetails)
     });
+    console.log(baseUrl);
     if (res.ok) {
       return res.json();
     } else {
@@ -60,7 +63,7 @@ export const ProductsService = {
   },
 
   update: async function(id, productDetails) {
-    let url = baseUrl + "/" + id;
+    let url = baseUrl + "/update/" + id;
     let res = await fetch(url, {
       method: "POST",
       headers: {
@@ -82,7 +85,7 @@ export const ProductsService = {
   },
 
   deleteOne: async function(id) {
-    let url = baseUrl + "/" + id;
+    let url = baseUrl + "/delete/" + id;
     let res = await fetch(url, {
       method: "DELETE"
     });

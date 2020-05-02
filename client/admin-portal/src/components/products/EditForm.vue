@@ -198,7 +198,7 @@ export default {
       isFormValid: undefined,
       categoriesSelected: {},
       fieldsObj: ProductFields,
-      confirmDestroy: false
+      confirmDestroy: false,
     };
   },
   methods: {
@@ -207,7 +207,7 @@ export default {
         return;
       }
       try {
-        ProductsService.update(this.formData);
+        await ProductsService.update(this.id, this.formData);
         this.added = true;
         this.errors = [];
         await this.initialiseFormData();
@@ -338,29 +338,24 @@ export default {
       return maxLevels;
     },
     destroyRecord: async function() {
-      const res = await fetch(baseUrl + "/products/delete/" + this.id, {
-        method: "DELETE"
-      });
-      if (res.ok) {
+      try {
+        await ProductsService.deleteOne(this.id);
         this.$router.push("/products");
-      } else {
-        this.errors.push(
-          "There was an issue with attempting to delete this record."
-        );
+      } catch (err) {
+        this.errors.push(err.message);
       }
     }
   },
   async created() {
-    let res = await fetch(baseUrl + "/products/" + this.id);
-    if (res.ok) {
-      this.formData = Object.assign({}, this.formData, await res.json());
+    try {
+      this.formData = Object.assign({}, this.formData, await ProductsService.findOne(this.id));
       this.categoriesSelected = Object.assign(
         {},
         this.categoriesSelected,
         await this.deObjectifyCategories(this.formData.category)
       );
-    } else {
-      this.errors.push("There was an issue retrieving the requested record.");
+    } catch (err) {
+      this.errors.push(err.message);
     }
   }
 };
