@@ -4,8 +4,8 @@ const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
 
 const noResponseMessage = "There was a problem communicating with the server. Please contact your administrator.";
 
-export default class ProductsService {
-  static async addProduct(productDetails) {
+export const ProductsService = {
+  addProduct: async function(productDetails) {
     let url = baseUrl + "/add";
     let res = await fetch(url, {
       method: "POST",
@@ -25,9 +25,9 @@ export default class ProductsService {
       }
       throw Error(message + ' - Code: ' + res.status);
     }
-  }
+  },
 
-  static async findAll() {
+  findAll: async function() {
     let url = baseUrl;
     let res = await fetch(url);
     if (res.ok) {
@@ -41,9 +41,9 @@ export default class ProductsService {
       }
       throw Error(message + ' - Code: ' + res.status);
     }
-  }
+  },
 
-  static async findOne(id) {
+  findOne: async function(id) {
     let url = baseUrl + "/" + id;
     let res = await fetch(url);
     if (res.ok) {
@@ -57,9 +57,9 @@ export default class ProductsService {
       }
       throw Error(message + ' - Code: ' + res.status);
     }
-  }
+  },
 
-  static async update(id, productDetails) {
+  update: async function(id, productDetails) {
     let url = baseUrl + "/" + id;
     let res = await fetch(url, {
       method: "POST",
@@ -79,9 +79,9 @@ export default class ProductsService {
       }
       throw Error(message + ' - Code: ' + res.status);
     }
-  }
+  },
 
-  static async deleteOne(id) {
+  deleteOne: async function(id) {
     let url = baseUrl + "/" + id;
     let res = await fetch(url, {
       method: "DELETE"
