@@ -61,7 +61,7 @@ export default {
 
     let i = 0;
     for (let product in productsObj) {
-      console.log(productsObj[product])
+      console.log(productsObj[product]);
       i++;
       let renderedRow = [i];
       this.ids.push(productsObj[product]._id);

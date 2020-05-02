@@ -54,8 +54,8 @@ export default {
       isSaving: false,
       currentImageFileName: "",
       baseUrl: window.location.hostname.includes("yambagraftonfirstaid.com.au")
-      ? "/store"
-      : ""
+        ? "/store"
+        : ""
     };
   },
   methods: {
@@ -65,7 +65,7 @@ export default {
       this.isSaving = true;
       let fd = new FormData();
       fd.append("image", event.target.files[0]);
-      let res = await fetch( this.baseUrl + "/file-upload/image", {
+      let res = await fetch(this.baseUrl + "/file-upload/image", {
         method: "POST",
         body: fd
       });

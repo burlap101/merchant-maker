@@ -198,7 +198,7 @@ export default {
       isFormValid: undefined,
       categoriesSelected: {},
       fieldsObj: ProductFields,
-      confirmDestroy: false,
+      confirmDestroy: false
     };
   },
   methods: {
@@ -348,7 +348,11 @@ export default {
   },
   async created() {
     try {
-      this.formData = Object.assign({}, this.formData, await ProductsService.findOne(this.id));
+      this.formData = Object.assign(
+        {},
+        this.formData,
+        await ProductsService.findOne(this.id)
+      );
       this.categoriesSelected = Object.assign(
         {},
         this.categoriesSelected,

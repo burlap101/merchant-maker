@@ -1,9 +1,9 @@
-const baseUrl =
-  window.location.hostname.includes("yambagraftonfirstaid.com.au")
+const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
   ? "/store/api/products"
   : "/api/products";
 
-const noResponseMessage = "There was a problem communicating with the server. Please contact your administrator.";
+const noResponseMessage =
+  "There was a problem communicating with the server. Please contact your administrator.";
 
 export const ProductsService = {
   // eslint-disable-next-line prettier/prettier
@@ -26,7 +26,7 @@ export const ProductsService = {
       } catch (err) {
         throw Error(noResponseMessage);
       }
-      throw Error(message + ' - Code: ' + res.status);
+      throw Error(message + " - Code: " + res.status);
     }
   },
 
@@ -42,7 +42,7 @@ export const ProductsService = {
       } catch (err) {
         throw Error(noResponseMessage);
       }
-      throw Error(message + ' - Code: ' + res.status);
+      throw Error(message + " - Code: " + res.status);
     }
   },
 
@@ -56,9 +56,11 @@ export const ProductsService = {
       try {
         message = (await res.json()).message;
       } catch (err) {
-        throw Error("There was a problem communicating with the server. Contact your site's administrator.")
+        throw Error(
+          "There was a problem communicating with the server. Contact your site's administrator."
+        );
       }
-      throw Error(message + ' - Code: ' + res.status);
+      throw Error(message + " - Code: " + res.status);
     }
   },
 
@@ -69,7 +71,7 @@ export const ProductsService = {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(productDetails)  
+      body: JSON.stringify(productDetails)
     });
     if (res.ok) {
       return res.json();
@@ -80,7 +82,7 @@ export const ProductsService = {
       } catch (err) {
         throw Error(noResponseMessage);
       }
-      throw Error(message + ' - Code: ' + res.status);
+      throw Error(message + " - Code: " + res.status);
     }
   },
 
@@ -98,7 +100,7 @@ export const ProductsService = {
       } catch (err) {
         throw Error(noResponseMessage);
       }
-      throw Error(message + ' - Code: ' + res.status);
+      throw Error(message + " - Code: " + res.status);
     }
   }
-}
+};
