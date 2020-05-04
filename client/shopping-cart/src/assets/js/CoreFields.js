@@ -1,5 +1,3 @@
-const states = ["NSW", "QLD", "ACT", "VIC", "NT", "SA", "WA", "TAS"];
-
 export const CoreFields = {
   text: {
     name: {
