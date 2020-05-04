@@ -4,7 +4,7 @@
       <span class="text-muted">Your cart</span>
       <span class="badge badge-secondary badge-pill"
         >{{ products.length + trainingSessions.length }}
-        <a href="/shopping-cart"><i class="fas fa-edit"></i></a
+        <router-link to="shopping-cart"><i class="fas fa-edit"></i></router-link
       ></span>
     </h4>
     <ul class="list-group mb-3">
@@ -71,6 +71,11 @@ export default {
         result += item.product.price * item.qty;
       }
       return result;
+    }
+  },
+  created() {
+    if (this.trainingSessions === undefined) {
+      this.trainingSessions = [];
     }
   }
 };

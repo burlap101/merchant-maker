@@ -7,6 +7,10 @@
     </div>
     <div class="row">
       <div class="col-md-4 order-md-2 mb-4">
+      <shopping-cart-preview
+        v-bind:products="products" 
+        v-bind:trainingSessions="trainingSessions"
+      />
         <form class="card p-2">
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Promo code" />
@@ -176,6 +180,7 @@
 <script>
 import { loadStripe } from "@stripe/stripe-js";
 import AddressForm from "../../components/AddressForm.vue";
+import ShoppingCartPreview from "../../components/ShoppingCartPreview.vue";
 import keys from "../../assets/localconfig/keys";
 import { ShoppingCartService } from "../../assets/js/ShoppingCartService";
 
@@ -184,7 +189,8 @@ export default {
   name: "checkout",
 
   components: {
-    AddressForm
+    AddressForm,
+    ShoppingCartPreview
   },
 
   data() {
