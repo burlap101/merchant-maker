@@ -18,8 +18,7 @@
             {{ item.course.course_code }} for {{ item.qty }} students
           </h6>
           <small class="text-muted"
-            >{{ item.course.title }} at
-            {{ item.training_session.location }},
+            >{{ item.course.title }} at {{ item.training_session.location }},
             {{ item.training_session.session_date }}</small
           >
         </div>
@@ -36,14 +35,20 @@
           </h6>
           <small class="text-muted">
             <span
-              v-for="(attrName, attrIndex) in Object.keys(item.product.attributes)"
+              v-for="(attrName, attrIndex) in Object.keys(
+                item.product.attributes
+              )"
               v-bind:key="attrIndex"
-            > 
-              {{ attrName }}: {{ item.product.attributes[attrName] }}, 
+            >
+              {{ attrName }}: {{ item.product.attributes[attrName] }},
             </span>
           </small>
         </div>
-        <span class="text-muted">${{ (item.product.price * item.qty).toFixed(2) }}</span>
+        <span class="text-muted"
+          >${{ (item.product.price * item.qty).toFixed(2) }}</span
+        >
+      </li>
+
       <li class="list-group-item d-flex justify-content-between">
         <span>Total (AUD)</span>
         <strong>${{ grandTotal.toFixed(2) }}</strong>
@@ -63,10 +68,10 @@ export default {
         result += item.total_cost;
       }
       for (let item of this.products) {
-        result += item.product.price * item.qty
+        result += item.product.price * item.qty;
       }
       return result;
     }
-  },
-}
+  }
+};
 </script>

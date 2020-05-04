@@ -13,13 +13,13 @@ import { Order } from 'src/orders/interfaces/order.interface';
 import { CheckoutDto } from './dto/checkout.dto';
 
 
-@Controller('shopping-cart')
+@Controller('api/shopping-cart')
 export class ShoppingCartController {
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
     private readonly jwtService: JwtService,
     private readonly ordersService: OrdersService
-    ) {}
+  ) {}
 
   @Get() 
   findMyCart(@Request() req): Promise<ShoppingCart> {

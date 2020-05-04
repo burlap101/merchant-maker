@@ -7,8 +7,6 @@
     </div>
     <div class="row">
       <div class="col-md-4 order-md-2 mb-4">
-        
-
         <form class="card p-2">
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Promo code" />
@@ -26,7 +24,7 @@
           class="alert alert-danger"
           role="alert"
         >
-          {{ index+1 }}. {{ error }}
+          {{ index + 1 }}. {{ error }}
         </div>
         <div class="alert alert-success" v-if="paymentSuccess">
           Payment Successful
@@ -38,9 +36,7 @@
             v-bind:key="index"
           >
             <div v-if="!fieldname.toLowerCase().includes('address')">
-              <label v-bind:for="fieldname" class="">{{
-                fieldname
-              }}</label>
+              <label v-bind:for="fieldname" class="">{{ fieldname }}</label>
               <input
                 v-bind:id="fieldname"
                 type="text"
@@ -50,30 +46,11 @@
             </div>
           </div>
           <div v-if="products.length > 0">
-            <div class="h5 text-muted mt-4 mb-3">
-              Shipping Address
-            </div>
-            <div
-              class="mb-3"
-              v-for="(fieldname, index) of Object.keys(formFields.shippingAddress)"
-              v-bind:key="index"
-            >
-              <label v-bind:for="fieldname" class="">{{
-                fieldname
-              }}</label>
-              <input
-                v-bind:id="fieldname"
-                type="text"
-                class="form-control"
-                v-model="formFields.shippingAddress[fieldname]"
-              />
-            </div>
+            <address-form addressType="shipping" />
             <div class="h5 text-muted mt-4 mb-3">
               Billing Address
             </div>
-            <div
-              class="mb-3 custom-control custom-checkbox"
-            >
+            <div class="mb-3 custom-control custom-checkbox">
               <input
                 type="checkbox"
                 class="custom-control-input"
@@ -81,17 +58,19 @@
                 v-model="isSameAddress"
                 v-bind:checked="isSameAddress"
               />
-              <label class="custom-control-label" for="save-info">Same as shipping</label>
+              <label class="custom-control-label" for="save-info"
+                >Same as shipping</label
+              >
             </div>
             <div v-if="!isSameAddress">
               <div
                 class="mb-3"
-                v-for="(fieldname, index) of Object.keys(formFields.billingAddress)"
+                v-for="(fieldname, index) of Object.keys(
+                  formFields.billingAddress
+                )"
                 v-bind:key="index"
               >
-                <label v-bind:for="fieldname" class="">{{
-                  fieldname
-                }}</label>
+                <label v-bind:for="fieldname" class="">{{ fieldname }}</label>
                 <input
                   v-bind:id="fieldname"
                   type="text"
@@ -100,9 +79,10 @@
                 />
               </div>
             </div>
-          </div> <!-- End of Addresses -->
-            
-            <!-- <div class="text-muted mt-5 mb-3">
+          </div>
+          <!-- End of Addresses -->
+
+          <!-- <div class="text-muted mt-5 mb-3">
               {{fieldname}}
             </div>
             <div
@@ -120,7 +100,7 @@
                 v-model="formFields[fieldname][childFieldname]"
               />
             </div> -->
-            
+
           <div
             v-if="trainingSessions.length > 0"
             class="mb-3 custom-control custom-checkbox"
@@ -195,11 +175,17 @@
 
 <script>
 import { loadStripe } from "@stripe/stripe-js";
+import AddressForm from "../../components/AddressForm.vue";
 import keys from "../../assets/localconfig/keys";
-import shoppingCartService from "../../assets/js/ShoppingCartService";
+import { ShoppingCartService } from "../../assets/js/ShoppingCartService";
 
+const states = ["NSW", "ACT", "QLD", "SA", "WA ", "TAS", "NT"];
 export default {
   name: "checkout",
+
+  components: {
+    AddressForm
+  },
 
   data() {
     return {
@@ -212,12 +198,6 @@ export default {
         name: "",
         email: "",
         phone: "",
-        shippingAddress: {
-          street: "",
-          suburb: "",
-          postcode: "",
-          state: ""
-        },
         billingAddress: {
           street: "",
           suburb: "",
@@ -246,13 +226,15 @@ export default {
           }
         }
       });
-      if(result.error) {
-        this.errors.push("There was a problem processing your payment. Please try again.");
+      if (result.error) {
+        this.errors.push(
+          "There was a problem processing your payment. Please try again."
+        );
       } else if (result.paymentIntent.status === "succeeded") {
         for (let field in this.formFields) {
           console.log("Here");
-          if(Object.keys(this.formFields[field]) > 0) {
-            for(let childField in this.formFields[field]) {
+          if (Object.keys(this.formFields[field]) > 0) {
+            for (let childField in this.formFields[field]) {
               this.formFields[field][childField] = "";
               console.log(childField);
             }
@@ -268,9 +250,13 @@ export default {
 
   async created() {
     try {
-      this.products = (await shoppingCartService.findMyCart()).items;
-      this.clientSecret = (await shoppingCartService.paymentIntentSecret()).secret;
-    } catch(err) { 
+      console.log("retrieving cart...");
+      this.products = (await ShoppingCartService.findMyCart()).items;
+      console.log("retrieving secret");
+      this.clientSecret = (
+        await ShoppingCartService.paymentIntentSecret()
+      ).secret;
+    } catch (err) {
       this.errors.push(err.message);
       throw err;
     }
@@ -279,8 +265,10 @@ export default {
   async mounted() {
     this.stripe = await loadStripe(keys.stripePublicKey);
     let elements = this.stripe.elements();
-    let card = elements.create("card", { style: { base: { color: "#32325d" } } });
-    card.mount(this.$refs['card-element']);
+    let card = elements.create("card", {
+      style: { base: { color: "#32325d" } }
+    });
+    card.mount(this.$refs["card-element"]);
     card.addEventListener("change", ({ error }) => {
       if (error) {
         this.errors.push(error.message);
