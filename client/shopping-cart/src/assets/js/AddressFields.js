@@ -49,4 +49,4 @@ export const AddressFields = {
       required: true
     }
   }
-}
+};

@@ -7,10 +7,10 @@
     </div>
     <div class="row">
       <div class="col-md-4 order-md-2 mb-4">
-      <shopping-cart-preview
-        v-bind:products="products" 
-        v-bind:trainingSessions="trainingSessions"
-      />
+        <shopping-cart-preview
+          v-bind:products="products"
+          v-bind:trainingSessions="trainingSessions"
+        />
         <form class="card p-2">
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Promo code" />
