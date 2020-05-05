@@ -55,6 +55,18 @@ export class AppController {
     return {};
   }
 
+  @Get('portal/products/add')
+  @Render('portal')
+  portalAddProduct() {
+    return {};
+  }
+
+  @Get('portal/products/edit/:id')
+  @Render('portal')
+  portalEditProduct() {
+    return {};
+  }
+
   @Get('portal/login')
   @Render('portal')
   portalLogin() {
