@@ -1,13 +1,14 @@
 <template>
-  <div v-on:keypress.enter="submit" class="text-center form-signin">
+  <div v-on:keypress.enter="submit" class="d-flex flex-column align-items-center align-self-center text-center form-signin">
     <img
-      class="mb-4"
-      src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg"
+      class="mt-5 mb-2"
+      src="../assets/img/mmlogo.svg"
       alt=""
-      width="72"
-      height="72"
+      width="128"
+      height="128"
     />
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+    <div class="h5">Merchant Maker&trade;</div>  
+    <h1 class="h4 my-3 font-weight-normal">Please sign in</h1>
     <div
       class="alert-danger"
       v-for="(error, index) in errors"
