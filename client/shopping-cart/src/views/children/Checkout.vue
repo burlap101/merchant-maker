@@ -51,9 +51,6 @@
           </div>
           <div v-if="products.length > 0">
             <address-form addressType="shipping" />
-            <div class="h5 text-muted mt-4 mb-3">
-              Billing Address
-            </div>
             <div class="mb-3 custom-control custom-checkbox">
               <input
                 type="checkbox"
@@ -66,6 +63,9 @@
                 >Same as shipping</label
               >
             </div>
+            <address-form v-if="!isSameAddress" addressType="billing" />
+            
+            
             <div v-if="!isSameAddress">
               <div
                 class="mb-3"
@@ -183,6 +183,7 @@ import AddressForm from "../../components/AddressForm.vue";
 import ShoppingCartPreview from "../../components/ShoppingCartPreview.vue";
 import keys from "../../assets/localconfig/keys";
 import { ShoppingCartService } from "../../assets/js/ShoppingCartService";
+import { mapState, mapGetters } from "vuex";
 
 const states = ["NSW", "ACT", "QLD", "SA", "WA ", "TAS", "NT"];
 export default {
@@ -196,8 +197,6 @@ export default {
   data() {
     return {
       errors: [],
-      products: [],
-      trainingSessions: [],
       saveInfo: false,
       ccPaymentSelected: true,
       formFields: {
@@ -219,6 +218,17 @@ export default {
       clientSecret: "",
       isSameAddress: false
     };
+  },
+
+  computed: {
+    ...mapState({
+      products: state => state.products,
+      trainingSessions: state => state.trainingSessions
+    }),
+    ...mapGetters([
+      'grandTotal',
+      'cartLength'
+    ])
   },
 
   methods: {
@@ -256,9 +266,6 @@ export default {
 
   async created() {
     try {
-      console.log("retrieving cart...");
-      this.products = (await ShoppingCartService.findMyCart()).items;
-      console.log("retrieving secret");
       this.clientSecret = (
         await ShoppingCartService.paymentIntentSecret()
       ).secret;

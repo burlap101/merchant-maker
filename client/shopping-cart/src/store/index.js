@@ -4,16 +4,6 @@ import { ShoppingCartService } from "../assets/js/ShoppingCartService";
 
 Vue.use(Vuex);
 
-let fetchProducts = async () => {
-  try {
-    console.log("retrieving cart...");
-    return(await ShoppingCartService.findMyCart()).items;
-  } catch (err) {
-    this.errors.push(err.message);
-    throw err;
-  }
-}
-
 export default new Vuex.Store({
   state: {
     products: [],
@@ -29,6 +19,9 @@ export default new Vuex.Store({
         result += item.product.price * item.qty;
       }
       return result;
+    },
+    cartLength: state => {
+      return state.products.length + state.trainingSessions.length;
     }
   },
   mutations: {
@@ -65,19 +58,16 @@ export default new Vuex.Store({
       }
     },
     addProducts (state, payload) {
-      payload.items.forEach(e => state.products.push(e));   
+      payload.items.forEach(e => state.products.push(e));
     }
   },
   actions: {
-    populateCart ({ commit, state }) {
-      let products = (await ShoppingCartService.findMyCart());
+    async populateCart ({ commit, state }) {
+      let products = (await ShoppingCartService.findMyCart()).items;
       state.products = [];
       commit('addProducts', {
         items: products
       })
-    },
-    saveCart ({ commit, state }) {
-      let res = await ShoppingCartService.
     }
   },
   modules: {}

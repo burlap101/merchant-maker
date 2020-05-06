@@ -40,7 +40,7 @@
 
 <script>
 export default {
-  name: "product-cart-item",
-  props: ["item"]
+  name: "product-cart-item"
+  
 };
 </script>

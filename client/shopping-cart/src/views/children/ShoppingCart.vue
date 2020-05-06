@@ -142,43 +142,26 @@
 </template>
 
 <script>
-import { ShoppingCartService } from "../../assets/js/ShoppingCartService";
+import { mapState, mapGetters } from 'vuex';
 export default {
   name: "shopping-cart",
+
   data() {
     return {
       errors: [],
-      products: [],
-      trainingSessions: []
     };
   },
+
   computed: {
-    grandTotal: function() {
-      let result = 0;
-      for (let item of this.trainingSessions) {
-        result += item.total_cost;
-      }
-      for (let item of this.products) {
-        result += item.product.price * item.qty;
-      }
-      return result;
-    },
-    cartLength: function() {
-      return this.products.length + this.trainingSessions.length;
-    }
-  },
-  async created() {
-    try {
-      console.log("retrieving cart...");
-      this.products = (await ShoppingCartService.findMyCart()).items;
-      console.log("retrieving secret");
-      this.clientSecret = (
-        await ShoppingCartService.paymentIntentSecret()
-      ).secret;
-    } catch (err) {
-      this.errors.push(err.message);
-      throw err;
-    }
+    ...mapState({
+      products: state => state.products,
+      trainingSessions: state => state.trainingSessions,
+    }),
+    ...mapGetters([
+      'grandTotal',
+      'cartLength'
+    ])
   }
+  
 };
 </script>
