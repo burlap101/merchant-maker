@@ -71,70 +71,27 @@
           v-bind:key="index"
           class="list-group-item"
         >
-          <div class="row">
-            <div class="col-6">
-              <h6 class="my-0">
-                {{ item.product.stockCode }} - {{ item.product.name }}
-              </h6>
-              <small class="text-muted">
-                <span
-                  v-for="(attrName, attrIndex) in Object.keys(
-                    item.product.attributes
-                  )"
-                  v-bind:key="attrIndex"
-                >
-                  {{ attrName }}: {{ item.product.attributes[attrName] }},
-                </span>
-              </small>
-            </div>
-            <div class="col-2 text-center">
-              <h6>Qty</h6>
-              <div class="input-group">
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="item.qty"
-                  min="1"
-                  v-bind:max="item.product.available"
-                />
-                <div class="input-group-append">
-                  <button class="btn btn-outline-secondary" type="button">
-                    -
-                  </button>
-                  <button class="btn btn-outline-secondary" type="button">
-                    +
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="col-3 text-muted text-right align-bottom">
-              ${{ (item.qty * item.product.price).toFixed(2) }}
-            </div>
-            <div class="col-1">
-              <a class="text-secondary"
-                ><i class="far fa-trash-alt fa-lg"></i
-              ></a>
-            </div>
-          </div>
+          <product-cart-item 
+            v-on:value-change="updateProductQty($event, item.product._id)" 
+            v-on:increment="incrementProductQty(item.product._id)"
+            v-on:decrement="decrementProductQty(item.product._id)"
+            v-bind:item="item" />
         </li>
-        <li class="list-group-item">
-          <div class="row">
-            <div class="col-8">
-              <h6>Grand Total (AUD)</h6>
-            </div>
-            <div id="grand-total" class="col-3 text-right">
-              <strong>${{ grandTotal.toFixed(2) }}</strong>
-            </div>
-          </div>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div class="h5">Total</div>
+          <div class="h5">${{ grandTotal.toFixed(2) }}</div>
         </li>
       </ul>
       <div class="row">
         <div class="col-lg-8">
-          <router-link to="checkout"
-            ><button id="checkout-button" class="btn btn-primary">
+            Save and 
+            <button id="checkout-button" v-on:click="saveAndCheckout()" class="btn btn-primary mr-2">
               Checkout
-            </button></router-link
-          >
+            </button>
+             or 
+            <button v-on:click="saveAndContinueShopping()" class="btn btn-primary ml-2">
+              Continue Shopping
+            </button>
         </div>
       </div>
     </form>
@@ -143,25 +100,82 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
+import ProductCartItem from "../../components/ProductCartItem.vue";
 export default {
   name: "shopping-cart",
+
+  components: {
+    ProductCartItem
+  },
 
   data() {
     return {
       errors: [],
+      hasChanged: false
     };
   },
 
   computed: {
     ...mapState({
-      products: state => state.products,
-      trainingSessions: state => state.trainingSessions,
+      products: state => state.cart.products,
+      trainingSessions: state => state.cart.trainingSessions,
     }),
-    ...mapGetters([
+    ...mapGetters('cart/', [
       'grandTotal',
       'cartLength'
     ])
+  },
+
+  methods: {
+    updateProductQty: function(newQty, productId) {
+      console.log(newQty);
+      this.$store.commit('cart/updateQty', {
+        type: "product",
+        id: productId,
+        qty: newQty
+      });
+      this.hasChanged = true;
+    },
+    incrementProductQty: function(productId) {
+      this.$store.commit('cart/increment', {
+        type: "product",
+        id: productId
+      });
+      this.hasChanged = true;
+    },
+    decrementProductQty: function(productId) {
+      this.$store.commit('cart/decrement', {
+        type: "product",
+        id: productId
+      })
+      this.hasChanged = true;
+    },
+    saveAndCheckout: function() {
+      if (this.hasChanged) {
+        this.$store.dispatch('cart/saveCart');
+        this.hasChanged = false;
+      }
+      this.$router.push("/checkout");
+    },
+    saveAndContinueShopping: function() {
+      if (this.hasChanged) {
+        this.$store.dispatch('cart/saveCart');
+        this.hasChanged = false;
+      }
+      this.$router.go(-1);
+    }
+  },
+
+  mounted() {
+    window.addEventListener('beforeunload', (event) => {
+      if (this.hasChanged) {
+        event.preventDefault();
+        event.returnValue='';
+        return window.alert("Discard changes?");
+      }
+      return true;
+    })
   }
-  
+
 };
 </script>

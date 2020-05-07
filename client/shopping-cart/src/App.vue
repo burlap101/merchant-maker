@@ -8,7 +8,7 @@
 export default {
   name: "shopping-cart-app",
   created() {
-    this.$store.dispatch('populateCart');
+    this.$store.dispatch('cart/populateCart');
   }
 }
 </script>

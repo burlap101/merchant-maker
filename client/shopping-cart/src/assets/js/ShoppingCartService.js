@@ -81,5 +81,22 @@ export const ShoppingCartService = {
       const message = (await res.json()).message;
       throw Error(message + " - Code: " + res.status);
     }
+  },
+
+  updateCartItem: async function(item) {
+    let url = baseUrl + "/modify-cart-qty";
+    let res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(item)
+    });
+    if (res.ok) {
+      return res.json();
+    } else {
+      const message = (await res.json()).message;
+      throw Error(message + " - Code: " + res.status);
+    }
   }
 };

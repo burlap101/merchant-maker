@@ -1,6 +1,6 @@
 <template>
-  <div class="row">
-    <div class="col-6">
+  <div class="d-flex justify-content-between">
+    <div class="">
       <h6 class="my-0">
         {{ item.product.stockCode }} - {{ item.product.name }}
       </h6>
@@ -13,34 +13,38 @@
         </span>
       </small>
     </div>
-    <div class="col-2 text-center">
-      <h6>Qty</h6>
+    <div class="d-flex-column">
+      <div class="">Qty</div>
       <div class="input-group">
         <input
           type="text"
-          class="form-control"
-          v-model="item.qty"
+          class="form-control col-3"
+          v-bind:value="item.qty"
+          v-on:change="$emit('value-change', $event.target.value)"
           min="1"
           v-bind:max="item.product.available"
         />
         <div class="input-group-append">
-          <button class="btn btn-outline-secondary" type="button">-</button>
-          <button class="btn btn-outline-secondary" type="button">+</button>
+          <button v-on:click="$emit('decrement')" class="btn btn-outline-secondary" type="button">-</button>
+          <button v-on:click="$emit('increment')" class="btn btn-outline-secondary" type="button">+</button>
         </div>
       </div>
     </div>
-    <div class="col-3 text-muted text-right align-bottom">
-      ${{ (item.qty * item.product.price).toFixed(2) }}
+    <div>
+      <span class="text-muted text-right align-bottom">
+        ${{ (item.qty * item.product.price).toFixed(2) }}
+      </span>
+      <span class="ml-2">
+        <a class="text-secondary"><i class="far fa-trash-alt fa-lg"></i></a>
+      </span>
     </div>
-    <div class="col-1">
-      <a class="text-secondary"><i class="far fa-trash-alt fa-lg"></i></a>
-    </div>
+    
   </div>
 </template>
 
 <script>
 export default {
-  name: "product-cart-item"
-  
+  name: "product-cart-item",
+  props: ["item"]
 };
 </script>
