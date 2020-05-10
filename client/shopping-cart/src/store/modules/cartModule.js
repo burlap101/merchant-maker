@@ -26,7 +26,6 @@ export const cartModule = {
   mutations: {
     increment (state, payload) {
       if (payload.type === "product") {
-        console.log("here");
         let item = state.products.find((el => el.product._id == payload.id));
         item.qty++;
         if(!state.changedProducts.includes(payload.id)) {
@@ -80,7 +79,7 @@ export const cartModule = {
       })
     },
     async saveCart ({ state }) {
-      for (let id in state.changedProducts) {
+      for (let id of state.changedProducts) {
         ShoppingCartService.updateCartItem(state.products.find(el => el.product._id == id))
       }
       state.changedProducts = [];

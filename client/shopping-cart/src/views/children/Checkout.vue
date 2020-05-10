@@ -7,10 +7,7 @@
     </div>
     <div class="row">
       <div class="col-md-4 order-md-2 mb-4">
-        <shopping-cart-preview
-          v-bind:products="products"
-          v-bind:trainingSessions="trainingSessions"
-        />
+        <shopping-cart-preview />
         <form class="card p-2">
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Promo code" />
@@ -21,7 +18,6 @@
         </form>
       </div>
       <div class="col-md-8 order-md-1">
-        <h4 class="mb-3 text-muted">Billing Details</h4>
         <div
           v-for="(error, index) in errors"
           v-bind:key="index"
@@ -34,21 +30,7 @@
           Payment Successful
         </div>
         <div id="payment-form">
-          <div
-            class="mb-3"
-            v-for="(fieldname, index) of Object.keys(formFields)"
-            v-bind:key="index"
-          >
-            <div v-if="!fieldname.toLowerCase().includes('address')">
-              <label v-bind:for="fieldname" class="">{{ fieldname }}</label>
-              <input
-                v-bind:id="fieldname"
-                type="text"
-                class="form-control"
-                v-model="formFields[fieldname]"
-              />
-            </div>
-          </div>
+          <core-details-form />
           <div v-if="products.length > 0">
             <address-form addressType="shipping" />
             <div class="mb-3 custom-control custom-checkbox">
@@ -64,46 +46,8 @@
               >
             </div>
             <address-form v-if="!isSameAddress" addressType="billing" />
-            
-            
-            <div v-if="!isSameAddress">
-              <div
-                class="mb-3"
-                v-for="(fieldname, index) of Object.keys(
-                  formFields.billingAddress
-                )"
-                v-bind:key="index"
-              >
-                <label v-bind:for="fieldname" class="">{{ fieldname }}</label>
-                <input
-                  v-bind:id="fieldname"
-                  type="text"
-                  class="form-control"
-                  v-model="formFields.billingAddress[fieldname]"
-                />
-              </div>
-            </div>
           </div>
           <!-- End of Addresses -->
-
-          <!-- <div class="text-muted mt-5 mb-3">
-              {{fieldname}}
-            </div>
-            <div
-              class="mb-3"
-              v-for="(childFieldname, index) in Object.keys(formFields[fieldname])"
-              v-bind:key="index"
-            >
-              <label v-bind:for="childFieldname" class="">{{
-                childFieldname
-              }}</label>
-              <input
-                v-bind:id="childFieldname"
-                type="text"
-                class="form-control"
-                v-model="formFields[fieldname][childFieldname]"
-              />
-            </div> -->
 
           <div
             v-if="trainingSessions.length > 0"
@@ -180,17 +124,18 @@
 <script>
 import { loadStripe } from "@stripe/stripe-js";
 import AddressForm from "../../components/AddressForm.vue";
+import CoreDetailsForm from "../../components/CoreDetailsForm.vue";
 import ShoppingCartPreview from "../../components/ShoppingCartPreview.vue";
 import keys from "../../assets/localconfig/keys";
 import { ShoppingCartService } from "../../assets/js/ShoppingCartService";
-import { mapState, mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 
-const states = ["NSW", "ACT", "QLD", "SA", "WA ", "TAS", "NT"];
 export default {
   name: "checkout",
 
   components: {
     AddressForm,
+    CoreDetailsForm,
     ShoppingCartPreview
   },
 
@@ -213,7 +158,6 @@ export default {
       card: undefined,
       paymentProcessing: false,
       paymentSuccess: false,
-      states: states,
       stripe: undefined,
       clientSecret: "",
       isSameAddress: false
@@ -222,8 +166,10 @@ export default {
 
   computed: {
     ...mapState({
-      products: state => state.products,
-      trainingSessions: state => state.trainingSessions
+      products: state => state.cart.products,
+      trainingSessions: state => state.cart.trainingSessions,
+      shippingAddress: state => state.customer.shippingAddress,
+      billingAddress: state => state.customer.billingAddress
     }),
     ...mapGetters([
       'grandTotal',

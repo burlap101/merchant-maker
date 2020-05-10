@@ -78,7 +78,7 @@ export class ShoppingCartService {
         break;
       }
     }
-    return this.shoppingCartModel.findOneAndReplace({_id: cartId}, cart).exec();
+    return this.shoppingCartModel.replaceOne({_id: cartId}, cart).exec();
   }
 
   async createPaymentIntent(amount: number, currency = "aud"): Promise<Stripe.PaymentIntent> {

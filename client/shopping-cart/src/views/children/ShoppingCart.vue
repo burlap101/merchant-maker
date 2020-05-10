@@ -128,7 +128,6 @@ export default {
 
   methods: {
     updateProductQty: function(newQty, productId) {
-      console.log(newQty);
       this.$store.commit('cart/updateQty', {
         type: "product",
         id: productId,

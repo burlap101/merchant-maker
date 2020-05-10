@@ -58,20 +58,20 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from "vuex";
+
 export default {
   name: "shopping-cart-preview",
-  props: ["products", "trainingSesssions"],
+
   computed: {
-    grandTotal: function() {
-      let result = 0;
-      for (let item of this.trainingSessions) {
-        result += item.total_cost;
-      }
-      for (let item of this.products) {
-        result += item.product.price * item.qty;
-      }
-      return result;
-    }
+    ...mapState({
+      products: state => state.products,
+      trainingSessions: state => state.trainingSessions
+    }),
+    ...mapGetters([
+      'grandTotal',
+      'cartLength'
+    ])
   },
   created() {
     if (this.trainingSessions === undefined) {

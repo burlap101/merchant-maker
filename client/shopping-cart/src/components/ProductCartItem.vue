@@ -31,12 +31,11 @@
       </div>
     </div>
     <div>
-      <span class="text-muted text-right align-bottom">
-        ${{ (item.qty * item.product.price).toFixed(2) }}
-      </span>
-      <span class="ml-2">
-        <a class="text-secondary"><i class="far fa-trash-alt fa-lg"></i></a>
-      </span>
+      <div class="text-muted text-right align-bottom">
+        <div class="col">
+          ${{ (item.qty * item.product.price).toFixed(2) }}<a class="text-secondary ml-2"><i class="far fa-trash-alt fa-lg"></i></a>
+        </div>
+      </div>
     </div>
     
   </div>
