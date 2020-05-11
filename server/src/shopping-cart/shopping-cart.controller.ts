@@ -65,14 +65,20 @@ export class ShoppingCartController {
   }
 
   @Post('process-order')
-  async processOrder(@Request() req, @Body() checkoutDto: CheckoutDto): Promise<Order> {
+  async processOrder(@Request() req, @Body() checkoutDto: CheckoutDto): Promise<ShoppingCart> {
     let cartObj = { cart: await this.shoppingCartService.getCart(req.cartid) };
     if(cartObj.cart.userid) {
       cartObj = {...cartObj, ...{ "username": cartObj.cart.userid }};
     }
 
     let processOrderDto = { ...checkoutDto, ...cartObj };
-    return this.ordersService.processOrder(processOrderDto);
+    const processedOrder = await this.ordersService.processOrder(processOrderDto);
+    if (processedOrder._id) {
+      return this.shoppingCartService.destroyCart(req.cartid);
+    } else {
+      throw Error("There was an an issue processing the order.")
+    }
+    
   }
 
   @Get('secret')

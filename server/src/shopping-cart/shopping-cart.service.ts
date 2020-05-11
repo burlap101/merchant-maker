@@ -50,6 +50,7 @@ export class ShoppingCartService {
    * @param {!cartId} cartId The ID of the cart to be destroyed
    * @return {Promise<ShoppingCart|undefined> } returns a copy of the deleted shopping cart 
    *  */
+  
   async destroyCart(cartId: string): Promise<ShoppingCart | undefined> {
     return this.shoppingCartModel.findOneAndDelete({ _id: cartId });
   }
