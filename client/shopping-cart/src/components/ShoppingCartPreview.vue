@@ -65,18 +65,13 @@ export default {
 
   computed: {
     ...mapState({
-      products: state => state.products,
-      trainingSessions: state => state.trainingSessions
+      products: state => state.cart.products,
+      trainingSessions: state => state.cart.trainingSessions
     }),
-    ...mapGetters([
+    ...mapGetters('cart/', [
       'grandTotal',
       'cartLength'
     ])
-  },
-  created() {
-    if (this.trainingSessions === undefined) {
-      this.trainingSessions = [];
-    }
   }
 };
 </script>

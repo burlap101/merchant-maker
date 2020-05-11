@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ShoppingCartModule } from './shopping-cart/shopping-cart.module';
 import { OrdersModule } from './orders/orders.module';
+import { CustomersModule } from './customers/customers.module';
 
 
 @Module({
@@ -21,7 +22,8 @@ import { OrdersModule } from './orders/orders.module';
     AuthModule,
     UsersModule,
     ShoppingCartModule,
-    OrdersModule
+    OrdersModule,
+    CustomersModule
   ],
   controllers: [AppController],
   providers: [AppService],

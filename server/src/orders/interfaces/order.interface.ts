@@ -1,5 +1,5 @@
 import { ShoppingCart } from "src/shopping-cart/interfaces/shopping-cart.interface";
-import { Address } from "./address.interface";
+import { Customer } from "../../customers/interfaces/customer.interface";
 
 
 export interface Order {
@@ -10,9 +10,6 @@ export interface Order {
   processed: Date,
   receiptUrl: string,
   cart: ShoppingCart,
-  name: string,
-  phone?: string,
   username?: string,
-  shippingAddress: Address,
-  billingAddress?: Address
+  customer: Customer
 }
