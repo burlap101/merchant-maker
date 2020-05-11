@@ -4,7 +4,6 @@ import { Customer } from "src/customers/interfaces/customer.interface";
 export class ProcessOrderDto {
   readonly chargeId: string;
   readonly receiptNo: string;
-  readonly email: string;
   readonly processed: Date;
   readonly receiptUrl: string;
   readonly cart: ShoppingCart;

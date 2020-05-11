@@ -144,17 +144,6 @@ export default {
       errors: [],
       saveInfo: false,
       ccPaymentSelected: true,
-      formFields: {
-        name: "",
-        email: "",
-        phone: "",
-        billingAddress: {
-          street: "",
-          suburb: "",
-          postcode: "",
-          state: ""
-        }
-      },
       card: undefined,
       paymentProcessing: false,
       paymentSuccess: false,
@@ -169,7 +158,8 @@ export default {
       products: state => state.cart.products,
       trainingSessions: state => state.cart.trainingSessions,
       shippingAddress: state => state.customer.shippingAddress,
-      billingAddress: state => state.customer.billingAddress
+      billingAddress: state => state.customer.billingAddress,
+      order: state => state.order
     }),
     ...mapGetters([
       'grandTotal',
@@ -180,6 +170,7 @@ export default {
   methods: {
     submit: async function() {
       this.paymentProcessing = true;
+      
       let result = await this.stripe.confirmCardPayment(this.clientSecret, {
         payment_method: {
           card: this.card,
@@ -193,17 +184,13 @@ export default {
           "There was a problem processing your payment. Please try again."
         );
       } else if (result.paymentIntent.status === "succeeded") {
-        for (let field in this.formFields) {
-          console.log("Here");
-          if (Object.keys(this.formFields[field]) > 0) {
-            for (let childField in this.formFields[field]) {
-              this.formFields[field][childField] = "";
-              console.log(childField);
-            }
-          } else {
-            this.formFields[field] = "";
-          }
-        }
+        this.$store.commit("order/updateFields", {
+          chargeId: result.data.object.charges.data[0].id,
+          receiptNo: result.data.object.charges.data[0].receipt_number,
+          processed: new Date(),
+          receiptUrl: result.data.object.charges.data[0].receipt_url
+        })
+        
         this.paymentSuccess = true;
       }
       this.paymentProcessing = false;
