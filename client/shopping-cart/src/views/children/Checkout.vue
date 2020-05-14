@@ -42,7 +42,7 @@
                 v-bind:checked="isSameAddress"
               />
               <label class="custom-control-label" for="save-info"
-                >Same as shipping</label
+                >Billing address the same as shipping</label
               >
             </div>
             <address-form v-if="!isSameAddress" addressType="billing" />

@@ -83,7 +83,6 @@ export class ShoppingCartController {
   async processOrder(@Body() stripeEvent: Stripe.Event): Promise<Order | undefined> {
     if(stripeEvent.type === "payment_intent.succeeded"){
       const paymentIntentObject = <Stripe.PaymentIntent>stripeEvent.data.object;
-      console.log(paymentIntentObject);
       const cart = await this.shoppingCartService.getCartByPaymentIntent(paymentIntentObject.id);
       this.shoppingCartService.destroyCart(cart._id);
       const customer = await this.customersService.findOneByPaymentIntent(paymentIntentObject.id);
