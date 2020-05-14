@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import keys from 'src/localconfig/keys';
 import { AuthModule } from 'src/auth/auth.module';
 import { OrdersModule } from 'src/orders/orders.module';
+import { CustomersModule } from 'src/customers/customers.module';
 
 @Module({
   imports: [
@@ -17,10 +18,12 @@ import { OrdersModule } from 'src/orders/orders.module';
       signOptions: { expiresIn: '7d' },
     }),
     AuthModule,
-    OrdersModule
+    OrdersModule,
+    CustomersModule
   ],
   controllers: [ShoppingCartController],
-  providers: [ShoppingCartService]
+  providers: [ShoppingCartService],
+  exports: [ShoppingCartService]
 })
 export class ShoppingCartModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -4,8 +4,9 @@ import { ShoppingCart } from './interfaces/shopping-cart.interface';
 import { Model } from 'mongoose';
 import { Product } from '../products/interfaces/product.interface';
 import Stripe from 'stripe';
+import keys from "../localconfig/keys";
 
-const stripe = new Stripe("sk_test_xM3e1kwevlHkduTNp8FDsfBw", { apiVersion: '2020-03-02' });
+const stripe = new Stripe(keys.stripe.privateKey, { apiVersion: '2020-03-02' });
 
 @Injectable()
 export class ShoppingCartService {
@@ -19,18 +20,6 @@ export class ShoppingCartService {
   async createUserCart(userId: string): Promise<ShoppingCart> {
     const createdCart = new this.shoppingCartModel({ "userId": userId, total: 0 });
     return createdCart.save();
-  }
-
-  async updateCartItem(cartId: string, product: Product, newQty: number): Promise<ShoppingCart> {
-    let cart = this.shoppingCartModel.find({"_id": cartId });
-    let item = cart.items.pull({ "_id": product._id });
-    if( newQty > 0) {
-      let oldQty = item.qty;
-      item["qty"] = newQty;
-      cart.items.push(item);
-      cart.total = cart.total - oldQty*item.price + newQty*item.price;
-    }
-    return this.shoppingCartModel.replaceOne({ "_id": cartId }, cart).exec();
   }
 
   /**
@@ -59,6 +48,10 @@ export class ShoppingCartService {
     return this.shoppingCartModel.findOne({ _id: cartId });
   }
 
+  async getCartByPaymentIntent(paymentIntentId: string): Promise<ShoppingCart> {
+    return this.shoppingCartModel.findOne({ "paymentIntentId": paymentIntentId });
+  }
+
   async addItemToCart(cartId: string, product: Product, qty: number): Promise<ShoppingCart> {
     let cart = await this.shoppingCartModel.findOne({_id: cartId}).exec();
     cart.items.push({
@@ -71,14 +64,10 @@ export class ShoppingCartService {
 
   async modifyItemInCart(cartId: string, product: Product, qty:number): Promise<ShoppingCart> {
     let cart = await this.shoppingCartModel.findOne({_id: cartId}).exec();
-    for (let item of cart.items) {
-      if (item.product._id == product._id) {
-        let oldQty = item.qty
-        item.qty = qty;
-        cart.total = cart.total - oldQty*item.price + qty*item.price;
-        break;
-      }
-    }
+    let item = cart.items.find(el => el.product._id == product._id);
+    let oldQty = item.qty
+    cart.total = cart.total - oldQty*item.product.price + qty*item.product.price;
+    item.qty = qty;
     return this.shoppingCartModel.replaceOne({_id: cartId}, cart).exec();
   }
 
@@ -87,6 +76,12 @@ export class ShoppingCartService {
       "amount": parseInt((amount*100).toFixed(0)),
       "currency": currency
     })
+  }
+
+  async assignPaymentIntentToCart(cartId: string, paymentIntentId: string): Promise<ShoppingCart>{
+    let cart = await this.shoppingCartModel.findOne({ _id: cartId });
+    cart.paymentIntentId = paymentIntentId;
+    return this.shoppingCartModel.replaceOne({ _id: cartId }); 
   }
 
 }

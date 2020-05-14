@@ -39,7 +39,8 @@ export default {
   methods: {
     updateStore: function(event, fieldname) {
       let tempObj = {};
-      tempObj[fieldname] = event.target.value;
+      tempObj.coreDetails = {};
+      tempObj.coreDetails[fieldname] = event.target.value;
       this.$store.commit('customer/updateFields', tempObj)
     }
   }

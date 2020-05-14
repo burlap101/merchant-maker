@@ -159,23 +159,23 @@ export default {
       trainingSessions: state => state.cart.trainingSessions,
       shippingAddress: state => state.customer.shippingAddress,
       billingAddress: state => state.customer.billingAddress,
-      order: state => state.order
+      order: state => state.order,
+      coreDetails: state => state.customer.coreDetails,
     }),
-    ...mapGetters([
-      'grandTotal',
-      'cartLength'
+    ...mapGetters('cart/', [
+      'grandTotal'
     ])
   },
 
   methods: {
     submit: async function() {
       this.paymentProcessing = true;
-      
+
       let result = await this.stripe.confirmCardPayment(this.clientSecret, {
         payment_method: {
           card: this.card,
           billing_details: {
-            name: this.formFields.name
+            name: this.coreDetails.name
           }
         }
       });
@@ -185,10 +185,10 @@ export default {
         );
       } else if (result.paymentIntent.status === "succeeded") {
         this.$store.commit("order/updateFields", {
-          chargeId: result.data.object.charges.data[0].id,
-          receiptNo: result.data.object.charges.data[0].receipt_number,
+          chargeId: result.paymentIntent.charges.data[0].id,
+          receiptNo: result.paymentIntent.charges.data[0].receipt_number,
           processed: new Date(),
-          receiptUrl: result.data.object.charges.data[0].receipt_url
+          receiptUrl: result.paymentIntent.charges.data[0].receipt_url
         })
         
         this.paymentSuccess = true;
@@ -199,6 +199,7 @@ export default {
 
   async created() {
     try {
+      await ShoppingCartService.updateCartItem
       this.clientSecret = (
         await ShoppingCartService.paymentIntentSecret()
       ).secret;

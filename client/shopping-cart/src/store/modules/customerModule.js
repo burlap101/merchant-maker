@@ -33,17 +33,8 @@ export const customerModule = {
   mutations: {
     updateFields (state, payload) {
       for (const fieldType in payload) {
-        if (state[fieldType] !== undefined) {
-          state[fieldType] = payload[fieldType];
-        } else {
-          throw Error(`Cannot assign ${fieldType} a value as it does not exist in state.`);
-        }
         for(const fieldName in payload[fieldType]) {
-          if (state[fieldType][fieldName] !== undefined) {
-            state[fieldType][fieldName] = payload[fieldType][fieldName]
-          } else {
-            throw Error(`Cannot assing ${fieldType}.${fieldName} a value as it does not exist in state.`);
-          }
+          state[fieldType][fieldName] = payload[fieldType][fieldName]
         }
       }
     }

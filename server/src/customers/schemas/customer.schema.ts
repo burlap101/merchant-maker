@@ -1,9 +1,22 @@
 import * as mongoose from 'mongoose';
 
 export const CustomerSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  phone: String,
-  shippingAddress: Object,
-  billingAddress: Object
+  coreDetails: {
+    name: String,
+    email: String,
+    phone: String
+  },
+  shippingAddress: {
+    street: String,
+    suburb: String,
+    postcode: String,
+    state: String
+  },
+  billingAddress: {
+    street: String,
+    suburb: String,
+    postcode: String,
+    state: String
+  },
+  paymentIntents: [String]
 })

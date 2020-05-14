@@ -149,9 +149,9 @@ export default {
       })
       this.hasChanged = true;
     },
-    saveAndCheckout: function() {
+    saveAndCheckout: async function() {
       if (this.hasChanged) {
-        this.$store.dispatch('cart/saveCart');
+        await this.$store.dispatch('cart/saveCart');
         this.hasChanged = false;
       }
       this.$router.push("/checkout");

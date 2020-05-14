@@ -8,9 +8,9 @@ import { Roles } from 'src/auth/roles.decorator';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { ModifyCartQtyDto } from './dto/modify-cart-qty.dto';
 import { OrdersService } from 'src/orders/orders.service';
-import { ProcessOrderDto } from 'src/orders/dto/process-order.dto';
 import { Order } from 'src/orders/interfaces/order.interface';
-import { CheckoutDto } from './dto/checkout.dto';
+import { CustomersService } from 'src/customers/customers.service';
+import Stripe from 'stripe';
 
 
 @Controller('api/shopping-cart')
@@ -18,7 +18,8 @@ export class ShoppingCartController {
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
     private readonly jwtService: JwtService,
-    private readonly ordersService: OrdersService
+    private readonly ordersService: OrdersService,
+    private readonly customersService: CustomersService
   ) {}
 
   @Get() 
@@ -64,30 +65,36 @@ export class ShoppingCartController {
     );
   }
 
-  @Post('process-order')
-  async processOrder(@Request() req, @Body() checkoutDto: CheckoutDto): Promise<ShoppingCart> {
-    let cartObj = { cart: await this.shoppingCartService.getCart(req.cartid) };
-    if(cartObj.cart.userid) {
-      cartObj = {...cartObj, ...{ "username": cartObj.cart.userid }};
-    }
-
-    let processOrderDto = { ...checkoutDto, ...cartObj };
-    const processedOrder = await this.ordersService.processOrder(processOrderDto);
-    if (processedOrder._id) {
-      return this.shoppingCartService.destroyCart(req.cartid);
-    } else {
-      throw Error("There was an an issue processing the order.")
-    }
-    
-  }
-
   @Get('secret')
   async createIntentAndRetrieveSecret(@Request() req): Promise<Object> {
     const cart = await this.shoppingCartService.getCart(req.cartid);
-    const paymentIntent = this.shoppingCartService.createPaymentIntent(cart.total, "aud");
+    const paymentIntent = await this.shoppingCartService.createPaymentIntent(cart.total, "aud");
+    this.shoppingCartService.assignPaymentIntentToCart(cart._id, paymentIntent.id);
     let secretObj = {};
-    secretObj["secret"] = (await paymentIntent).client_secret
+    secretObj["secret"] = paymentIntent.client_secret
     return secretObj;
   }
 
+  /**
+   * Accepts the webhook from Stripe after paymentintent complete.
+   *  
+   * */
+  @Post('process-order')
+  async processOrder(@Body() stripeEvent: Stripe.Event): Promise<Order | undefined> {
+    if(stripeEvent.type === "payment_intent.succeeded"){
+      const paymentIntentObject = <Stripe.PaymentIntent>stripeEvent.data.object;
+      console.log(paymentIntentObject);
+      const cart = await this.shoppingCartService.getCartByPaymentIntent(paymentIntentObject.id);
+      this.shoppingCartService.destroyCart(cart._id);
+      const customer = await this.customersService.findOneByPaymentIntent(paymentIntentObject.id);
+      return this.ordersService.processOrder({
+        chargeId: paymentIntentObject.charges.data[0].id,
+        receiptNo: paymentIntentObject.charges.data[0].receipt_number,
+        processed: new Date(),
+        receiptUrl: paymentIntentObject.charges.data[0].receipt_url,
+        "cart": cart,
+        "customer": customer 
+      })
+    } 
+  }
 }

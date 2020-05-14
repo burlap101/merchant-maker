@@ -7,6 +7,5 @@ export class ProcessOrderDto {
   readonly processed: Date;
   readonly receiptUrl: string;
   readonly cart: ShoppingCart;
-  readonly username?: string;
   readonly customer: Customer;
 }
