@@ -9,7 +9,7 @@ export class CategoriesService {
   constructor(@InjectModel('Category') private readonly categoryModel: Model<Category>) {}
 
   async create(proposedCategory: ProposedCategoryDto, child?: Category, lvl = 0): Promise<Category> {
-    
+    console.log(proposedCategory);
     const existingCategories = await this.find("name", proposedCategory.name );
 
     if (existingCategories.length == 0 && !child) {
@@ -74,5 +74,7 @@ export class CategoriesService {
       return filteredEntries;
     }
   }
+
+
   
 }

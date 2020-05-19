@@ -6,11 +6,10 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 
-@Controller('categories')
+@Controller('api/categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   find(@Query("hasParent") hasParent): Promise<Category[]> {
     if (hasParent !== undefined) {

@@ -40,11 +40,12 @@ export default {
           topCats.push(cat);
         }
       }
+      console.log(topCats);
       return topCats;
     }
   },
   async created() {
-    const res = await fetch("/categories");
+    const res = await fetch("api/categories");
     if (res.ok) {
       this.categories = await res.json();
     } else {
