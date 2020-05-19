@@ -18,5 +18,5 @@ export const CustomerSchema = new mongoose.Schema({
     postcode: String,
     state: String
   },
-  paymentIntents: [String]
+  contactable: Boolean
 })

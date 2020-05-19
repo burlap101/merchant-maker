@@ -12,19 +12,23 @@
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Promo code" />
             <div class="input-group-append">
-              <button type="submit" class="btn btn-secondary">Redeem</button>
+              <button class="btn btn-secondary">Redeem</button>
             </div>
           </div>
         </form>
       </div>
       <div class="col-md-8 order-md-1">
         <div
-          v-for="(error, index) in errors"
-          v-bind:key="index"
+          v-if="errors.length + viewErrors.length > 0"
           class="alert alert-danger"
           role="alert"
         >
-          {{ index + 1 }}. {{ error }}
+          <p v-for="(error, index) in errors" v-bind:key="index">
+            {{ index + 1 }}. {{ error }}
+          </p>
+          <p v-for="(error, index) in viewErrors" v-bind:key="index">
+            {{ index + 1 }}. {{ error }}
+          </p>
         </div>
         <div class="alert alert-success" v-if="paymentSuccess">
           Payment Successful
@@ -57,7 +61,9 @@
               type="checkbox"
               class="custom-control-input"
               id="save-info"
-              v-model="saveInfo"
+              v-bind:checked="contactable"
+              value="checked"
+              v-on:change="contactableChanged($event)"
             />
             <label class="custom-control-label" for="save-info" checked
               >Can we contact you in the future regarding your
@@ -91,6 +97,7 @@
                 type="checkbox"
                 class="custom-control-input"
                 id="student-agreement"
+                v-model="acceptedStudentAgreement"
               />
               <label class="custom-control-label" for="student-agreement"
                 >I accept all terms of the
@@ -129,6 +136,8 @@ import ShoppingCartPreview from "../../components/ShoppingCartPreview.vue";
 import keys from "../../assets/localconfig/keys";
 import { ShoppingCartService } from "../../assets/js/ShoppingCartService";
 import { mapGetters, mapState } from "vuex";
+import { CustomersService } from "../../assets/js/CustomersService";
+import { OrdersService } from "../../assets/js/OrdersService";
 
 export default {
   name: "checkout",
@@ -141,15 +150,15 @@ export default {
 
   data() {
     return {
-      errors: [],
-      saveInfo: false,
       ccPaymentSelected: true,
       card: undefined,
       paymentProcessing: false,
       paymentSuccess: false,
       stripe: undefined,
       clientSecret: "",
-      isSameAddress: false
+      isSameAddress: false,
+      viewErrors: [],
+      acceptedStudentAgreement: false
     };
   },
 
@@ -159,52 +168,96 @@ export default {
       trainingSessions: state => state.cart.trainingSessions,
       shippingAddress: state => state.customer.shippingAddress,
       billingAddress: state => state.customer.billingAddress,
+      contactable: state => state.customer.contactable,
       order: state => state.order,
       coreDetails: state => state.customer.coreDetails,
+      errors: state => state.customer.errors
     }),
-    ...mapGetters('cart/', [
-      'grandTotal'
-    ])
+    ...mapGetters("cart/", ["grandTotal"])
   },
 
   methods: {
+    contactableChanged: function(event) {
+      this.$store.commit('customer/isContactable', { contactable: (event.target.value==="checked") ? true : false })
+    },
+
     submit: async function() {
+      this.viewErrors = [];
+      if (!this.acceptedStudentAgreement) {
+        this.viewErrors.push("Please accept the Student Agreement by selecting the checkbox above the submit button.");
+        return;
+      }
       this.paymentProcessing = true;
+      
+
+      if (this.isSameAddress) {
+        this.$store.commit("customer/copyShippingToBillingAddress");
+      }
+      this.$store.commit("customer/validateFields");
+      if (this.errors.length > 0) {
+        this.paymentProcessing = false;
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        return;
+      }
+
+      let customer = undefined;
+
+      try {
+        customer = await CustomersService.create(
+          this.coreDetails,
+          this.shippingAddress,
+          this.billingAddress,
+          this.contactable
+        );
+        await OrdersService.open(customer);
+      } catch (err) {
+        this.viewErrors.push(err.message);
+        this.paymentProcessing = false;
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        return;
+      }
 
       let result = await this.stripe.confirmCardPayment(this.clientSecret, {
         payment_method: {
           card: this.card,
           billing_details: {
-            name: this.coreDetails.name
+            name: this.coreDetails.name,
+            email: this.coreDetails.email
           }
-        }
+        },
+        receipt_email: this.coreDetails.email
       });
       if (result.error) {
-        this.errors.push(
+        this.viewErrors.push(
           "There was a problem processing your payment. Please try again."
         );
       } else if (result.paymentIntent.status === "succeeded") {
-        this.$store.commit("order/updateFields", {
-          chargeId: result.paymentIntent.charges.data[0].id,
-          receiptNo: result.paymentIntent.charges.data[0].receipt_number,
-          processed: new Date(),
-          receiptUrl: result.paymentIntent.charges.data[0].receipt_url
-        })
-        
         this.paymentSuccess = true;
+        try {
+          let orderObj = await OrdersService.deinitialise(); 
+          this.$store.commit("order/updateFields", orderObj);
+        } catch(err) {
+          this.viewErrors.push(err.message);
+        }
+        this.$router.push("/payment-success");
       }
       this.paymentProcessing = false;
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
     }
   },
 
   async created() {
     try {
-      await ShoppingCartService.updateCartItem
+      let orderObj = await OrdersService.initialise();
+      this.$store.commit("order/updateFields", orderObj);
       this.clientSecret = (
         await ShoppingCartService.paymentIntentSecret()
       ).secret;
     } catch (err) {
-      this.errors.push(err.message);
+      this.viewErrors.push(err.message);
       throw err;
     }
   },
@@ -218,9 +271,9 @@ export default {
     card.mount(this.$refs["card-element"]);
     card.addEventListener("change", ({ error }) => {
       if (error) {
-        this.errors.push(error.message);
+        this.viewErrors.push(error.message);
       } else {
-        this.errors = [];
+        this.viewErrors = [];
         this.card = card;
       }
     });

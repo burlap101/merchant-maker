@@ -31,7 +31,7 @@ export class ShoppingCartService {
   async assignUserToCart(cartId: string, userId: string): Promise<ShoppingCart> {
     let cart = await this.shoppingCartModel.findOne({ _id: cartId }).exec();
     cart.userId = userId;
-    return this.shoppingCartModel.replaceOne({ _id: cartId }, cart);
+    return this.shoppingCartModel.findOneAndUpdate({ _id: cartId }, cart, {new: true, useFindAndModify: false});
   }
 
   /**
@@ -54,34 +54,53 @@ export class ShoppingCartService {
 
   async addItemToCart(cartId: string, product: Product, qty: number): Promise<ShoppingCart> {
     let cart = await this.shoppingCartModel.findOne({_id: cartId}).exec();
-    cart.items.push({
-      "product": product,
-      "qty": qty
-    });
-    cart.total += product.price * qty;
-    return this.shoppingCartModel.replaceOne({_id: cartId}, cart).exec();
+    let existingItem = cart.items.find(el => el.product._id === product._id);
+    if(existingItem) {
+      return this.modifyItemInCart(cartId, product, qty);
+    }
+    else {
+      cart.items.push({
+        "product": product,
+        "qty": qty
+      });
+      cart.total += product.price * qty;
+      return this.shoppingCartModel.findOneAndUpdate({_id: cartId}, cart, {new: true, useFindAndModify: false}).exec();
+    }
   }
 
   async modifyItemInCart(cartId: string, product: Product, qty:number): Promise<ShoppingCart> {
+    if (qty <= 0) {
+      return this.removeItemFromCart(cartId, product);
+    }
     let cart = await this.shoppingCartModel.findOne({_id: cartId}).exec();
     let item = cart.items.find(el => el.product._id == product._id);
     let oldQty = item.qty
     cart.total = cart.total - oldQty*item.product.price + qty*item.product.price;
     item.qty = qty;
-    return this.shoppingCartModel.replaceOne({_id: cartId}, cart).exec();
+    return this.shoppingCartModel.findOneAndUpdate({_id: cartId}, cart, {new: true, useFindAndModify: false}).exec();
   }
 
-  async createPaymentIntent(amount: number, currency = "aud"): Promise<Stripe.PaymentIntent> {
+  async createPaymentIntent(amount: number, currency = "aud", metadata = {}): Promise<Stripe.PaymentIntent> {
     return stripe.paymentIntents.create({
       "amount": parseInt((amount*100).toFixed(0)),
-      "currency": currency
+      "currency": currency,
+      "metadata": metadata
     })
   }
 
   async assignPaymentIntentToCart(cartId: string, paymentIntentId: string): Promise<ShoppingCart>{
     let cart = await this.shoppingCartModel.findOne({ _id: cartId });
+    
     cart.paymentIntentId = paymentIntentId;
-    return this.shoppingCartModel.replaceOne({ _id: cartId }); 
+    return this.shoppingCartModel.findOneAndUpdate({ _id: cartId }, cart, {new: true, useFindAndModify: false}); 
+  }
+
+  async removeItemFromCart(cartId: string, product: Product): Promise<ShoppingCart> {
+    let cart = await this.shoppingCartModel.findOne({ _id: cartId }).exec();
+    let item = cart.items.find(el => el.product._id === product._id);
+    let deleteItemIndex = cart.items.indexOf(item);
+    cart.items.splice(deleteItemIndex, 1);
+    return this.shoppingCartModel.findOneAndUpdate({_id: cart._id}, cart, {new: true, useFindAndModify: false});
   }
 
 }

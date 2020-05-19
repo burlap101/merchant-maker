@@ -10,5 +10,6 @@ export const OrderSchema = new mongoose.Schema({
   receiptUrl: String,
   cart: ShoppingCartSchema,
   username: String,
-  customer: CustomerSchema
+  customer: CustomerSchema,
+  status: String
 })

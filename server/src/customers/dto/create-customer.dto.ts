@@ -5,4 +5,5 @@ export class CreateCustomerDto {
   readonly coreDetails: CoreDetails;
   readonly shippingAddress: Address;
   readonly billingAddress: Address;
+  readonly contactable: boolean;
 }

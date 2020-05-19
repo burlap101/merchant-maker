@@ -98,5 +98,23 @@ export const ShoppingCartService = {
       const message = (await res.json()).message;
       throw Error(message + " - Code: " + res.status);
     }
+  },
+
+  removeItem: async function(item) {
+    let url = baseUrl + "/remove-item";
+    let res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(item.product)
+    });
+
+    if (res.ok) {
+      return res.json();
+    } else {
+      const message = (await res.json()).message;
+      throw Error(message + " - Code: " + res.status);
+    }
   }
 };

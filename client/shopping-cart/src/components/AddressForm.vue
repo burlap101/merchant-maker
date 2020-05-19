@@ -13,7 +13,8 @@
         v-bind:id="field.id"
         type="text"
         class="form-control"
-        v-model="formData[field.id]"
+        v-bind:value="$store.state.customer[midField][field.id]"
+        v-on:change="updateStore($event, field.id)"
       />
     </div>
     <div class="mb-3 form-group">
@@ -24,7 +25,8 @@
         v-bind:name="addressType + '-state'"
         v-bind:id="addressType + '-state'"
         class="form-control"
-        v-model="formData[fields.select.state.id]"
+        v-bind:value="$store.state.customer[midField].state"
+        v-on:change="updateStore($event, fields.select.state.id)"
       >
         <option
           v-for="(state, index) in fields.select.state.options"
@@ -39,31 +41,25 @@
 </template>
 
 <script>
-import _ from "lodash";
 import { AddressFields } from "../assets/js/AddressFields";
+
 export default {
   name: "address-form",
   props: ["addressType"],
   data() {
     return {
-      formData: {},
-      fields: AddressFields
+      fields: AddressFields,
+      midField: this.addressType + "Address"
     };
   },
-  methods: {
-    initialiseFormData: async function() {
-      for (let fieldTypeName in this.fields) {
-        for (let fieldName in this.fields[fieldTypeName]) {
-          this.formData[this.fields[fieldTypeName][fieldName].id] = _.cloneDeep(
-            this.fields[fieldTypeName][fieldName].value
-          );
-        }
-      }
-    }
-  },
 
-  async created() {
-    await this.initialiseFormData();
+  methods: {
+    updateStore: function(event, fieldname) {
+      let tempObj = {};
+      tempObj[this.midField] = {};
+      tempObj[this.midField][fieldname] = event.target.value;
+      this.$store.commit("customer/updateFields", tempObj);
+    }
   }
 };
 </script>

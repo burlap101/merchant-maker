@@ -13,7 +13,8 @@ export class CustomersService {
   async create(createCustomerDto: CreateCustomerDto): Promise<Customer> {
     const createdCustomer = new this.customerModel({
       ...createCustomerDto,
-      paymentIntents: []
+      paymentIntents: [],
+      shoppingCarts: []
     });
     return createdCustomer.save();
   }
@@ -23,17 +24,6 @@ export class CustomersService {
   }
 
   async findOneById(id: string | Stripe.Customer | Stripe.DeletedCustomer ): Promise<Customer> {
-    return this.customerModel.findone({ _id: id });
-  }
-
-  async assignPaymentIntent(id: string, paymentIntentId: string): Promise<Customer> {
-    let customer = await this.customerModel.findOne({ _id: id });
-    console.log(paymentIntentId);
-    customer.paymentIntents.push(paymentIntentId);
-    return customer.save();
-  }
-
-  async findOneByPaymentIntent(paymentIntentId: string): Promise<Customer> {
-    return this.customerModel.findOne({ paymentIntents: paymentIntentId });
+    return this.customerModel.findone({ _id: id }).exec();
   }
 }

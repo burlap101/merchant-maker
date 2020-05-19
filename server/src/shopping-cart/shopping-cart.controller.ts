@@ -7,10 +7,7 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { ModifyCartQtyDto } from './dto/modify-cart-qty.dto';
-import { OrdersService } from 'src/orders/orders.service';
-import { Order } from 'src/orders/interfaces/order.interface';
-import { CustomersService } from 'src/customers/customers.service';
-import Stripe from 'stripe';
+import { Product } from 'src/products/interfaces/product.interface';
 
 
 @Controller('api/shopping-cart')
@@ -18,8 +15,6 @@ export class ShoppingCartController {
   constructor(
     private readonly shoppingCartService: ShoppingCartService,
     private readonly jwtService: JwtService,
-    private readonly ordersService: OrdersService,
-    private readonly customersService: CustomersService
   ) {}
 
   @Get() 
@@ -68,32 +63,15 @@ export class ShoppingCartController {
   @Get('secret')
   async createIntentAndRetrieveSecret(@Request() req): Promise<Object> {
     const cart = await this.shoppingCartService.getCart(req.cartid);
-    const paymentIntent = await this.shoppingCartService.createPaymentIntent(cart.total, "aud");
-    this.shoppingCartService.assignPaymentIntentToCart(cart._id, paymentIntent.id);
+    const paymentIntent = await this.shoppingCartService.createPaymentIntent(cart.total, "aud", {"orderid": req.cookies["mm-orderid"]});
     let secretObj = {};
     secretObj["secret"] = paymentIntent.client_secret
     return secretObj;
   }
 
-  /**
-   * Accepts the webhook from Stripe after paymentintent complete.
-   *  
-   * */
-  @Post('process-order')
-  async processOrder(@Body() stripeEvent: Stripe.Event): Promise<Order | undefined> {
-    if(stripeEvent.type === "payment_intent.succeeded"){
-      const paymentIntentObject = <Stripe.PaymentIntent>stripeEvent.data.object;
-      const cart = await this.shoppingCartService.getCartByPaymentIntent(paymentIntentObject.id);
-      this.shoppingCartService.destroyCart(cart._id);
-      const customer = await this.customersService.findOneByPaymentIntent(paymentIntentObject.id);
-      return this.ordersService.processOrder({
-        chargeId: paymentIntentObject.charges.data[0].id,
-        receiptNo: paymentIntentObject.charges.data[0].receipt_number,
-        processed: new Date(),
-        receiptUrl: paymentIntentObject.charges.data[0].receipt_url,
-        "cart": cart,
-        "customer": customer 
-      })
-    } 
+  @Post('remove-item')
+  async removeItemFromCart(@Request() req, @Body() product: Product): Promise<ShoppingCart> {
+    return this.shoppingCartService.removeItemFromCart(req.cartid, product);
   }
+
 }

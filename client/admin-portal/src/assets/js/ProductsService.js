@@ -16,7 +16,6 @@ export const ProductsService = {
       },
       body: JSON.stringify(productDetails)
     });
-    console.log(baseUrl);
     if (res.ok) {
       return res.json();
     } else {

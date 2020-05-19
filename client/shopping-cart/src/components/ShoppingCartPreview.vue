@@ -68,10 +68,7 @@ export default {
       products: state => state.cart.products,
       trainingSessions: state => state.cart.trainingSessions
     }),
-    ...mapGetters('cart/', [
-      'grandTotal',
-      'cartLength'
-    ])
+    ...mapGetters("cart/", ["grandTotal", "cartLength"])
   }
 };
 </script>

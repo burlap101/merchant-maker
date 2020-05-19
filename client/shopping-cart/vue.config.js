@@ -18,15 +18,19 @@ module.exports = {
       },
       "/api/shopping-cart": {
         target: "http://localhost:3000"
+      },
+      "/api/customers": {
+        target: "http://localhost:3000"
+      },
+      "/api/orders": {
+        target: "http://localhost:3000"
       }
     }
   },
   chainWebpack: config => {
-    config
-    .plugin('html')
-    .tap(args => {
-      args[0].title = 'Cart & Checkout'
-      return args
-    })
+    config.plugin("html").tap(args => {
+      args[0].title = "Cart & Checkout";
+      return args;
+    });
   }
 };

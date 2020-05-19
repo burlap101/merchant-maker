@@ -7,8 +7,6 @@ import { ShoppingCartMiddleware } from './middleware/shopping-cart.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import keys from 'src/localconfig/keys';
 import { AuthModule } from 'src/auth/auth.module';
-import { OrdersModule } from 'src/orders/orders.module';
-import { CustomersModule } from 'src/customers/customers.module';
 
 @Module({
   imports: [
@@ -18,8 +16,6 @@ import { CustomersModule } from 'src/customers/customers.module';
       signOptions: { expiresIn: '7d' },
     }),
     AuthModule,
-    OrdersModule,
-    CustomersModule
   ],
   controllers: [ShoppingCartController],
   providers: [ShoppingCartService],

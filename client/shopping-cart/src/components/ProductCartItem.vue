@@ -25,19 +25,33 @@
           v-bind:max="item.product.available"
         />
         <div class="input-group-append">
-          <button v-on:click="$emit('decrement')" class="btn btn-outline-secondary" type="button">-</button>
-          <button v-on:click="$emit('increment')" class="btn btn-outline-secondary" type="button">+</button>
+          <button
+            v-on:click="$emit('decrement')"
+            class="btn btn-outline-secondary"
+            type="button"
+          >
+            -
+          </button>
+          <button
+            v-on:click="$emit('increment')"
+            class="btn btn-outline-secondary"
+            type="button"
+          >
+            +
+          </button>
         </div>
       </div>
     </div>
     <div>
       <div class="text-muted text-right align-bottom">
         <div class="col">
-          ${{ (item.qty * item.product.price).toFixed(2) }}<a class="text-secondary ml-2"><i class="far fa-trash-alt fa-lg"></i></a>
+          ${{ (item.qty * item.product.price).toFixed(2)
+          }}<a class="text-secondary ml-2" v-on:click="$emit('remove')"
+            ><i class="far fa-trash-alt fa-lg"></i
+          ></a>
         </div>
       </div>
     </div>
-    
   </div>
 </template>
 

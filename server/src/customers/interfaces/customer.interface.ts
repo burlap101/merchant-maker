@@ -6,5 +6,5 @@ export interface Customer {
   coreDetails: CoreDetails,
   shippingAddress: Address,
   billingAddress: Address,
-  paymentIntents: Array<string>
+  contactable: boolean
 }

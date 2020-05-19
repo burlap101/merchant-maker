@@ -27,12 +27,12 @@ export default {
   data() {
     return {
       fields: CoreFields
-    }
+    };
   },
 
   computed: {
     ...mapState({
-      coreDetails: state => state.customer.coreDetails,
+      coreDetails: state => state.customer.coreDetails
     })
   },
 
@@ -41,10 +41,8 @@ export default {
       let tempObj = {};
       tempObj.coreDetails = {};
       tempObj.coreDetails[fieldname] = event.target.value;
-      this.$store.commit('customer/updateFields', tempObj)
+      this.$store.commit("customer/updateFields", tempObj);
     }
   }
-
-
-}
+};
 </script>

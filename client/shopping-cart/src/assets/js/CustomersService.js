@@ -3,24 +3,21 @@ const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
   : "/api/customers";
 
 export const CustomersService = {
-  createAndAssignIntent: async function(coreDetails, shippingAddress, billingAddress, paymentIntentId) {
-    let url = baseUrl + "/create-assign-intent";
+  create: async function(coreDetails, shippingAddress, billingAddress, contactable=false) {
+    let url = baseUrl + "/create";
     let customer = {
-      "coreDetails": coreDetails,
-      "shippingAddress": shippingAddress,
-      "billingAddress": billingAddress
-    };
-    let createAndAssignObj = {
-      "customer": customer,
-      "paymentIntentId": paymentIntentId
+      coreDetails: coreDetails,
+      shippingAddress: shippingAddress,
+      billingAddress: billingAddress,
+      contactable: contactable
     };
     let res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(createAndAssignObj)
-    })
+      body: JSON.stringify(customer)
+    });
 
     if (res.ok) {
       return res.json();
@@ -28,7 +25,7 @@ export const CustomersService = {
       let message = undefined;
       try {
         message = (await res.json()).message;
-      } catch(err) {
+      } catch (err) {
         throw Error(
           "There was a problem communicating with the server. Please try again later."
         );
@@ -36,4 +33,4 @@ export const CustomersService = {
       throw Error(message + " - Code: " + res.status);
     }
   }
-}
+};

@@ -11,5 +11,6 @@ export interface Order {
   receiptUrl: string,
   cart: ShoppingCart,
   username?: string,
-  customer: Customer
+  customer: Customer,
+  status: string
 }

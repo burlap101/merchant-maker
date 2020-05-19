@@ -4,13 +4,14 @@ export const orderModule = {
     chargeId: "",
     receiptNo: "",
     processed: "",
-    receiptUrl: ""
+    receiptUrl: "",
+    id: ""
   }),
   mutations: {
-    updateFields (state, payload) {
+    updateFields(state, payload) {
       for (const field in payload) {
         state[field] = payload[field];
       }
     }
   }
-}
+};
