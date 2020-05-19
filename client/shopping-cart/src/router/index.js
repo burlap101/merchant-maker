@@ -1,6 +1,9 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import Checkout from "../views/children/Checkout.vue";
+import ShoppingCart from "../views/children/ShoppingCart.vue";
+import PaymentSuccess from "../views/children/PaymentSuccess.vue";
 
 Vue.use(VueRouter);
 
@@ -12,11 +15,15 @@ const routes = [
     children: [
       {
         path: "checkout",
-        component: () => import("../views/children/Checkout.vue")
+        component: Checkout
       },
       {
-        path: "overview",
-        component: () => import("../views/children/ShoppingCart.vue")
+        path: "shopping-cart",
+        component: ShoppingCart
+      },
+      {
+        path: "payment-success",
+        component: PaymentSuccess
       }
     ]
   }

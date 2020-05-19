@@ -47,7 +47,7 @@ export class CategoriesService {
   }
 
   async update(id: string, newCategory: Category): Promise<Category>{
-    return this.categoryModel.findOneAndReplace({_id: id}, newCategory).exec();
+    return this.categoryModel.findOneAndUpdate({_id: id}, newCategory, {new: true, useFindAndModify: false}).exec();
   }
 
   async find(key?: string, value?: any): Promise<Category[]> {

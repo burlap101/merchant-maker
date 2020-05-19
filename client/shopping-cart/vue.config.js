@@ -1,13 +1,13 @@
 module.exports = {
   devServer: {
     proxy: {
-      "/api": {
+      "/api/courses": {
         target: "http://localhost:8000"
       },
       "/categories": {
         target: "http://localhost:3000"
       },
-      "/products": {
+      "/api/products": {
         target: "http://localhost:3000"
       },
       "/media": {
@@ -16,9 +16,21 @@ module.exports = {
       "/file-upload": {
         target: "http://localhost:3000"
       },
-      "/shopping-cart": {
+      "/api/shopping-cart": {
+        target: "http://localhost:3000"
+      },
+      "/api/customers": {
+        target: "http://localhost:3000"
+      },
+      "/api/orders": {
         target: "http://localhost:3000"
       }
     }
+  },
+  chainWebpack: config => {
+    config.plugin("html").tap(args => {
+      args[0].title = "Cart & Checkout";
+      return args;
+    });
   }
 };

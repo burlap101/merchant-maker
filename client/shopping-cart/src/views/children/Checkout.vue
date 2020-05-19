@@ -7,73 +7,37 @@
     </div>
     <div class="row">
       <div class="col-md-4 order-md-2 mb-4">
-        
-
+        <shopping-cart-preview />
         <form class="card p-2">
           <div class="input-group">
             <input type="text" class="form-control" placeholder="Promo code" />
             <div class="input-group-append">
-              <button type="submit" class="btn btn-secondary">Redeem</button>
+              <button class="btn btn-secondary">Redeem</button>
             </div>
           </div>
         </form>
       </div>
       <div class="col-md-8 order-md-1">
-        <h4 class="mb-3 text-muted">Billing Details</h4>
         <div
-          v-for="(error, index) in errors"
-          v-bind:key="index"
+          v-if="errors.length + viewErrors.length > 0"
           class="alert alert-danger"
           role="alert"
         >
-          {{ index+1 }}. {{ error }}
+          <p v-for="(error, index) in errors" v-bind:key="index">
+            {{ index + 1 }}. {{ error }}
+          </p>
+          <p v-for="(error, index) in viewErrors" v-bind:key="index">
+            {{ index + 1 }}. {{ error }}
+          </p>
         </div>
         <div class="alert alert-success" v-if="paymentSuccess">
           Payment Successful
         </div>
         <div id="payment-form">
-          <div
-            class="mb-3"
-            v-for="(fieldname, index) of Object.keys(formFields)"
-            v-bind:key="index"
-          >
-            <div v-if="!fieldname.toLowerCase().includes('address')">
-              <label v-bind:for="fieldname" class="">{{
-                fieldname
-              }}</label>
-              <input
-                v-bind:id="fieldname"
-                type="text"
-                class="form-control"
-                v-model="formFields[fieldname]"
-              />
-            </div>
-          </div>
+          <core-details-form />
           <div v-if="products.length > 0">
-            <div class="h5 text-muted mt-4 mb-3">
-              Shipping Address
-            </div>
-            <div
-              class="mb-3"
-              v-for="(fieldname, index) of Object.keys(formFields.shippingAddress)"
-              v-bind:key="index"
-            >
-              <label v-bind:for="fieldname" class="">{{
-                fieldname
-              }}</label>
-              <input
-                v-bind:id="fieldname"
-                type="text"
-                class="form-control"
-                v-model="formFields.shippingAddress[fieldname]"
-              />
-            </div>
-            <div class="h5 text-muted mt-4 mb-3">
-              Billing Address
-            </div>
-            <div
-              class="mb-3 custom-control custom-checkbox"
-            >
+            <address-form addressType="shipping" />
+            <div class="mb-3 custom-control custom-checkbox">
               <input
                 type="checkbox"
                 class="custom-control-input"
@@ -81,46 +45,14 @@
                 v-model="isSameAddress"
                 v-bind:checked="isSameAddress"
               />
-              <label class="custom-control-label" for="save-info">Same as shipping</label>
-            </div>
-            <div v-if="!isSameAddress">
-              <div
-                class="mb-3"
-                v-for="(fieldname, index) of Object.keys(formFields.billingAddress)"
-                v-bind:key="index"
+              <label class="custom-control-label" for="save-info"
+                >Billing address the same as shipping</label
               >
-                <label v-bind:for="fieldname" class="">{{
-                  fieldname
-                }}</label>
-                <input
-                  v-bind:id="fieldname"
-                  type="text"
-                  class="form-control"
-                  v-model="formFields.billingAddress[fieldname]"
-                />
-              </div>
             </div>
-          </div> <!-- End of Addresses -->
-            
-            <!-- <div class="text-muted mt-5 mb-3">
-              {{fieldname}}
-            </div>
-            <div
-              class="mb-3"
-              v-for="(childFieldname, index) in Object.keys(formFields[fieldname])"
-              v-bind:key="index"
-            >
-              <label v-bind:for="childFieldname" class="">{{
-                childFieldname
-              }}</label>
-              <input
-                v-bind:id="childFieldname"
-                type="text"
-                class="form-control"
-                v-model="formFields[fieldname][childFieldname]"
-              />
-            </div> -->
-            
+            <address-form v-if="!isSameAddress" addressType="billing" />
+          </div>
+          <!-- End of Addresses -->
+
           <div
             v-if="trainingSessions.length > 0"
             class="mb-3 custom-control custom-checkbox"
@@ -129,7 +61,9 @@
               type="checkbox"
               class="custom-control-input"
               id="save-info"
-              v-model="saveInfo"
+              v-bind:checked="contactable"
+              value="checked"
+              v-on:change="contactableChanged($event)"
             />
             <label class="custom-control-label" for="save-info" checked
               >Can we contact you in the future regarding your
@@ -163,6 +97,7 @@
                 type="checkbox"
                 class="custom-control-input"
                 id="student-agreement"
+                v-model="acceptedStudentAgreement"
               />
               <label class="custom-control-label" for="student-agreement"
                 >I accept all terms of the
@@ -195,83 +130,134 @@
 
 <script>
 import { loadStripe } from "@stripe/stripe-js";
+import AddressForm from "../../components/AddressForm.vue";
+import CoreDetailsForm from "../../components/CoreDetailsForm.vue";
+import ShoppingCartPreview from "../../components/ShoppingCartPreview.vue";
 import keys from "../../assets/localconfig/keys";
-import shoppingCartService from "../../assets/js/ShoppingCartService";
+import { ShoppingCartService } from "../../assets/js/ShoppingCartService";
+import { mapGetters, mapState } from "vuex";
+import { CustomersService } from "../../assets/js/CustomersService";
+import { OrdersService } from "../../assets/js/OrdersService";
 
 export default {
   name: "checkout",
 
+  components: {
+    AddressForm,
+    CoreDetailsForm,
+    ShoppingCartPreview
+  },
+
   data() {
     return {
-      errors: [],
-      products: [],
-      trainingSessions: [],
-      saveInfo: false,
       ccPaymentSelected: true,
-      formFields: {
-        name: "",
-        email: "",
-        phone: "",
-        shippingAddress: {
-          street: "",
-          suburb: "",
-          postcode: "",
-          state: ""
-        },
-        billingAddress: {
-          street: "",
-          suburb: "",
-          postcode: "",
-          state: ""
-        }
-      },
       card: undefined,
       paymentProcessing: false,
       paymentSuccess: false,
-      states: states,
       stripe: undefined,
       clientSecret: "",
-      isSameAddress: false
+      isSameAddress: false,
+      viewErrors: [],
+      acceptedStudentAgreement: false
     };
   },
 
+  computed: {
+    ...mapState({
+      products: state => state.cart.products,
+      trainingSessions: state => state.cart.trainingSessions,
+      shippingAddress: state => state.customer.shippingAddress,
+      billingAddress: state => state.customer.billingAddress,
+      contactable: state => state.customer.contactable,
+      order: state => state.order,
+      coreDetails: state => state.customer.coreDetails,
+      errors: state => state.customer.errors
+    }),
+    ...mapGetters("cart/", ["grandTotal"])
+  },
+
   methods: {
+    contactableChanged: function(event) {
+      this.$store.commit('customer/isContactable', { contactable: (event.target.value==="checked") ? true : false })
+    },
+
     submit: async function() {
+      this.viewErrors = [];
+      if (!this.acceptedStudentAgreement) {
+        this.viewErrors.push("Please accept the Student Agreement by selecting the checkbox above the submit button.");
+        return;
+      }
       this.paymentProcessing = true;
+      
+
+      if (this.isSameAddress) {
+        this.$store.commit("customer/copyShippingToBillingAddress");
+      }
+      this.$store.commit("customer/validateFields");
+      if (this.errors.length > 0) {
+        this.paymentProcessing = false;
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        return;
+      }
+
+      let customer = undefined;
+
+      try {
+        customer = await CustomersService.create(
+          this.coreDetails,
+          this.shippingAddress,
+          this.billingAddress,
+          this.contactable
+        );
+        await OrdersService.open(customer);
+      } catch (err) {
+        this.viewErrors.push(err.message);
+        this.paymentProcessing = false;
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        return;
+      }
+
       let result = await this.stripe.confirmCardPayment(this.clientSecret, {
         payment_method: {
           card: this.card,
           billing_details: {
-            name: this.formFields.name
+            name: this.coreDetails.name,
+            email: this.coreDetails.email
           }
-        }
+        },
+        receipt_email: this.coreDetails.email
       });
-      if(result.error) {
-        this.errors.push("There was a problem processing your payment. Please try again.");
+      if (result.error) {
+        this.viewErrors.push(
+          "There was a problem processing your payment. Please try again."
+        );
       } else if (result.paymentIntent.status === "succeeded") {
-        for (let field in this.formFields) {
-          console.log("Here");
-          if(Object.keys(this.formFields[field]) > 0) {
-            for(let childField in this.formFields[field]) {
-              this.formFields[field][childField] = "";
-              console.log(childField);
-            }
-          } else {
-            this.formFields[field] = "";
-          }
-        }
         this.paymentSuccess = true;
+        try {
+          let orderObj = await OrdersService.deinitialise(); 
+          this.$store.commit("order/updateFields", orderObj);
+        } catch(err) {
+          this.viewErrors.push(err.message);
+        }
+        this.$router.push("/payment-success");
       }
       this.paymentProcessing = false;
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
     }
   },
 
   async created() {
     try {
-      this.products = (await shoppingCartService.findMyCart()).items;
-      this.clientSecret = (await shoppingCartService.paymentIntentSecret()).secret;
-    } catch(err) { 
-      this.errors.push(err.message);
+      let orderObj = await OrdersService.initialise();
+      this.$store.commit("order/updateFields", orderObj);
+      this.clientSecret = (
+        await ShoppingCartService.paymentIntentSecret()
+      ).secret;
+    } catch (err) {
+      this.viewErrors.push(err.message);
       throw err;
     }
   },
@@ -279,13 +265,15 @@ export default {
   async mounted() {
     this.stripe = await loadStripe(keys.stripePublicKey);
     let elements = this.stripe.elements();
-    let card = elements.create("card", { style: { base: { color: "#32325d" } } });
-    card.mount(this.$refs['card-element']);
+    let card = elements.create("card", {
+      style: { base: { color: "#32325d" } }
+    });
+    card.mount(this.$refs["card-element"]);
     card.addEventListener("change", ({ error }) => {
       if (error) {
-        this.errors.push(error.message);
+        this.viewErrors.push(error.message);
       } else {
-        this.errors = [];
+        this.viewErrors = [];
         this.card = card;
       }
     });

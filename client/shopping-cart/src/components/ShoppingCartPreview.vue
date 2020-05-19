@@ -4,7 +4,7 @@
       <span class="text-muted">Your cart</span>
       <span class="badge badge-secondary badge-pill"
         >{{ products.length + trainingSessions.length }}
-        <a href="/shopping-cart"><i class="fas fa-edit"></i></a
+        <router-link to="shopping-cart"><i class="fas fa-edit"></i></router-link
       ></span>
     </h4>
     <ul class="list-group mb-3">
@@ -18,8 +18,7 @@
             {{ item.course.course_code }} for {{ item.qty }} students
           </h6>
           <small class="text-muted"
-            >{{ item.course.title }} at
-            {{ item.training_session.location }},
+            >{{ item.course.title }} at {{ item.training_session.location }},
             {{ item.training_session.session_date }}</small
           >
         </div>
@@ -36,14 +35,20 @@
           </h6>
           <small class="text-muted">
             <span
-              v-for="(attrName, attrIndex) in Object.keys(item.product.attributes)"
+              v-for="(attrName, attrIndex) in Object.keys(
+                item.product.attributes
+              )"
               v-bind:key="attrIndex"
-            > 
-              {{ attrName }}: {{ item.product.attributes[attrName] }}, 
+            >
+              {{ attrName }}: {{ item.product.attributes[attrName] }},
             </span>
           </small>
         </div>
-        <span class="text-muted">${{ (item.product.price * item.qty).toFixed(2) }}</span>
+        <span class="text-muted"
+          >${{ (item.product.price * item.qty).toFixed(2) }}</span
+        >
+      </li>
+
       <li class="list-group-item d-flex justify-content-between">
         <span>Total (AUD)</span>
         <strong>${{ grandTotal.toFixed(2) }}</strong>
@@ -53,20 +58,17 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from "vuex";
+
 export default {
   name: "shopping-cart-preview",
-  props: ["products", "trainingSesssions"],
+
   computed: {
-    grandTotal: function() {
-      let result = 0;
-      for (let item of this.trainingSessions) {
-        result += item.total_cost;
-      }
-      for (let item of this.products) {
-        result += item.product.price * item.qty
-      }
-      return result;
-    }
-  },
-}
+    ...mapState({
+      products: state => state.cart.products,
+      trainingSessions: state => state.cart.trainingSessions
+    }),
+    ...mapGetters("cart/", ["grandTotal", "cartLength"])
+  }
+};
 </script>

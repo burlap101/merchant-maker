@@ -1,4 +1,6 @@
 import * as mongoose from 'mongoose';
+import { CustomerSchema } from 'src/customers/schemas/customer.schema';
+import { ShoppingCartSchema } from 'src/shopping-cart/schemas/shopping-cart.schema';
 
 export const OrderSchema = new mongoose.Schema({
   chargeId: String,
@@ -6,10 +8,8 @@ export const OrderSchema = new mongoose.Schema({
   email: String,
   processed: Date,
   receiptUrl: String,
-  cart: Object,
-  name: String,
-  phone: String,
+  cart: ShoppingCartSchema,
   username: String,
-  shippingAddress: Object,
-  billingAddress: Object
+  customer: CustomerSchema,
+  status: String
 })

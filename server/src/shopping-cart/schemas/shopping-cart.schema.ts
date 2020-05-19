@@ -3,5 +3,6 @@ import * as mongoose from 'mongoose';
 export const ShoppingCartSchema = new mongoose.Schema({
   userId: String,
   items: [Object],
-  total: Number
+  total: Number,
+  paymentIntentId: String
 })

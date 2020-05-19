@@ -13,4 +13,4 @@ export const CheckoutValidation = {
       return true;
     }
   }
-}
+};
