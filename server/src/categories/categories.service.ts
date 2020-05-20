@@ -2,13 +2,15 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Category } from './interfaces/category.interface';
-import { ProposedCategoryDto } from './dto/proposed-category.dto';
+import { ProductCategory } from 'src/products/interfaces/product-category.interface';
 
 @Injectable()
 export class CategoriesService {
-  constructor(@InjectModel('Category') private readonly categoryModel: Model<Category>) {}
+  constructor(
+    @InjectModel('Category') private readonly categoryModel: Model<Category>,
+  ) {}
 
-  async create(proposedCategory: ProposedCategoryDto, child?: Category, lvl = 0): Promise<Category> {
+  async create(proposedCategory: ProductCategory, child?: Category, lvl = 0): Promise<Category> {
     console.log(proposedCategory);
     const existingCategories = await this.find("name", proposedCategory.name );
 
@@ -74,7 +76,6 @@ export class CategoriesService {
       return filteredEntries;
     }
   }
-
 
   
 }

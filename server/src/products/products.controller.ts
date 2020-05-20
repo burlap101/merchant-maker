@@ -23,7 +23,7 @@ export class ProductsController {
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
-  findOne(@Param() params): Promise<Product[]> {
+  findOne(@Param() params): Promise<Product> {
     return this.productsService.findOneById(params.id);
   }
 

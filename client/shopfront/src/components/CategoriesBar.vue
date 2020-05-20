@@ -12,10 +12,8 @@
           {{ cat.name }}
         </div>
         
-        <div v-if="cat.expanded">
-          <div class="my-list-item-info p-2" v-for="(childCat, index) in cat.children" v-bind:key="index">
-            {{ childCat.name }}
-          </div>
+        <div class="my-list-item-info p-2" v-if="cat.expanded">
+          <child-category v-bind:category="childCat" v-for="(childCat, index) in category.children" v-bind:key="index" />
         </div> 
       </li>
     </ul>
@@ -23,8 +21,13 @@
 </template>
 
 <script>
+import ChildCategory from "./ChildCategory.vue";
+
 export default {
   name: 'categories-bar',
+  components: {
+    ChildCategory
+  },
   data() {
     return {
       categories: [],
