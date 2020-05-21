@@ -12,7 +12,7 @@
 <script>
 export default {
   name: 'child-category',
-  props: ['category']
+  props: ['category', 'parent']
 }
 </script>
 

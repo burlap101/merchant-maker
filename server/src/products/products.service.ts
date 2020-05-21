@@ -25,6 +25,13 @@ export class ProductsService {
     return createdProduct.save();
   }
 
+  async findByCategoryTree(categories: ProductCategory[]): Promise<Product[]> {
+    let names: string[] = [];
+    categories.forEach(el => names.push(el.name));
+    let products = this.productModel.find({categories: {$not: {$elemMatch: {name: {$nin: names}} }}});
+    return products.exec();
+  }
+
   async findall(): Promise<Product[]> {
     return this.productModel.find().exec();
   }

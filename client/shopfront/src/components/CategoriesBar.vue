@@ -13,7 +13,7 @@
         </div>
         
         <div class="my-list-item-info p-2" v-if="cat.expanded">
-          <child-category v-bind:category="childCat" v-for="(childCat, index) in category.children" v-bind:key="index" />
+          <child-category v-bind:category="childCat" v-bind:parent="cat" v-for="(childCat, index) in category.children" v-bind:key="index" />
         </div> 
       </li>
     </ul>
