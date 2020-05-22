@@ -21,7 +21,7 @@ export class ProductsController {
    return this.productsService.findall();
   }
 
-  @Post('category')
+  @Post('categories')
   findByCategories(@Body() q): Promise<Product[]> {
     return this.productsService.findByCategoryTree(q.categories);
   }
