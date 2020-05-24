@@ -101,5 +101,27 @@ export const ProductsService = {
       }
       throw Error(message + " - Code: " + res.status);
     }
+  },
+
+  filterByCategories: async function(categories) {
+    let url = baseUrl + "/categories";
+    let res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({categories})
+    })
+    if (res.ok) {
+      return res.json();
+    } else {
+      let message = undefined;
+      try {
+        message = (await res.json()).message;
+      } catch (err) {
+        throw Error(noResponseMessage);
+      }
+      throw Error(message + " - Code: " + res.status);
+    }
   }
 };

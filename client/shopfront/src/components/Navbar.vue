@@ -142,7 +142,7 @@
 
 <script>
 import { CourseService } from "../../../shopfront/src/assets/js/CourseService";
-import { ShoppingCartService } from "../../../shopfront/src/assets/js/ShoppingCartService";
+import { ShoppingCartService } from "../../../shopping-cart/src/assets/js/ShoppingCartService";
 
 export default {
   name: "Navbar",

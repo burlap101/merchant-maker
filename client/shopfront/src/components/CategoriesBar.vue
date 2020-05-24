@@ -22,6 +22,7 @@
 
 <script>
 import ChildCategory from "./ChildCategory.vue";
+import { CategoriesService } from "../assets/js/CategoriesService";
 
 export default {
   name: 'categories-bar',
@@ -31,29 +32,21 @@ export default {
   data() {
     return {
       categories: [],
+      topLevelCategories: [],
       errors: []
     }
   },
-  computed: {
-    topLevelCategories: function() {
-      let topCats = [];
-      for (let cat of this.categories) {
-        this.$set(cat, 'expanded', false)
-        if (!cat.hasParent) {
-          topCats.push(cat);
-        }
-      }
-      console.log(topCats);
-      return topCats;
-    }
-  },
+  
   async created() {
-    const res = await fetch("api/categories");
-    if (res.ok) {
-      this.categories = await res.json();
-    } else {
-      this.errors.push("There was a problem retrieving categories." + res.status)
+    this.categories = await CategoriesService.findAll();
+    let topCats = [];
+    for (let cat of this.categories) {
+      this.$set(cat, 'expanded', false)
+      if (!cat.hasParent) {
+        topCats.push(cat);
+      }
     }
+    this.topLevelCategories = topCats;
   }
 }
 </script>

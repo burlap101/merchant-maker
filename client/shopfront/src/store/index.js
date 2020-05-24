@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { ProductService } from "../../../admin-portal/src/assets/js/ProductsService";
+import { ProductsService } from "../../../admin-portal/src/assets/js/ProductsService";
 
 Vue.use(Vuex)
 
@@ -22,9 +22,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    updateTreeAndProducts ({ commit, state }, category) {
+    async updateTreeAndProducts ({ commit, state }, category) {
       commit('addToTree', { category });
-      
+      state.products = await ProductsService.filterByCategories(state.categoryTree);
     }
   },
   modules: {

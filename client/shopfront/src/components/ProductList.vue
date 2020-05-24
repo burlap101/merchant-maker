@@ -12,14 +12,21 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: 'product-list',
   data() {
     return {
-      products: [],
       errors: []
     }
   },
+
+  computed: {
+    ...mapState({
+      products: state => state.products
+    })
+  },
+
   async created() {
     let res = await fetch('/products');
     if (res.ok) {
