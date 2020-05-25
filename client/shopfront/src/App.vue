@@ -7,3 +7,13 @@
     <router-view></router-view>
   </div>
 </template>
+
+<script>
+
+export default {
+  name: "shopfront",
+  created() {
+    this.$store.dispatch('populateProducts');
+  }
+}
+</script>

@@ -7,7 +7,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     categoryTree: [],
-    products: []
+    products: [],
+    errors: []
   },
   mutations: {
     addToTree(state, payload) {
@@ -19,12 +20,27 @@ export default new Vuex.Store({
     resetTree(state) {
       state.categoryTree = [];
       state.products = [];
+    },
+    setProducts(state, payload) {
+      state.products = payload.products;
     }
   },
   actions: {
-    async updateTreeAndProducts ({ commit, state }, category) {
+    async updateTreeAndProducts ({ commit }, category) {
+      console.log("Here")
       commit('addToTree', { category });
-      state.products = await ProductsService.filterByCategories(state.categoryTree);
+      // let products = await ProductsService.filterByCategories(state.categoryTree);
+    },
+
+    async populateProducts ({state}) {
+      state.errors = [];
+      try {
+        state.commit('setProducts', {
+          products: await ProductsService.findAll()
+        });
+      } catch (err) {
+        state.errors.push(err.message);
+      }
     }
   },
   modules: {

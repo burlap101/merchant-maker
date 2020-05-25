@@ -15,7 +15,6 @@ export class ProductsController {
     private readonly categoriesService: CategoriesService
   ) {}
   
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   findAll(): Promise<Product[]> {
    return this.productsService.findall();
@@ -26,7 +25,6 @@ export class ProductsController {
     return this.productsService.findByCategoryTree(q.categories);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   findOne(@Param() params): Promise<Product> {
     return this.productsService.findOneById(params.id);
