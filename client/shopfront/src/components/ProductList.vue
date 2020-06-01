@@ -3,6 +3,7 @@
     <div ref="productcard" class="d-flex flex-row mt-2 border" v-for="(product, index) in products" v-bind:key="index">
       <div class="p-3 mr-2 border-right">
         <img v-if="product.images[0] !== undefined" class="my-image" v-bind:src="product.images[0].path"  />
+        <img v-else src="../assets/img/img-not-found.svg.png" alt="" class="my-image">
       </div>
       <div class="ml-2 py-3">
         {{ product.name }}
@@ -26,7 +27,7 @@ export default {
 
 <style scoped>
 .my-image {
-  max-height: 5rem;
-  max-width: fit-content;
+  height: 5rem;
+  width: fit-content; 
 }
 </style>

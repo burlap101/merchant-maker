@@ -21,6 +21,7 @@ export class ProductsService {
       ...createProductDto,
       categories: this.arrayCategories(createProductDto.category)
     };
+    console.log(convertedProduct);
     const createdProduct = new this.productModel(convertedProduct);
     return createdProduct.save();
   }

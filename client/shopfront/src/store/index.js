@@ -9,7 +9,7 @@ export default new Vuex.Store({
   state: {
     categoryTree: [],
     categories: [],
-    topeLevelCategories: [],
+    topLevelCategories: [],
     products: [],
     errors: [],
     maxLevels: 1
@@ -63,10 +63,10 @@ export default new Vuex.Store({
 
     async retrieveCategories({state}) {
       state.categories = await CategoriesService.findAll();
-      state.maxLevels = Math.max.apply(Math, categories.map(function(cat) { return cat.level }));
+      state.maxLevels = Math.max.apply(Math, state.categories.map(function(cat) { return cat.level }));
       let topCats = [];
       for (let cat of state.categories) {
-        this.$set(cat, 'expanded', true)
+        Vue.set(cat, 'expanded', true)
         if (!cat.hasParent) {
           topCats.push(cat);
         }

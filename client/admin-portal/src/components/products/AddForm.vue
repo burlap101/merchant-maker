@@ -250,6 +250,7 @@ export default {
         }
       }
       this.formData.attributes = {};
+      this.images = [];
     }
   },
   async created() {
