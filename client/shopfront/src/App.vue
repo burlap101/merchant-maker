@@ -14,6 +14,8 @@ export default {
   name: "shopfront",
   created() {
     this.$store.dispatch('populateProducts');
+    // this.$store.dispatch('determineMaxLevels');
+    this.$store.dispatch('retrieveCategories');
   }
 }
 </script>

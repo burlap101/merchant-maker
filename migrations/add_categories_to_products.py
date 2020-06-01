@@ -19,7 +19,7 @@ client = MongoClient(mongo_uri)
 db = client.mmdb
 count = 0
 
-print("Performing migration...")
+print("Performing migration 'Add categories to products'...")
 
 for product in db.products.find():
   if not ("categories" in product.keys()):

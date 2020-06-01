@@ -19,7 +19,8 @@ export class CategoriesService {
         name: proposedCategory.name,
         description: proposedCategory.description,
         hasParent: proposedCategory.parent.name ? true : false,
-        children: []
+        children: [],
+        level: lvl
       });
       let parent: Category;
       let newChild = await createdCategory.save();
@@ -37,7 +38,8 @@ export class CategoriesService {
         name: proposedCategory.name,
         description: proposedCategory.description,
         hasParent: proposedCategory.parent.name ? true : false,
-        children: [child]
+        children: [child],
+        level: lvl
       });
       let parent: Category;
       let newChild = await createdCategory.save();

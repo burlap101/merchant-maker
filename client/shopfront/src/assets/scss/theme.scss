@@ -15,30 +15,12 @@ $light:#F2F2F0;
 $dark:#072247;
 $dark-hover: #254065;
 $primary-hover: #285378;
-$info-hover: #46abbf;
+$info-hover: #487398;
 
 @import "bootstrap";
 
 
 // Add SASS theme customizations here..
-
-.my-list-item-primary {
-  background-color: $primary;
-  color: #fff;
-  &:hover {
-    background-color: $primary-hover;
-    cursor: pointer;
-  }
-}
-
-.my-list-item-info {
-  background-color: $info;
-  color: $primary;
-  &:hover {
-    background-color: $info-hover;
-    cursor: pointer;
-  }
-}
 
 .my-list-group-primary {
   background-color: $primary;
@@ -48,4 +30,20 @@ $info-hover: #46abbf;
 .my-list-group-info {
   background-color: $info;
   color: $primary;
+}
+
+.my-list-item-primary {
+  @extend .my-list-group-primary;
+  &:hover {
+    background-color: $primary-hover;
+    cursor: pointer;
+  }
+}
+
+.my-list-item-info {
+  @extend .my-list-group-info;
+  &:hover {
+    color: $info-hover;
+    cursor: pointer;
+  }
 }

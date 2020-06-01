@@ -7,12 +7,18 @@
         v-for="(cat, index) in topLevelCategories"
         v-bind:key="index"
       > 
-        <div class="my-list-item-primary p-2" v-on:click="cat.expanded=!cat.expanded">
-          {{ cat.name }} <span v-if="cat.children !== undefined && cat.children.length > 0"><span v-if="cat.expanded">v</span><span v-else>></span></span>
+        <div class="d-flex justify-content-between align-items-center my-list-item-primary p-2" v-on:click="cat.expanded=!cat.expanded">
+          <div>{{ cat.name }}</div> <span v-if="cat.children !== undefined && cat.children.length > 0"><strong><span v-if="cat.expanded"><i class="fas fa-angle-double-down"></i></span><span v-else><i class="fas fa-angle-double-right"></i></span></strong></span>
         </div>
         
         <div class="my-list-item-info p-0" v-if="cat.expanded">
-          <child-category v-bind:category="childCat" v-bind:parent="cat" v-bind:ccindex="index" v-for="(childCat, index) in cat.children" v-bind:key="index" />
+          <child-category 
+            v-bind:category="childCat" 
+            v-bind:parent="cat" 
+            v-bind:level="1"
+            v-for="(childCat, index) in cat.children" 
+            v-bind:key="index" 
+          />
         </div> 
       </li>
     </ul>
@@ -21,31 +27,19 @@
 
 <script>
 import ChildCategory from "./ChildCategory.vue";
-import { CategoriesService } from "../assets/js/CategoriesService";
+import { mapState } from 'vuex';
 
 export default {
   name: 'categories-bar',
   components: {
     ChildCategory
   },
-  data() {
-    return {
-      categories: [],
-      topLevelCategories: [],
-      errors: []
-    }
-  },
-  
-  async created() {
-    this.categories = await CategoriesService.findAll();
-    let topCats = [];
-    for (let cat of this.categories) {
-      this.$set(cat, 'expanded', false)
-      if (!cat.hasParent) {
-        topCats.push(cat);
-      }
-    }
-    this.topLevelCategories = topCats;
+
+  computed: {
+    ...mapState({
+      categories: state => state.categories,
+      topLevelCategories: state => state.topLevelCategories
+    })
   }
 }
 </script>

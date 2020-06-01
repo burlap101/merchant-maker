@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Bandages",
+    "description": "All bandages",
+    "hasParent": true,
+    "children": []
+  },
+  {
+    "name": "Refill Components",
+    "description": "All components to refill kits",
+    "hasParent": true,
+    "children": [
+      {
+        "children": [],
+        "name": "Bandages",
+        "description": "All bandages",
+        "hasParent": true
+      },
+      {
+        "name": "Band Aids",
+        "description": "All band aids",
+        "hasParent": true,
+        "children": []
+      }
+    ]
+  },
+  {
+    "name": "First Aid Kits",
+    "description": "All first aid kits",
+    "hasParent": false,
+    "children": [
+      {
+        "name": "Refill Components",
+        "description": "All components to refill kits",
+        "hasParent": true,
+        "children": [
+          {
+            "name": "Bandages",
+            "description": "All bandages",
+            "hasParent": true,
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Band Aids",
+    "description": "All band aids",
+    "hasParent": true,
+    "children": []
+  },
+  {
+    "name": "Growth Enhancing",
+    "description": "Concoctions targeting growth",
+    "hasParent": true,
+    "children": []
+  },
+  {
+    "name": "Fast Acting",
+    "description": "All fast acting potions",
+    "hasParent": true,
+    "children": [
+      {
+        "name": "Growth Enhancing",
+        "description": "Concoctions targeting growth",
+        "hasParent": true,
+        "children": []
+      }
+    ]
+  },
+  {
+    "name": "Potions",
+    "description": "All potions",
+    "hasParent": false,
+    "children": [
+      {
+        "name": "Fast Acting",
+        "description": "All fast acting potions",
+        "hasParent": true,
+        "children": [
+          {
+            "name": "Growth Enhancing",
+            "description": "Concoctions targeting growth",
+            "hasParent": true,
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+]
