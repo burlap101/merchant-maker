@@ -14,6 +14,7 @@
 <script>
 import CategoriesBar from '@/components/CategoriesBar.vue';
 import ProductList from '@/components/ProductList.vue';
+// import CategoryBreadCrumb from '@/components/CategoryBreadCrumb.vue';
 
 export default {
   name: "products-overview",

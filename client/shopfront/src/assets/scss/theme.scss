@@ -16,6 +16,7 @@ $dark:#072247;
 $dark-hover: #254065;
 $primary-hover: #285378;
 $info-hover: #487398;
+$info-selected: #1c7c04;
 
 @import "bootstrap";
 
@@ -45,5 +46,8 @@ $info-hover: #487398;
   &:hover {
     color: $info-hover;
     cursor: pointer;
+  }
+  &-selected {
+    color: $warning;
   }
 }

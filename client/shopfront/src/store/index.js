@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import { ProductsService } from "../../../admin-portal/src/assets/js/ProductsService";
 import { CategoriesService } from "../assets/js/CategoriesService";
 
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -26,7 +27,6 @@ export default new Vuex.Store({
       state.products = [];
     },
     setProducts(state, payload) {
-      console.log(payload);
       state.products = payload.products;
     }
   },
@@ -34,11 +34,15 @@ export default new Vuex.Store({
     async updateTreeAndProducts ({ state, commit }, category) {
       commit('resetTree');
       commit('addToTree', { category });
-      let hasParent = category.hasParent;
       let cat = category;
-      while (hasParent) {
-        let parent = state.categories.find(el => el.parent._id === cat._id);
-        commit('addToTree', { parent });
+      while (cat.hasParent) {
+        let parent = state.categories.find(el => el.children.some(child => {
+          return (child.name === cat.name) && (child.description === cat.description);
+        }));
+        console.log(parent);
+        if (parent !== undefined) {
+          commit('addToTree', { "category": parent });
+        }
         cat = parent;
       }
       let products = await ProductsService.filterByCategories(state.categoryTree);

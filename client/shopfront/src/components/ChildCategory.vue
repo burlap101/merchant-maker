@@ -2,9 +2,9 @@
   <div class="ml-3">
     <div
       class="d-flex justify-content-between align-items-center my-list-group-info p-2"
-      v-on:click="expanded=!expanded"
+      v-on:click="categorySelected()"
     >
-      <span class="my-list-item-info">{{ category.name }}</span>
+      <span v-bind:class="{ 'my-list-item-info-selected': selected, 'my-list-item-info': !selected }">{{ category.name }}</span>
       <span v-if="category.children !== undefined && category.children.length > 0">
         <strong>
           <span v-if="expanded">
@@ -40,7 +40,9 @@ export default {
 
   computed: {
     selected: function() {
-      if (this.$store.categoryTree.includes(this.category._id)) {
+      if (this.$store.state.categoryTree.some(el => {
+        return (el.name === this.category.name) && (el.description === this.category.description)
+      })) {
         return true;
       } else {
         return false;
@@ -51,7 +53,7 @@ export default {
   methods: {
     categorySelected() {
       this.$store.dispatch("updateTreeAndProducts", this.category);
-      this.expanded = true;
+      this.expanded = !this.expanded;
     }
   }
 };
