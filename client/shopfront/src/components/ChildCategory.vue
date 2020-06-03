@@ -17,13 +17,16 @@
       </span>
     </div>
     <div v-if="expanded">
-      <child-category
-        v-bind:category="childCat"
-        v-bind:parent="category"
+      <div
         v-for="(childCat, index) in category.children"
         v-bind:key="index"
-        v-bind:level="level + 1"
-      />
+      >
+        <child-category
+          v-bind:category="childCat"
+          v-bind:parent="category"
+          v-bind:level="level + 1"
+        />
+      </div>
     </div>
   </div>
 </template>

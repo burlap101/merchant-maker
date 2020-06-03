@@ -39,7 +39,6 @@ export default new Vuex.Store({
         let parent = state.categories.find(el => el.children.some(child => {
           return (child.name === cat.name) && (child.description === cat.description);
         }));
-        console.log(parent);
         if (parent !== undefined) {
           commit('addToTree', { "category": parent });
         }
