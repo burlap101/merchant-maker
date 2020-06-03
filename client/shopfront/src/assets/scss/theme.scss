@@ -16,7 +16,6 @@ $dark:#072247;
 $dark-hover: #254065;
 $primary-hover: #285378;
 $info-hover: #487398;
-$info-selected: #1c7c04;
 
 @import "bootstrap";
 
@@ -39,6 +38,9 @@ $info-selected: #1c7c04;
     background-color: $primary-hover;
     cursor: pointer;
   }
+  &-selected {
+    font-weight: 900;
+  }
 }
 
 .my-list-item-info {
@@ -48,6 +50,7 @@ $info-selected: #1c7c04;
     cursor: pointer;
   }
   &-selected {
-    color: $warning;
+    color: $dark;
+    font-weight: 900;
   }
 }

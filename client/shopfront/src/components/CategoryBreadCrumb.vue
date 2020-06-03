@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span v-for="(cat, index) in categories.reverse()" v-bind:key="index">{{ cat.name }} > </span> 
+    <span v-for="(cat, index) in categories" v-bind:key="index">{{ cat.name }} > </span> 
   </div>
 </template>
 
