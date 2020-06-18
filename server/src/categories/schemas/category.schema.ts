@@ -4,6 +4,7 @@ const CategorySchema = new mongoose.Schema({
   name: String,
   description: String,
   hasParent: Boolean,
+  level: Number
 });
 
 CategorySchema.add({children: [CategorySchema]});

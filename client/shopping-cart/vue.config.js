@@ -1,10 +1,13 @@
 module.exports = {
+  outputDir: "../../server/dist/public/cart",
+  indexPath: "../../views/cart.hbs",
+  publicPath: "/store/cart",
   devServer: {
     proxy: {
       "/api/courses": {
         target: "http://localhost:8000"
       },
-      "/categories": {
+      "/api/categories": {
         target: "http://localhost:3000"
       },
       "/api/products": {
@@ -29,7 +32,7 @@ module.exports = {
   },
   chainWebpack: config => {
     config.plugin("html").tap(args => {
-      args[0].title = "Cart & Checkout";
+      args[0].title = "Cart & Checkout | Yamba Grafton First Aid";
       return args;
     });
   }

@@ -1,4 +1,5 @@
 import { Category } from '../../categories/interfaces/category.interface';
+import { ProductCategory } from '../interfaces/product-category.interface';
 
 export class CreateProductDto {
   readonly name: string;
@@ -8,6 +9,6 @@ export class CreateProductDto {
   readonly stockCode: string;
   readonly attributes: Object;
   readonly available: number;
-  readonly category: Category;
+  readonly category: ProductCategory;
   readonly images: Array<Object>;
 }

@@ -1,5 +1,8 @@
 <template>
-  <div v-on:keypress.enter="submit" class="d-flex flex-column align-items-center align-self-center text-center form-signin">
+  <div
+    v-on:keypress.enter="submit"
+    class="d-flex flex-column align-items-center align-self-center text-center form-signin"
+  >
     <img
       class="mt-5 mb-2"
       src="../assets/img/mmlogo.png"
@@ -7,7 +10,7 @@
       width="128"
       height="128"
     />
-    <div class="h5">Merchant Maker&trade;</div>  
+    <div class="h5">Merchant Maker&trade;</div>
     <h1 class="h4 my-3 font-weight-normal">Please sign in</h1>
     <div
       class="alert-danger"

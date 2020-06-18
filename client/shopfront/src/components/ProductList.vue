@@ -1,40 +1,54 @@
 <template>
   <div>
-    <div ref="productcard" class="d-flex flex-row mt-2 border" v-for="(product, index) in products" v-bind:key="index">
-      <div class="p-3 mr-2 border-right">
-        <img v-if="product.images[0].path !== undefined" class="my-image" v-bind:src="product.images[0].path"  />
+    <!-- For higher res tablets and PCs -->
+    <div class="my-product-list overflow-auto d-none d-lg-block">
+      <div
+        ref="productcard"
+        class=""
+        v-for="(product, index) in products"
+        v-bind:key="index"
+      >
+        <pc-product-card v-bind:product="product" />
       </div>
-      <div class="ml-2 py-3">
-        {{ product.name }}
+    </div>
+
+    <!-- For smaller screens -->
+    <div class="">
+      <div
+        ref="productcard"
+        class="d-lg-none"
+        v-for="(product, index) in products"
+        v-bind:key="index"
+      >
+        <mobile-product-card v-bind:product="product" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import PcProductCard from "./pc/ProductCard.vue";
+import MobileProductCard from "./mobile/ProductCard.vue";
+import { mapState } from "vuex";
 export default {
-  name: 'product-list',
-  data() {
-    return {
-      products: [],
-      errors: []
-    }
+  name: "product-list",
+
+  components: {
+    PcProductCard,
+    MobileProductCard
   },
-  async created() {
-    let res = await fetch('/products');
-    if (res.ok) {
-      this.errors = [];
-      this.products = await res.json();
-    } else {
-      this.errors.push(res);
-    }
+
+  computed: {
+    ...mapState({
+      products: state => state.products,
+      cart: state => state.cart
+    })
   }
-}
+};
 </script>
 
-<style scoped>
-.my-image {
-  max-height: 5rem;
-  max-width: fit-content;
+<style scoped lang="scss">
+.my-product-list {
+  max-height: 640px;
 }
 </style>

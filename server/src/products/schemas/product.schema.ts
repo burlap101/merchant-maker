@@ -10,5 +10,6 @@ export const ProductSchema = new mongoose.Schema({
   available: Number,
   images: [Object],
   category: Object,
+  categories: [Object],
   deleted: Boolean
 })

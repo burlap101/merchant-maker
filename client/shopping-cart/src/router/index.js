@@ -18,7 +18,7 @@ const routes = [
         component: Checkout
       },
       {
-        path: "shopping-cart",
+        path: "edit",
         component: ShoppingCart
       },
       {

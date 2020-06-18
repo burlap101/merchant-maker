@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Delete, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param, UseGuards, Query } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
@@ -15,15 +15,18 @@ export class ProductsController {
     private readonly categoriesService: CategoriesService
   ) {}
   
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   findAll(): Promise<Product[]> {
    return this.productsService.findall();
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post('categories')
+  findByCategories(@Body() q): Promise<Product[]> {
+    return this.productsService.findByCategoryTree(q.categories);
+  }
+
   @Get(':id')
-  findOne(@Param() params): Promise<Product[]> {
+  findOne(@Param() params): Promise<Product> {
     return this.productsService.findOneById(params.id);
   }
 

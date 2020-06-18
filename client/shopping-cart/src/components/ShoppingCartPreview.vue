@@ -4,7 +4,7 @@
       <span class="text-muted">Your cart</span>
       <span class="badge badge-secondary badge-pill"
         >{{ products.length + trainingSessions.length }}
-        <router-link to="shopping-cart"><i class="fas fa-edit"></i></router-link
+        <router-link to="/edit"><i class="fas fa-edit"></i></router-link
       ></span>
     </h4>
     <ul class="list-group mb-3">
@@ -31,9 +31,13 @@
       >
         <div>
           <h6 class="my-0">
-            {{ item.product.name }} -- {{ item.qty }} {{ item.product.uom }}
+            {{ item.product.name }} -- {{ item.qty }} &times;
+            {{ item.product.uom }}
           </h6>
-          <small class="text-muted">
+          <small
+            v-if="item.product.attributes !== undefined"
+            class="text-muted"
+          >
             <span
               v-for="(attrName, attrIndex) in Object.keys(
                 item.product.attributes

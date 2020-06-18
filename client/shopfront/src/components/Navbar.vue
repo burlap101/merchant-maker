@@ -47,9 +47,10 @@
       </div>
     </nav>
     <nav
-      class="navbar navbar-expand navbar-light bg-info fixed-top fixed-top-2 justify-content-between mb-dual-navbar"
+      class="navbar navbar-expand-lg navbar-light bg-info fixed-top fixed-top-2 justify-content-between mb-dual-navbar"
       style="z-index: 999;"
     >
+      <div class="navbar-brand d-lg-none">Menu</div>
       <button
         class="navbar-toggler"
         type="button"
@@ -93,6 +94,11 @@
               >
             </div>
           </li>
+          <li>
+            <a class="nav-link text-primary" href="/store/shopfront/overview/"
+              >Store<span class="sr-only">(current)</span></a
+            >
+          </li>
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle text-primary"
@@ -119,19 +125,16 @@
         </ul>
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="/checkout/shopping_cart/">
-              <!-- <span class="fa-layers">
+            <a class="nav-link" href="/store/cart/checkout/">
+              <span class="fa-layers">
                 <i
                   class="fas fa-shopping-cart fa-2x"
                   data-fa-transform="shrink-2"
                 ></i>
-                <span
-                  id="cart-counter"
-                  class="fa-layers-counter fa-3x"
-                  style="background:Tomato;"
-                  >{{ cartCount }}</span
-                >
-              </span> -->
+                <span id="cart-counter" class="badge badge-pill badge-danger">
+                  {{ cartLength }}
+                </span>
+              </span>
             </a>
           </li>
         </ul>
@@ -142,26 +145,29 @@
 
 <script>
 import { CourseService } from "../../../shopfront/src/assets/js/CourseService";
-import { ShoppingCartService } from "../../../shopfront/src/assets/js/ShoppingCartService";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Navbar",
+
+  computed: {
+    ...mapGetters("cart/", ["cartLength"])
+  },
+
   data() {
     return {
-      ts: [],
       errors: [],
-      courses: "",
-      cart: [],
-      cartCount: 0
+      courses: []
     };
   },
+
   async created() {
     try {
       this.courses = await CourseService.getCourses();
-      this.cart = await ShoppingCartService.getShoppingCart();
     } catch (err) {
       this.errors.push(err.message);
     }
+    this.$store.dispatch("cart/populateCart");
   }
 };
 </script>

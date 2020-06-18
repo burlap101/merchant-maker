@@ -1,9 +1,14 @@
-const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
-  ? "/store/api/customers"
-  : "/api/customers";
+const baseUrl = window.location.hostname.includes("localhost:8")
+  ? "/api/customers"
+  : "/store/api/customers";
 
 export const CustomersService = {
-  create: async function(coreDetails, shippingAddress, billingAddress, contactable=false) {
+  create: async function(
+    coreDetails,
+    shippingAddress,
+    billingAddress,
+    contactable = false
+  ) {
     let url = baseUrl + "/create";
     let customer = {
       coreDetails: coreDetails,

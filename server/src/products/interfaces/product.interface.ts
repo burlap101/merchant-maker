@@ -1,4 +1,4 @@
-import { Category } from '../../categories/interfaces/category.interface';
+import { ProductCategory } from './product-category.interface';
 
 export interface Product {
   _id: string,
@@ -10,6 +10,7 @@ export interface Product {
   attributes: Object,
   available: number,
   images: Array<Object>,
-  category: Category,
+  category: ProductCategory,
+  categories: Array<ProductCategory>,
   deleted: boolean
 }

@@ -3,5 +3,6 @@ export interface Category {
   name: string,
   description: string,
   hasParent: boolean,
-  children: Category[]
+  children: Category[],
+  level: number
 }

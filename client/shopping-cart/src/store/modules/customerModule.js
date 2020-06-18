@@ -107,7 +107,7 @@ export const customerModule = {
             );
           }
         } catch (err) {
-          (err.message);
+          err.message;
           if (AddressFields.text[fieldName]) {
             state.errors.push(
               "Shipping Address " +

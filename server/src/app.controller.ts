@@ -73,4 +73,39 @@ export class AppController {
     return {};
   }
 
+  @Get('shopfront')
+  @Render('shopfront')
+  shopfront() {
+    return {};
+  }
+
+  @Get('shopfront/overview')
+  @Render('shopfront')
+  shopfrontOverview() {
+    return {};
+  }
+
+  @Get('cart')
+  @Render('cart')
+  cart() {
+    return {}
+  }
+
+  @Get('cart/checkout')
+  @Render('cart')
+  cartCheckout() {
+    return {}
+  }
+
+  @Get('cart/edit')
+  @Render('cart')
+  cartEdit() {
+    return {}
+  }
+
+  @Get('cart/payment-success')
+  @Render('cart')
+  cartPaymentSuccess() {
+    return {}
+  }
 }
