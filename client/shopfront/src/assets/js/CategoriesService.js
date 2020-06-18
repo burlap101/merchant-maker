@@ -1,13 +1,11 @@
-const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
-  ? "/store/api/categories"
-  : "/api/categories";
+const baseUrl = window.location.hostname.includes("localhost:8")
+  ? "/api/categories"
+  : "/store/api/categories";
 
 const noResponseMessage =
   "There was a problem communicating with the server. Please contact your administrator.";
 
-
 export const CategoriesService = {
-
   findAll: async function() {
     let url = baseUrl;
     let res = await fetch(url);
@@ -23,4 +21,4 @@ export const CategoriesService = {
       throw Error(message + " - Code: " + res.status);
     }
   }
-}
+};

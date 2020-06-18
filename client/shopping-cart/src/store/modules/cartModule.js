@@ -6,7 +6,8 @@ export const cartModule = {
     products: [],
     trainingSessions: [],
     changedProducts: [],
-    changedTrainingsessions: []
+    changedTrainingsessions: [],
+    errors: []
   }),
 
   getters: {
@@ -84,7 +85,16 @@ export const cartModule = {
     },
 
     addProducts(state, payload) {
-      payload.items.forEach(e => state.products.push(e));
+      payload.items.forEach(item => {
+        const index = state.products.findIndex(
+          el => el.product._id === item.product._id
+        );
+        if (index < 0) {
+          state.products.push(item);
+        } else {
+          state.products[index].qty = item.qty;
+        }
+      });
     }
   },
 
@@ -109,6 +119,25 @@ export const cartModule = {
         }
       }
       state.changedProducts = [];
+    },
+
+    async addProductToCart({ state, commit }, payload) {
+      const index = state.products.findIndex(
+        el => el.product._id === payload.product._id
+      );
+      state.errors = [];
+      try {
+        if (index < 0) {
+          ShoppingCartService.addToCart(payload);
+        } else {
+          ShoppingCartService.updateCartItem(payload);
+        }
+        commit("addProducts", {
+          items: [payload]
+        });
+      } catch (err) {
+        state.errors.push(err.message);
+      }
     }
   }
 };

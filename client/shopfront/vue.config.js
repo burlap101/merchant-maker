@@ -1,4 +1,7 @@
 module.exports = {
+  outputDir: "../../server/dist/public/shopfront",
+  indexPath: "../../views/shopfront.hbs",
+  publicPath: "/store/shopfront",
   devServer: {
     proxy: {
       "/api/courses": {
@@ -29,7 +32,7 @@ module.exports = {
   },
   chainWebpack: config => {
     config.plugin("html").tap(args => {
-      args[0].title = "Online Store";
+      args[0].title = "Online Store | Yamba Grafton First Aid";
       return args;
     });
   }

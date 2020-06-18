@@ -2,8 +2,8 @@
   <footer class="container mt-5 text-muted text-center">
     <small>
       <p>
-        Copyright © {{ new Date().year }} Yamba Grafton First Aid - All Rights
-        Reserved.
+        Copyright &copy; {{ new Date().getFullYear() }} Yamba Grafton First Aid
+        - All Rights Reserved.
       </p>
       <div class="mb-5">
         All training is delivered in Partnership and Under the Auspice of

@@ -1,10 +1,11 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 import { ProductsService } from "../../../admin-portal/src/assets/js/ProductsService";
 import { CategoriesService } from "../assets/js/CategoriesService";
+import { ShoppingCartService } from "../../../shopping-cart/src/assets/js/ShoppingCartService";
+import { cartModule } from "../../../shopping-cart/src/store/modules/cartModule";
 
-
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
@@ -15,6 +16,7 @@ export default new Vuex.Store({
     errors: [],
     maxLevels: 1
   },
+
   mutations: {
     addToTree(state, payload) {
       state.categoryTree.push(payload.category);
@@ -31,27 +33,33 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async updateTreeAndProducts ({ state, commit }, category) {
-      commit('resetTree');
-      commit('addToTree', { category });
+    async updateTreeAndProducts({ state, commit }, category) {
+      commit("resetTree");
+      commit("addToTree", { category });
       let cat = category;
       while (cat.hasParent) {
-        let parent = state.categories.find(el => el.children.some(child => {
-          return (child.name === cat.name) && (child.description === cat.description);
-        }));
+        let parent = state.categories.find(el =>
+          el.children.some(child => {
+            return (
+              child.name === cat.name && child.description === cat.description
+            );
+          })
+        );
         if (parent !== undefined) {
-          commit('addToTree', { "category": parent });
+          commit("addToTree", { category: parent });
         }
         cat = parent;
       }
-      let products = await ProductsService.filterByCategories(state.categoryTree);
-      commit('setProducts', { products })
+      let products = await ProductsService.filterByCategories(
+        state.categoryTree
+      );
+      commit("setProducts", { products });
     },
 
-    async populateProducts ({state, commit}) {
+    async populateProducts({ state, commit }) {
       state.errors = [];
       try {
-        commit('setProducts', {
+        commit("setProducts", {
           products: await ProductsService.findAll()
         });
       } catch (err) {
@@ -59,25 +67,40 @@ export default new Vuex.Store({
       }
     },
 
-    async determineMaxLevels({state}) {
+    async determineMaxLevels({ state }) {
       let categories = await CategoriesService.findAll();
-      state.maxLevels = Math.max.apply(Math, categories.map(function(cat) { return cat.level }))
+      state.maxLevels = Math.max.apply(
+        Math,
+        categories.map(function(cat) {
+          return cat.level;
+        })
+      );
     },
 
-    async retrieveCategories({state}) {
-      state.categories = await CategoriesService.findAll();
-      state.maxLevels = Math.max.apply(Math, state.categories.map(function(cat) { return cat.level }));
+    async retrieveCategories({ state }) {
+      const cats = await CategoriesService.findAll();
+      state.categories = cats;
+      state.maxLevels = Math.max.apply(
+        Math,
+        state.categories.map(function(cat) {
+          return cat.level;
+        })
+      );
       let topCats = [];
       for (let cat of state.categories) {
-        Vue.set(cat, 'expanded', true)
+        Vue.set(cat, "expanded", true);
         if (!cat.hasParent) {
           topCats.push(cat);
         }
       }
       state.topLevelCategories = topCats;
-    }
+    },
 
+    async retrieveShoppingCart({ state }) {
+      state.shoppingCart = await ShoppingCartService.findMyCart();
+    }
   },
   modules: {
+    cart: cartModule
   }
-})
+});

@@ -178,17 +178,20 @@ export default {
 
   methods: {
     contactableChanged: function(event) {
-      this.$store.commit('customer/isContactable', { contactable: (event.target.value==="checked") ? true : false })
+      this.$store.commit("customer/isContactable", {
+        contactable: event.target.value === "checked" ? true : false
+      });
     },
 
     submit: async function() {
       this.viewErrors = [];
       if (!this.acceptedStudentAgreement) {
-        this.viewErrors.push("Please accept the Student Agreement by selecting the checkbox above the submit button.");
+        this.viewErrors.push(
+          "Please accept the Student Agreement by selecting the checkbox above the submit button."
+        );
         return;
       }
       this.paymentProcessing = true;
-      
 
       if (this.isSameAddress) {
         this.$store.commit("customer/copyShippingToBillingAddress");
@@ -236,9 +239,9 @@ export default {
       } else if (result.paymentIntent.status === "succeeded") {
         this.paymentSuccess = true;
         try {
-          let orderObj = await OrdersService.deinitialise(); 
+          let orderObj = await OrdersService.deinitialise();
           this.$store.commit("order/updateFields", orderObj);
-        } catch(err) {
+        } catch (err) {
           this.viewErrors.push(err.message);
         }
         this.$router.push("/payment-success");

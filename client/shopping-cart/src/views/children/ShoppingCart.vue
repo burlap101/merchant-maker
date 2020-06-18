@@ -12,15 +12,11 @@
         </h4>
       </div>
     </div>
-    <div
-      v-if="errors.length > 0"
-      class="alert alert-danger"
-      role="alert"
-    >
+    <div v-if="errors.length > 0" class="alert alert-danger" role="alert">
       <p v-for="(error, index) in errors" v-bind:key="index">
         {{ index + 1 }}. {{ error }}
       </p>
-    </div>  
+    </div>
     <form name="shopping_cart_form" id="shopping-cart-form">
       <ul class="list-group mb-3">
         <li
@@ -154,10 +150,12 @@ export default {
       this.hasChanged = true;
     },
     incrementProductQty: function(productId) {
-      this.errors = []
+      this.errors = [];
       let item = this.products.find(el => productId === el.product._id);
-      if(item.qty >= item.product.available) {
-        this.errors.push(`Only ${item.product.available} ${item.product.name}'s are available`);
+      if (item.qty >= item.product.available) {
+        this.errors.push(
+          `Only ${item.product.available} ${item.product.name}'s are available`
+        );
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
         return;
@@ -187,11 +185,16 @@ export default {
       this.$router.push("/checkout");
     },
     saveAndContinueShopping: function() {
+      this.errors = [];
       if (this.hasChanged) {
         this.$store.dispatch("cart/saveCart");
         this.hasChanged = false;
       }
-      this.$router.go(-1);
+      try {
+        this.$router.go(-2);
+      } catch (err) {
+        this.errors.push(err.message);
+      }
     }
   },
 

@@ -10,11 +10,16 @@ class Categories():
     del category["parent"]
     self.categories_array.append(category)
     return self.categories_array
+
+
+try:
+  import localconfig.mongouri as config
+  MONGO_URI = config.MONGO_URI
+except ModuleNotFoundError:
+  MONGO_URI = input("Enter mongo uri: ")
+
     
-    
-mongo_uri = input("Enter mongo URI: ")
-print(mongo_uri)
-client = MongoClient(mongo_uri)
+client = MongoClient(MONGO_URI)
 
 db = client.mmdb
 count = 0

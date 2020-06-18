@@ -1,6 +1,6 @@
-const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
-  ? "/store/api/products"
-  : "/api/products";
+const baseUrl = window.location.hostname.includes("localhost:8")
+  ? "/api/products"
+  : "/store/api/products";
 
 const noResponseMessage =
   "There was a problem communicating with the server. Please contact your administrator.";
@@ -110,8 +110,8 @@ export const ProductsService = {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({categories})
-    })
+      body: JSON.stringify({ categories })
+    });
     if (res.ok) {
       return res.json();
     } else {

@@ -1,5 +1,11 @@
 #!/bin/bash
 
+cd migrations
+source venv/bin/activate
+bash make-migrations.sh
+deactivate
+cd ../
+
 cd server
 npm i
 npm run build

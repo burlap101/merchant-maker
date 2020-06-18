@@ -1,7 +1,7 @@
 <template>
-  <div class="">
+  <div class="after-navbar">
     <Navbar />
-    <ErrorBar />
+    <ErrorBar v-if="errors.length > 0" />
     <router-view></router-view>
     <MyFooter />
   </div>
@@ -12,6 +12,7 @@
 import Navbar from "@/components/Navbar.vue";
 import ErrorBar from "@/components/ErrorBar.vue";
 import MyFooter from "@/components/MyFooter.vue";
+import { mapState } from "vuex";
 
 export default {
   name: "Home",
@@ -19,6 +20,11 @@ export default {
     Navbar,
     ErrorBar,
     MyFooter
+  },
+  computed: {
+    ...mapState({
+      errors: state => state.errors.concat(state.cart.errors)
+    })
   }
 };
 </script>

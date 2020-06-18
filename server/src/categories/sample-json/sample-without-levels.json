@@ -39,6 +39,12 @@
             "description": "All bandages",
             "hasParent": true,
             "children": []
+          },
+          {
+            "name": "Band Aids",
+            "description": "All band aids",
+            "hasParent": true,
+            "children": []
           }
         ]
       }

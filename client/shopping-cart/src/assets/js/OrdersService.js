@@ -1,13 +1,13 @@
-const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
-  ? "/store/api/orders"
-  : "/api/orders";
+const baseUrl = window.location.hostname.includes("localhost:8")
+  ? "/api/orders"
+  : "/store/api/orders";
 
 export const OrdersService = {
   initialise: async function() {
     let url = baseUrl + "/initialise";
     let res = await fetch(url);
 
-    if(res.ok) {
+    if (res.ok) {
       return res.json();
     } else {
       let message = undefined;
@@ -47,7 +47,7 @@ export const OrdersService = {
     let url = baseUrl + "/deinitialise";
     let res = await fetch(url);
 
-    if(res.ok) {
+    if (res.ok) {
       return res.json();
     } else {
       let message = undefined;
@@ -58,6 +58,5 @@ export const OrdersService = {
       }
       throw Error(message + " - Code: " + res.status);
     }
-
   }
 };

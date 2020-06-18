@@ -100,7 +100,7 @@
       </div>
       <image-upload
         v-bind:images="images"
-        v-on:new-image="formData.images.push(image)"
+        v-on:new-image="formData.images.push($event)"
       />
       <additional-attributes
         v-bind:attributes="formData.attributes"
@@ -132,7 +132,8 @@ export default {
   data() {
     return {
       formData: {
-        category: {}
+        category: {},
+        images: []
       },
       errors: [],
       attrName: "",
@@ -149,7 +150,7 @@ export default {
         return;
       }
 
-      // this.formData.images = this.images;
+      this.formData.images = this.images;
 
       try {
         await ProductsService.addProduct(this.formData);

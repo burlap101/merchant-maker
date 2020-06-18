@@ -9,13 +9,12 @@
 </template>
 
 <script>
-
 export default {
   name: "shopfront",
   created() {
-    this.$store.dispatch('populateProducts');
+    this.$store.dispatch("populateProducts");
     // this.$store.dispatch('determineMaxLevels');
-    this.$store.dispatch('retrieveCategories');
+    this.$store.dispatch("retrieveCategories");
   }
-}
+};
 </script>

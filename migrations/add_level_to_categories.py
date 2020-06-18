@@ -1,13 +1,19 @@
 from pymongo import MongoClient
 
-MONGO_URI = "mongodb://localhost:27017"
+try: 
+  import localconfig.mongouri as config
+  
+  MONGO_URI = config.MONGO_URI
+except ModuleNotFoundError:
+  MONGO_URI = input("Enter mongo uri: ")
+
+
 client = MongoClient(MONGO_URI)
 db = client.mmdb
 count = 0
 
 def update_children(cat, lvl=0):
   global count
-  print(lvl)
   if "_id" in cat.keys():
     db.categories.find_one_and_update({ "_id": cat["_id"] }, { "$set": { "level": lvl }})
     count += 1

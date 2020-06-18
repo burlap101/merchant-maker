@@ -1,30 +1,13 @@
 <template>
   <div class="ml-3">
     <div
-      class="d-flex justify-content-between align-items-center my-list-group-info p-2"
+      class="d-flex justify-content-between align-items-center p-2"
+      v-bind:class="{ 'category-selected': selected }"
       v-on:click="categorySelected()"
     >
-      <span
-        v-bind:class="{
-          'my-list-item-info-selected': selected,
-          'my-list-item-info': !selected
-        }"
-        >{{ category.name }}</span
-      >
-      <span
-        v-if="category.children !== undefined && category.children.length > 0"
-      >
-        <strong>
-          <span v-if="expanded">
-            <i class="fas fa-angle-double-down"></i>
-          </span>
-          <span v-else>
-            <i class="fas fa-angle-double-right"></i>
-          </span>
-        </strong>
-      </span>
+      <span class="">{{ category.name }}</span>
     </div>
-    <div v-if="expanded">
+    <div>
       <div v-for="(childCat, index) in category.children" v-bind:key="index">
         <child-category
           v-bind:category="childCat"
@@ -40,11 +23,6 @@
 export default {
   name: "child-category",
   props: ["category", "parent", "level"],
-  data() {
-    return {
-      expanded: true
-    };
-  },
 
   computed: {
     selected: function() {
@@ -66,8 +44,16 @@ export default {
   methods: {
     categorySelected() {
       this.$store.dispatch("updateTreeAndProducts", this.category);
-      this.expanded = !this.expanded;
     }
   }
 };
 </script>
+
+<style scoped>
+span:hover {
+  color: #7a7a7a;
+}
+.category-selected {
+  font-weight: 900;
+}
+</style>

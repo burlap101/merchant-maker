@@ -1,6 +1,6 @@
-const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
-  ? "/store/api/shopping-cart"
-  : "/api/shopping-cart";
+const baseUrl = window.location.hostname.includes("localhost:8")
+  ? "/api/shopping-cart"
+  : "/store/api/shopping-cart";
 
 export const ShoppingCartService = {
   findMyCart: async function() {

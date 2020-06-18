@@ -9,21 +9,9 @@
       v-on:click="categorySelected()"
     >
       <div>{{ category.name }}</div>
-      <span
-        v-if="category.children !== undefined && category.children.length > 0"
-      >
-        <strong>
-          <span v-if="category.expanded">
-            <i class="fas fa-angle-double-down"></i>
-          </span>
-          <span v-else>
-            <i class="fas fa-angle-double-right"></i>
-          </span>
-        </strong>
-      </span>
     </div>
 
-    <div class="my-list-item-info p-0" v-if="category.expanded">
+    <div class="bg-light text-dark p-0">
       <child-category
         v-bind:category="childCat"
         v-bind:parent="category"
@@ -38,16 +26,10 @@
 <script>
 import ChildCategory from "./ChildCategory.vue";
 export default {
-  name: "top-category",
+  name: "mobile-top-category",
   props: ["category"],
   components: {
     ChildCategory
-  },
-
-  data() {
-    return {
-      expanded: true
-    };
   },
 
   computed: {
@@ -70,7 +52,6 @@ export default {
   methods: {
     categorySelected() {
       this.$store.dispatch("updateTreeAndProducts", this.category);
-      this.expanded = !this.expanded;
     }
   }
 };
