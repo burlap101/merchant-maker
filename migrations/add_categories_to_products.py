@@ -28,6 +28,8 @@ count = 0
 print("Performing migration 'Add categories to products'...")
 
 for product in db.products.find():
+  if not ("category" in product.keys()):
+    product["category"] = {}
   if not ("categories" in product.keys()):
     product["categories"] = Categories().array_categories(product["category"])
     db.products.find_one_and_replace({"_id" : product['_id']}, product)
