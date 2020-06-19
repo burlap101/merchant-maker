@@ -7,7 +7,8 @@ class Categories():
   def array_categories(self, category):
     if ("parent" in category.keys()) and (category["parent"] != {}):
       self.array_categories(category["parent"])
-    del category["parent"]
+    if ("parent" in category.keys()):
+      del category["parent"]
     self.categories_array.append(category)
     return self.categories_array
 
