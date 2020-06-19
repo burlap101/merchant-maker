@@ -17,6 +17,7 @@ print("Performing image wipe..", end="")
 
 for product in db.products.find():
   product["images"] = []
+  db.products.find_one_and_replace({"_id" : product["_id"]}, product)
   count += 1
   print("..", end="")
 print()
