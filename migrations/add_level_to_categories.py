@@ -2,7 +2,6 @@ from pymongo import MongoClient
 
 try: 
   import localconfig.mongouri as config
-  
   MONGO_URI = config.MONGO_URI
 except ModuleNotFoundError:
   MONGO_URI = input("Enter mongo uri: ")

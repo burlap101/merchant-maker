@@ -5,7 +5,7 @@ class Categories():
     self.categories_array = []
 
   def array_categories(self, category):
-    if (category["parent"]) and (category["parent"] != {}):
+    if ("parent" in category.keys()) and (category["parent"] != {}):
       self.array_categories(category["parent"])
     del category["parent"]
     self.categories_array.append(category)
