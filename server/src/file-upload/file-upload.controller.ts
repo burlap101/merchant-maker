@@ -5,6 +5,7 @@ import { editFileName } from './utils/file-upload.utils';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
+import config from '../localconfig/keys';
 
 
 @Controller('file-upload')
@@ -15,7 +16,7 @@ export class FileUploadController {
   @Post('image')
   @UseInterceptors(FileInterceptor('image', {
     storage: diskStorage({
-      destination: './media/',
+      destination: config.mediaDir,
       filename: editFileName
     })
   }))
