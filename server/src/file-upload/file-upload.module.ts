@@ -2,12 +2,13 @@ import { Module } from '@nestjs/common';
 import { FileUploadController } from './file-upload.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { FileUploadService } from './file-upload.service';
+import config from '../localconfig/keys';
 
 
 @Module({
   imports: [
     MulterModule.register({
-      dest: './media/'
+      dest: config.mediaDir
     })
   ],
   controllers: [FileUploadController],
