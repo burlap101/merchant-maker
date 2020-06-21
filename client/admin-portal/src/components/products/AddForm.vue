@@ -100,7 +100,7 @@
       </div>
       <image-upload
         v-bind:images="images"
-        v-on:new-image="formData.images.push($event)"
+        v-on:new-image="images.push($event)"
       />
       <additional-attributes
         v-bind:attributes="formData.attributes"

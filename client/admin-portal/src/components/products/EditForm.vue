@@ -148,8 +148,8 @@
         </div>
       </div>
       <image-upload
-        v-bind:images="formData.images"
-        v-on:new-image="formData.images.push($event)"
+        v-bind:images="images"
+        v-on:new-image="images.push($event)"
       />
       <additional-attributes
         v-bind:attributes="formData.attributes"
@@ -187,7 +187,7 @@ export default {
     return {
       formData: {
         category: {},
-        attributes: {}
+        attributes: {},
       },
       errors: [],
       attrName: "",
@@ -206,6 +206,8 @@ export default {
       if (!this.validateFormData()) {
         return;
       }
+
+      this.formData.images = this.images;
       try {
         await ProductsService.update(this.id, this.formData);
         this.added = true;
@@ -358,6 +360,7 @@ export default {
         this.categoriesSelected,
         await this.deObjectifyCategories(this.formData.category)
       );
+      this.images = _.cloneDeep(this.formData.images) ;
     } catch (err) {
       this.errors.push(err.message);
     }

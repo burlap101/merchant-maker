@@ -1,4 +1,4 @@
-const baseUrl = window.location.hostname.includes("localhost:8")
+const baseUrl = window.location.host.includes("localhost:8")
   ? "/api/customers"
   : "/store/api/customers";
 
