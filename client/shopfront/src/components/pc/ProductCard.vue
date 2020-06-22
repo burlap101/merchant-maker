@@ -14,7 +14,8 @@
       <img
         v-if="product.images[0] !== undefined"
         class="my-image"
-        v-bind:src="product.images[0].path"
+        v-bind:src="'/store/media/' + product.images[0].filename"
+        v-bind:alt="'../../assets/img/img-not-found.svg.png'"
       />
       <img
         v-else
