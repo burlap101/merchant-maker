@@ -95,8 +95,21 @@ export const cartModule = {
           state.products[index].qty = item.qty;
         }
       });
+    },
+    // TODO: Complete this.....
+    addTrainingSessions(state, payload) {
+      payload.items.forEach(item => {
+          const index = state.trainingSessions.findIndex(
+            el => el.training_session === item.training_session
+          )
+      });
+      if (index < 0) {
+        state.trainingSessions.push(item);
+      } else {
+        state.trainingSessions[index].qty = item.qty;
+      }
     }
-  },
+   },
 
   actions: {
     async populateCart({ commit, state }) {
