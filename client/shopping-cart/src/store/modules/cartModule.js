@@ -1,4 +1,6 @@
 import { ShoppingCartService } from "../../assets/js/ShoppingCartService";
+import { TrainingShoppingCartService } from "../../assets/js/TrainingShoppingCartService";
+
 
 export const cartModule = {
   namespaced: true,
@@ -96,28 +98,42 @@ export const cartModule = {
         }
       });
     },
-    // TODO: Complete this.....
+    
     addTrainingSessions(state, payload) {
       payload.items.forEach(item => {
-          const index = state.trainingSessions.findIndex(
-            el => el.training_session === item.training_session
-          )
+        const index = state.trainingSessions.findIndex(
+          el => el.training_session === item.training_session
+        );
+        if (index < 0) {
+          state.trainingSessions.push(item);
+        } else {
+          state.trainingSessions[index].qty = item.qty;
+        }
       });
-      if (index < 0) {
-        state.trainingSessions.push(item);
-      } else {
-        state.trainingSessions[index].qty = item.qty;
-      }
     }
    },
 
   actions: {
     async populateCart({ commit, state }) {
-      let products = (await ShoppingCartService.findMyCart()).items;
-      state.products = [];
-      commit("addProducts", {
-        items: products
-      });
+      try {
+        let products = (await ShoppingCartService.findMyCart()).items;
+        state.products = [];
+        commit("addProducts", {
+          items: products
+        });
+      } catch (err) {
+        state.errors.push(err.message);
+      }
+
+      try {
+        let trainingCart = await TrainingShoppingCartService.getShoppingCart();
+        state.trainingSessions = [];
+        commit("addTrainingSessions", {
+          items: trainingCart
+        });
+      } catch (err) {
+        state.errors.push(err.message);
+      }
     },
 
     async saveCart({ state }) {
