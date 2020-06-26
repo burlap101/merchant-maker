@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-      <a class="navbar-brand mr-1 mb-1 mt-0" href="">
+      <a class="navbar-brand mr-1 mb-1 mt-0" href="/">
         <img
           src="../assets/img/first-aid-kit.svg"
           class="align-items-center d-none d-md-inline"

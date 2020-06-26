@@ -1,4 +1,4 @@
-const url = "api/courses/";
+const url = "/api/courses/";
 
 export class CourseService {
   // Get course list
