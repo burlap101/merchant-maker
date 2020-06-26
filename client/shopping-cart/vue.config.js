@@ -4,7 +4,10 @@ module.exports = {
   publicPath: "/store/cart",
   devServer: {
     proxy: {
-      "/api/courses": {
+      "store/shopfront/api/courses": {
+        target: "http://localhost:8000"
+      },
+      "/api/shoppingcart": {
         target: "http://localhost:8000"
       },
       "/api/categories": {

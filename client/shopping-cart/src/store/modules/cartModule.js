@@ -132,7 +132,7 @@ export const cartModule = {
           items: trainingCart
         });
       } catch (err) {
-        state.errors.push(err.message);
+        state.errors.push("TrainingCart: " + err.message);
       }
     },
 

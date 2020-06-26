@@ -7,6 +7,9 @@ module.exports = {
       "/api/courses": {
         target: "http://localhost:8000"
       },
+      "/api/shoppingcart": {
+        target: "http://localhost:8000"
+      },
       "/api/categories": {
         target: "http://localhost:3000"
       },
