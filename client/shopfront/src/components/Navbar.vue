@@ -89,7 +89,7 @@
                 v-for="course in courses"
                 v-bind:key="course.id"
                 class="dropdown-item text-primary"
-                v-bind:href="'courses/' + course.url_friendly_title"
+                v-bind:href="'/courses/' + course.url_friendly_title"
                 >{{ course.course_code }} - {{ course.title }}</a
               >
             </div>
