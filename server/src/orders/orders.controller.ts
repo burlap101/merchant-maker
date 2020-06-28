@@ -2,7 +2,7 @@ import { Controller, Post, Body, Request, Get, Response, HttpException } from '@
 import { Order } from './interfaces/order.interface';
 import { OrdersService } from './orders.service';
 import { ShoppingCartService } from 'src/shopping-cart/shopping-cart.service';
-import { Customer } from 'src/customers/interfaces/customer.interface';
+import { OpenOrderControllerDto } from './dto/open-order-controller.dto';
 import { ProductsService } from 'src/products/products.service';
 import Stripe from 'stripe';
 import * as Express from 'express';
@@ -17,11 +17,12 @@ export class OrdersController {
   ) {}
   
   @Post('open')
-  async openOrder(@Request() req, @Body() customer: Customer): Promise<Order> {
+  async openOrder(@Request() req, @Body() openOrderControllerDto: OpenOrderControllerDto): Promise<Order> {
     const cart = await this.shoppingCartService.getCart(req.cookies["mm-cartid"]);
     let openOrderDto = {
       "cart": cart,
-      "customer": customer
+      "customer": openOrderControllerDto.customer,
+      "trainingSessions": (openOrderControllerDto.trainingSessions !== undefined) ? openOrderControllerDto.trainingSessions : [] 
     }
     return this.ordersService.openOrder(req.cookies["mm-orderid"], openOrderDto);
   }
@@ -32,7 +33,7 @@ export class OrdersController {
    * */
   @Post('process-order')
   async processOrder(@Body() stripeEvent: Stripe.Event): Promise<Order | undefined> {
-    if(stripeEvent.type === "payment_intent.succeeded"){
+    if(stripeEvent.type === "payment_intent.succeeded") {
       const paymentIntentObject = <Stripe.PaymentIntent>stripeEvent.data.object;
       const order = await this.ordersService.getOrder(paymentIntentObject.metadata["orderid"]);
       const cart = await this.shoppingCartService.destroyCart(order.cart._id);

@@ -204,7 +204,10 @@ export default {
           this.coreDetails,
           this.contactable
         );
-        await OrdersService.open(customer);
+        await OrdersService.open({
+          customer,
+          trainingSessions: this.order.trainingSessions
+        });
       } catch (err) {
         this.viewErrors.push(err.message);
         this.paymentProcessing = false;
@@ -228,7 +231,10 @@ export default {
           this.billingAddress,
           this.contactable
         );
-        await OrdersService.open(customer);
+        await OrdersService.open({
+          customer,
+          trainingSessions: this.order.trainingSessions
+        });
       } catch (err) {
         this.viewErrors.push(err.message);
         this.paymentProcessing = false;
@@ -255,10 +261,12 @@ export default {
       }
       this.paymentProcessing = true;
       let customer = undefined;
-      if (this.trainingSessions.length === 0) {
-        customer = this.normalCustomer();
-      } else if (this.trainingSessions.length > 0) {
+      await this.$store.dispatch("order/populateTrainingSessionData", {trainingSessions: this.trainingSessions})
+
+      if (this.trainingSessions.length > 0 && this.products.length === 0) {
         customer = this.courseOnlyCustomer();
+      } else {
+        customer = this.normalCustomer();
       }
 
       if (customer === undefined) {

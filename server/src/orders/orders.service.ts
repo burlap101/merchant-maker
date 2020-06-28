@@ -42,4 +42,5 @@ export class OrdersService {
   async getOrder(id: string): Promise<Order> {
     return this.orderModel.findOne({ _id: id }).exec();
   }
+
 }

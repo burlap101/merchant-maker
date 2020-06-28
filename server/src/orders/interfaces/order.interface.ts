@@ -12,5 +12,6 @@ export interface Order {
   cart: ShoppingCart,
   username?: string,
   customer: Customer,
-  status: string
+  status: string,
+  trainingSessions?: Array<Object>
 }

@@ -9,6 +9,7 @@ export const OrderSchema = new mongoose.Schema({
   processed: Date,
   receiptUrl: String,
   cart: ShoppingCartSchema,
+  trainingSessions: [Object],
   username: String,
   customer: CustomerSchema,
   status: String
