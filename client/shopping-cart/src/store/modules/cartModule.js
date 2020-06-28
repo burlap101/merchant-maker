@@ -1,7 +1,6 @@
 import { ShoppingCartService } from "../../assets/js/ShoppingCartService";
 import { TrainingShoppingCartService } from "../../assets/js/TrainingShoppingCartService";
 
-
 export const cartModule = {
   namespaced: true,
   state: () => ({
@@ -9,6 +8,7 @@ export const cartModule = {
     trainingSessions: [],
     changedProducts: [],
     changedTrainingsessions: [],
+    clientSecret: "",
     errors: []
   }),
 
@@ -16,7 +16,7 @@ export const cartModule = {
     grandTotal(state) {
       let result = 0;
       for (let item of state.trainingSessions) {
-        result += item.total_cost;
+        result += item.qty * item.unit_price;
       }
       for (let item of state.products) {
         result += item.product.price * item.qty;
@@ -37,9 +37,7 @@ export const cartModule = {
           state.changedProducts.push(payload.id);
         }
       } else if (payload.type === "trainingSession") {
-        let item = state.trainingSessions.find(
-          el => el.training_session.id == payload.id
-        );
+        let item = state.trainingSessions.find(el => el.pk == payload.id);
         item.qty++;
       } else {
         throw Error(
@@ -56,9 +54,7 @@ export const cartModule = {
           state.changedProducts.push(payload.id);
         }
       } else if (payload.type === "trainingSession") {
-        let item = state.trainingSessions.find(
-          el => el.training_session.id == payload.id
-        );
+        let item = state.trainingSessions.find(el => el.pk == payload.id);
         item.qty--;
       } else {
         throw Error(
@@ -75,9 +71,7 @@ export const cartModule = {
           state.changedProducts.push(payload.id);
         }
       } else if (payload.type === "trainingSession") {
-        let item = state.trainingSessions.find(
-          el => el.training_session.id == payload.id
-        );
+        let item = state.trainingSessions.find(el => el.pk == payload.id);
         item.qty = payload.qty;
       } else {
         throw Error(
@@ -98,7 +92,7 @@ export const cartModule = {
         }
       });
     },
-    
+
     addTrainingSessions(state, payload) {
       payload.items.forEach(item => {
         const index = state.trainingSessions.findIndex(
@@ -111,7 +105,7 @@ export const cartModule = {
         }
       });
     }
-   },
+  },
 
   actions: {
     async populateCart({ commit, state }) {
@@ -166,6 +160,25 @@ export const cartModule = {
         });
       } catch (err) {
         state.errors.push(err.message);
+      }
+    },
+
+    async setClientSecret({ state }, payload) {
+      state.clientSecret = (
+        await ShoppingCartService.paymentIntentSecret(payload.grandTotal)
+      ).secret;
+    },
+
+    async deleteTrainingCart({ state }, payload) {
+      console.log("Delete cart called");
+      const res = await fetch("/api/shoppingcart/delete", {
+        method: "DELETE",
+        headers: payload.headers
+      });
+      if (res.ok) {
+        state.trainingSessions = [];
+      } else {
+        state.errors.push(res.status + " - " + res.statusText);
       }
     }
   }

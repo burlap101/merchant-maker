@@ -24,52 +24,11 @@
           v-bind:key="index"
           class="list-group-item"
         >
-          <div v-if="item.qty > 0" class="row">
-            <div class="col-6">
-              <h6 class="my-0">
-                {{ item.course.course_code }} - {{ item.course.title }}
-              </h6>
-              <small class="text-muted align-middle">
-                at {{ item.training_session.location }},
-                {{ item.training_session.session_date }}</small
-              >
-              <br /><span class="text-muted align-bottom">
-                There are
-                <strong>{{ item.training_session.spots_left }}</strong> spots
-                left.</span
-              >
-            </div>
-            <div class="col-2 text-center">
-              <h6>No. of Students</h6>
-              <div class="input-group">
-                <input
-                  type="text"
-                  class="form-control"
-                  v-bind:value="item.qty"
-                  aria-label="No. of Students"
-                  aria-describedby="basic-addon2"
-                  min="1"
-                  v-bind:max="item.training_session.spots_left"
-                />
-                <div class="input-group-append">
-                  <button class="btn btn-outline-secondary" type="button">
-                    -
-                  </button>
-                  <button class="btn btn-outline-secondary" type="button">
-                    +
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="col-3 text-muted text-right align-bottom">
-              ${{ item.total_cost.toFixed(2) }}
-            </div>
-            <div class="col-1">
-              <a class="text-secondary"
-                ><i class="far fa-trash-alt fa-lg"></i
-              ></a>
-            </div>
-          </div>
+          <training-session-cart-item
+            v-if="item.qty > 0"
+            v-on:haschanged="hasChanged = true"
+            v-bind:item="item"
+          />
         </li>
         <li
           v-for="(item, index) in products"
@@ -118,11 +77,14 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import ProductCartItem from "../../components/ProductCartItem.vue";
+import TrainingSessionCartItem from "../../components/TrainingSessionCartItem.vue";
+
 export default {
   name: "shopping-cart",
 
   components: {
-    ProductCartItem
+    ProductCartItem,
+    TrainingSessionCartItem
   },
 
   data() {

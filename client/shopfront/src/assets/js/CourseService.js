@@ -1,14 +1,17 @@
-const url = "/api/courses/";
+const baseUrl = "/api/courses";
 
-export class CourseService {
+export const CourseService = {
   // Get course list
-  static async getCourses() {
+  getCourses: async function(courseId = undefined) {
+    let url = baseUrl;
+    if (courseId !== undefined) {
+      url += "?course_id=" + courseId;
+    }
     const res = await fetch(url);
     if (!res.ok) {
       throw new Error("CourseService: Network response was not ok.");
     } else {
-      let data = await res.json();
-      return data.map(course => ({ ...course }));
+      return res.json();
     }
   }
-}
+};

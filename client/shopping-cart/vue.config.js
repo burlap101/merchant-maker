@@ -4,10 +4,16 @@ module.exports = {
   publicPath: "/store/cart",
   devServer: {
     proxy: {
-      "store/shopfront/api/courses": {
+      "/api/courses": {
         target: "http://localhost:8000"
       },
       "/api/shoppingcart": {
+        target: "http://localhost:8000"
+      },
+      "/api/trainingsessions": {
+        target: "http://localhost:8000"
+      },
+      "/api/trainingsession": {
         target: "http://localhost:8000"
       },
       "/api/categories": {

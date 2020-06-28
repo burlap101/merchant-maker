@@ -51,6 +51,31 @@ export const customerModule = {
       state.billingAddress = { ...state.shippingAddress };
     },
 
+    validateCoreFieldsOnly(state) {
+      state.errors = [];
+      for (const fieldName in state.coreDetails) {
+        try {
+          if (
+            !CheckoutValidation.validateTextField(
+              state.coreDetails[fieldName],
+              CoreFields.text[fieldName].required,
+              CoreFields.text[fieldName].re
+            )
+          ) {
+            state.errors.push(
+              CoreFields.text[fieldName].label +
+                " field " +
+                CoreFields.text[fieldName].errorMsg.toLowerCase()
+            );
+          }
+        } catch (err) {
+          state.errors.push(
+            CoreFields.text[fieldName].label + " " + err.message.toLowerCase()
+          );
+        }
+      }
+    },
+
     validateFields(state) {
       state.errors = [];
       for (const fieldName in state.coreDetails) {

@@ -1,4 +1,4 @@
-import { Controller, Get, Request, BadRequestException, Post, Param, UseGuards, Delete, Body,  } from '@nestjs/common';
+import { Controller, Get, Request, BadRequestException, Post, Param, UseGuards, Delete, Body, Query,  } from '@nestjs/common';
 import { ShoppingCartService } from './shopping-cart.service';
 import { ShoppingCart } from './interfaces/shopping-cart.interface';
 import { JwtService } from '@nestjs/jwt';
@@ -61,11 +61,27 @@ export class ShoppingCartController {
   }
 
   @Get('secret')
-  async createIntentAndRetrieveSecret(@Request() req): Promise<Object> {
+  async createIntentAndRetrieveSecret(@Request() req, @Query() q): Promise<Object> {
     const cart = await this.shoppingCartService.getCart(req.cartid);
-    const paymentIntent = await this.shoppingCartService.createPaymentIntent(cart.total, "aud", {"orderid": req.cookies["mm-orderid"]});
+    let tsTotal = 0;
+    if (q.tsval !== undefined) {
+      tsTotal += q.tsval
+    }
+    console.log(tsTotal);
+    const paymentIntent = await this.shoppingCartService.createPaymentIntent((cart.total + tsTotal), "aud", {"orderid": req.cookies["mm-orderid"]});
     let secretObj = {};
     secretObj["secret"] = paymentIntent.client_secret
+    return secretObj;
+  }
+
+  @Get('secretbyval')
+  async createIntentAndRetrieveSecretWithValue(@Request() req, @Query() q): Promise<Object> {
+    if (q.val === undefined) {
+      throw Error()
+    }
+    const paymentIntent = await this.shoppingCartService.createPaymentIntent((q.val/100), "aud", {"orderid": req.cookies["mm-orderid"]});
+    let secretObj = {};
+    secretObj["secret"] = paymentIntent.client_secret;
     return secretObj;
   }
 

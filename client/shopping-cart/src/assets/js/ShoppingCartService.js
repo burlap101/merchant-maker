@@ -72,8 +72,13 @@ export const ShoppingCartService = {
     }
   },
 
-  paymentIntentSecret: async function() {
-    let url = baseUrl + "/secret";
+  paymentIntentSecret: async function(val = undefined) {
+    let url = baseUrl;
+    if (val !== undefined) {
+      url += "/secretbyval?val=" + val;
+    } else {
+      url += "/secret";
+    }
     let res = await fetch(url);
     if (res.ok) {
       return res.json();

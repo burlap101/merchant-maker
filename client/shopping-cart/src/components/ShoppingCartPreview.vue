@@ -11,18 +11,9 @@
       <li
         v-for="(item, index) in trainingSessions"
         v-bind:key="index"
-        class="list-group-item d-flex justify-content-between lh-condensed"
+        class="list-group-item"
       >
-        <div>
-          <h6 class="my-0">
-            {{ item.course.course_code }} for {{ item.qty }} students
-          </h6>
-          <small class="text-muted"
-            >{{ item.course.title }} at {{ item.training_session.location }},
-            {{ item.training_session.session_date }}</small
-          >
-        </div>
-        <span class="text-muted">${{ item.total_cost.toFixed(2) }}</span>
+        <training-session-preview-item v-bind:item="item" />
       </li>
       <li
         v-for="(item, index) in products"
@@ -63,9 +54,14 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
+import TrainingSessionPreviewItem from "./TrainingSessionPreviewItem";
 
 export default {
   name: "shopping-cart-preview",
+
+  components: {
+    TrainingSessionPreviewItem
+  },
 
   computed: {
     ...mapState({

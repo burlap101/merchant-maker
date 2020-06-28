@@ -37,5 +37,31 @@ export const CustomersService = {
       }
       throw Error(message + " - Code: " + res.status);
     }
+  },
+
+  createTrainingOnlyCustomer: async function(coreDetails, contactable = false) {
+    let url = baseUrl + "/create";
+    let customer = { coreDetails, contactable };
+    let res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(customer)
+    });
+
+    if (res.ok) {
+      return res.json();
+    } else {
+      let message = undefined;
+      try {
+        message = (await res.json()).message;
+      } catch (err) {
+        throw Error(
+          "There was a problem communicating with the server. Please try again later."
+        );
+      }
+      throw Error(message + " - Code: " + res.status);
+    }
   }
 };

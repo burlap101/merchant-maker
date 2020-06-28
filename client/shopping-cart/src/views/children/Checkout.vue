@@ -134,7 +134,6 @@ import AddressForm from "../../components/AddressForm.vue";
 import CoreDetailsForm from "../../components/CoreDetailsForm.vue";
 import ShoppingCartPreview from "../../components/ShoppingCartPreview.vue";
 import keys from "../../assets/localconfig/keys";
-import { ShoppingCartService } from "../../assets/js/ShoppingCartService";
 import { mapGetters, mapState } from "vuex";
 import { CustomersService } from "../../assets/js/CustomersService";
 import { OrdersService } from "../../assets/js/OrdersService";
@@ -155,7 +154,6 @@ export default {
       paymentProcessing: false,
       paymentSuccess: false,
       stripe: undefined,
-      clientSecret: "",
       isSameAddress: false,
       viewErrors: [],
       acceptedStudentAgreement: false
@@ -171,9 +169,25 @@ export default {
       contactable: state => state.customer.contactable,
       order: state => state.order,
       coreDetails: state => state.customer.coreDetails,
-      errors: state => state.customer.errors
+      errors: state => state.customer.errors,
+      clientSecret: state => state.cart.clientSecret
     }),
     ...mapGetters("cart/", ["grandTotal"])
+  },
+
+  watch: {
+    grandTotal: async function() {
+      try {
+        if (this.grandTotal > 0) {
+          await this.$store.dispatch("cart/setClientSecret", {
+            grandTotal: this.grandTotal * 100
+          });
+        }
+      } catch (err) {
+        this.viewErrors.push(err.message);
+        throw err;
+      }
+    }
   },
 
   methods: {
@@ -183,27 +197,28 @@ export default {
       });
     },
 
-    submit: async function() {
-      this.viewErrors = [];
-      if (!this.acceptedStudentAgreement) {
-        this.viewErrors.push(
-          "Please accept the Student Agreement by selecting the checkbox above the submit button."
+    courseOnlyCustomer: async function() {
+      let customer = undefined;
+      try {
+        customer = await CustomersService.createTrainingOnlyCustomer(
+          this.coreDetails,
+          this.contactable
         );
-        return;
-      }
-      this.paymentProcessing = true;
-
-      if (this.isSameAddress) {
-        this.$store.commit("customer/copyShippingToBillingAddress");
-      }
-      this.$store.commit("customer/validateFields");
-      if (this.errors.length > 0) {
+        await OrdersService.open(customer);
+      } catch (err) {
+        this.viewErrors.push(err.message);
         this.paymentProcessing = false;
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
         return;
       }
 
+      this.$store.commit("customer/validateCoreFieldsOnly");
+
+      return customer;
+    },
+
+    normalCustomer: async function() {
       let customer = undefined;
 
       try {
@@ -216,6 +231,43 @@ export default {
         await OrdersService.open(customer);
       } catch (err) {
         this.viewErrors.push(err.message);
+        this.paymentProcessing = false;
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        return;
+      }
+
+      if (this.isSameAddress) {
+        this.$store.commit("customer/copyShippingToBillingAddress");
+      }
+      this.$store.commit("customer/validateFields");
+
+      return customer;
+    },
+
+    submit: async function() {
+      this.viewErrors = [];
+      if (!this.acceptedStudentAgreement) {
+        this.viewErrors.push(
+          "Please accept the Student Agreement by selecting the checkbox above the submit button."
+        );
+        return;
+      }
+      this.paymentProcessing = true;
+      let customer = undefined;
+      if (this.trainingSessions.length === 0) {
+        customer = this.normalCustomer();
+      } else if (this.trainingSessions.length > 0) {
+        customer = this.courseOnlyCustomer();
+      }
+
+      if (customer === undefined) {
+        this.viewErrors.push(
+          "There was a problem processing details. Please try again later."
+        );
+      }
+
+      if (this.errors.length + this.viewErrors.length > 0) {
         this.paymentProcessing = false;
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
@@ -241,10 +293,16 @@ export default {
         try {
           let orderObj = await OrdersService.deinitialise();
           this.$store.commit("order/updateFields", orderObj);
+
+          await this.$store.dispatch("cart/deleteTrainingCart", {
+            headers: {
+              "X-CSRFToken": this.$cookie.get("csrftoken")
+            }
+          });
+          this.$router.push("/payment-success");
         } catch (err) {
           this.viewErrors.push(err.message);
         }
-        this.$router.push("/payment-success");
       }
       this.paymentProcessing = false;
       document.body.scrollTop = 0;
@@ -256,9 +314,6 @@ export default {
     try {
       let orderObj = await OrdersService.initialise();
       this.$store.commit("order/updateFields", orderObj);
-      this.clientSecret = (
-        await ShoppingCartService.paymentIntentSecret()
-      ).secret;
     } catch (err) {
       this.viewErrors.push(err.message);
       throw err;
