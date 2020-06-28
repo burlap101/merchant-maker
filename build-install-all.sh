@@ -16,4 +16,7 @@ npm run build
 cd ../shopping-cart
 npm i
 npm run build
+cd ../shopfront
+npm i
+npm run build
 cd ../../
