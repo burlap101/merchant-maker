@@ -62,10 +62,9 @@
               class="custom-control-input"
               id="save-info"
               v-bind:checked="contactable"
-              value="checked"
               v-on:change="contactableChanged($event)"
             />
-            <label class="custom-control-label" for="save-info" checked
+            <label class="custom-control-label" for="save-info"
               >Can we contact you in the future regarding your
               competencies?</label
             >

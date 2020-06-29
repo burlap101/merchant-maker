@@ -105,7 +105,7 @@ export default {
         qty: this.qty
       });
       if (this.errors.length === 0) {
-        location.assign("/store/cart/checkout");
+        location = "/store/cart/checkout";
       }
     }
   }

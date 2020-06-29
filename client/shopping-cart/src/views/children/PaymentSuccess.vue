@@ -7,7 +7,7 @@
           Your order no. is: <strong>{{ order.id }}</strong>
         </div>
         <div class="mt-3">
-          Thankyou for your booking. A copy of your receipt has been emailed to
+          Thankyou for your payment. A copy of your receipt has been emailed to
           <strong>{{ customer.coreDetails.email }}</strong> <br />
           <span v-if="cart.trainingSessions.length > 0">
             We will be in contact with you shortly to confirm the course and
