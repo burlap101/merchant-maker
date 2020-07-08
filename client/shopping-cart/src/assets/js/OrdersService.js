@@ -58,5 +58,22 @@ export const OrdersService = {
       }
       throw Error(message + " - Code: " + res.status);
     }
+  },
+
+  findAll: async function() {
+    let url = baseUrl;
+    let res = await fetch(url);
+
+    if(res.ok) {
+      return res.json();
+    } else {
+      let message = undefined;
+      try {
+        message = (await res.json()).message;
+      } catch (err) {
+        throw Error("There was a problem communicating with the server.");
+      }
+      throw Error(message + " - Code: " + res.status);
+    }
   }
 };

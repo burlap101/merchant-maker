@@ -25,27 +25,27 @@
           </router-link>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">
-            <span data-feather="users"></span>
-            Customers
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">
-            <span data-feather="bar-chart-2"></span>
-            Reports
-          </a>
-        </li>
-        <li class="nav-item">
           <router-link to="/orders">
             <div
               v-bind:class="{ active: activeOption == 'orders' }"
-              class="nav-link disabled"
+              class="nav-link"
               v-on:click="activeOption = 'orders'"
             >
               Orders
             </div>
           </router-link>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">
+            <span data-feather="users"></span>
+            Customers
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">
+            <span data-feather="bar-chart-2"></span>
+            Reports
+          </a>
         </li>
       </ul>
 
@@ -90,7 +90,7 @@ export default {
   name: "sidebar",
   data() {
     return {
-      activeOption: "dashboard"
+      activeOption: "products"
     };
   }
 };

@@ -22,19 +22,23 @@ const routes = [
     children: [
       {
         path: "products",
-        component: () => import("../views/children/Products.vue")
-      },
-      {
-        path: "orders",
-        component: () => import("../views/children/Orders.vue")
+        component: () => import("../views/children/products/Overview.vue")
       },
       {
         path: "products/add",
-        component: () => import("../views/children/ProductsAdd.vue")
+        component: () => import("../views/children/products/Add.vue")
       },
       {
         path: "products/edit/:id",
-        component: () => import("../views/children/ProductsEdit.vue")
+        component: () => import("../views/children/products/Edit.vue")
+      },
+      {
+        path: "orders",
+        component: () => import("../views/children/orders/Overview.vue")
+      },
+      {
+        path: "orders/edit/:id",
+        component: () => import("../views/children/orders/Edit.vue")
       }
     ]
   }

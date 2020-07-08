@@ -3,14 +3,30 @@
     <div
       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom"
     >
-      <h2 class="h2">Orders</h2>
+      <h2 class="h2">Products</h2>
       <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group mr-2">
+          <router-link to="/products/add">
+            <button class="btn btn-sm btn-outline-success">+ Add</button>
+          </router-link>
+        </div>
         <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
           <span data-feather="calendar"></span>
-          Actions
+          Other Actions
         </button>
       </div>
     </div>
     <my-table />
   </div>
 </template>
+
+<script>
+import MyTable from "@/components/products/MyTable.vue";
+
+export default {
+  name: "products",
+  components: {
+    MyTable
+  }
+};
+</script>

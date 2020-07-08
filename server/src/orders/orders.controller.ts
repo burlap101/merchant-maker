@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Request, Get, Response, HttpException } from '@nestjs/common';
+import { Controller, Post, Body, Request, Get, Response, HttpException, UseGuards } from '@nestjs/common';
 import { Order } from './interfaces/order.interface';
 import { OrdersService } from './orders.service';
 import { ShoppingCartService } from 'src/shopping-cart/shopping-cart.service';
@@ -6,6 +6,9 @@ import { Customer } from 'src/customers/interfaces/customer.interface';
 import { ProductsService } from 'src/products/products.service';
 import Stripe from 'stripe';
 import * as Express from 'express';
+import { Roles } from 'src/auth/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 
 @Controller('api/orders')
@@ -73,5 +76,11 @@ export class OrdersController {
 
     res.status(200).json({ id: req.cookies["mm-orderid"]});
   }
-  
+
+  @Roles('admin', 'superuser')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get()
+  async findAll(): Promise<Order[]> {
+    return this.ordersService.findAll();
+  }
 }

@@ -12,5 +12,6 @@ export interface Product {
   images: Array<Object>,
   category: ProductCategory,
   categories: Array<ProductCategory>,
+  shippingCalc?: string,
   deleted: boolean
 }
