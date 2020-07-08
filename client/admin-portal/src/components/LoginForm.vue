@@ -47,7 +47,7 @@
     <button class="btn btn-lg btn-primary btn-block" v-on:click="submit()">
       Sign in
     </button>
-    <p class="mt-5 mb-3 text-muted">&copy; {{ (new Date()).getFullYear() }}</p>
+    <p class="mt-5 mb-3 text-muted">&copy; {{ new Date().getFullYear() }}</p>
   </div>
 </template>
 

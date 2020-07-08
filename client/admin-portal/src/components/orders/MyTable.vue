@@ -43,12 +43,11 @@ export default {
       orders = await OrdersService.findAll();
       this.errors = [];
     } catch (err) {
-      this.errors.push(err.message)
+      this.errors.push(err.message);
       return;
     }
-    
 
-    let cols = ["#"]; // this stores the header names to be displayed e.g. after title casing applied etc. 
+    let cols = ["#"]; // this stores the header names to be displayed e.g. after title casing applied etc.
     let names = []; // this stores the header names as they're referred to originally i.e. no formatting applied.
     for (let order of orders) {
       for (let header in Object.keys(order)) {
@@ -58,9 +57,9 @@ export default {
         }
       }
     }
-    
+
     this.headers = cols;
-    
+
     let i = 0;
     for (let order in orders) {
       i++;

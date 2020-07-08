@@ -4,7 +4,7 @@ import router from "./router";
 import "bootstrap";
 import "./assets/bootstrap-scss/bootstrap.scss";
 import "@fortawesome/fontawesome-free/css/all.css";
-import store from './store'
+import store from "./store";
 
 Vue.config.productionTip = false;
 

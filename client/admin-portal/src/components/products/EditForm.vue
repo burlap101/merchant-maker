@@ -187,7 +187,7 @@ export default {
     return {
       formData: {
         category: {},
-        attributes: {},
+        attributes: {}
       },
       errors: [],
       attrName: "",
@@ -360,7 +360,7 @@ export default {
         this.categoriesSelected,
         await this.deObjectifyCategories(this.formData.category)
       );
-      this.images = _.cloneDeep(this.formData.images) ;
+      this.images = _.cloneDeep(this.formData.images);
     } catch (err) {
       this.errors.push(err.message);
     }

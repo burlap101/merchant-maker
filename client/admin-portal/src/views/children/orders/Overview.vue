@@ -23,5 +23,5 @@ export default {
   components: {
     MyTable
   }
-}
+};
 </script>
