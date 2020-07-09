@@ -64,7 +64,7 @@ export const OrdersService = {
     let url = baseUrl;
     let res = await fetch(url);
 
-    if(res.ok) {
+    if (res.ok) {
       return res.json();
     } else {
       let message = undefined;
@@ -92,7 +92,7 @@ export const OrdersService = {
         );
       }
       throw Error(message + " - Code: " + res.status);
-    } 
+    }
   },
 
   complete: async function(id) {
@@ -110,6 +110,6 @@ export const OrdersService = {
         );
       }
       throw Error(message + " - Code: " + res.status);
-    } 
+    }
   }
 };

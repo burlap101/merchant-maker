@@ -260,7 +260,9 @@ export default {
       }
       this.paymentProcessing = true;
       let customer = undefined;
-      await this.$store.dispatch("order/populateTrainingSessionData", {trainingSessions: this.trainingSessions})
+      await this.$store.dispatch("order/populateTrainingSessionData", {
+        trainingSessions: this.trainingSessions
+      });
 
       if (this.trainingSessions.length > 0 && this.products.length === 0) {
         customer = this.courseOnlyCustomer();

@@ -22,11 +22,13 @@ export const orderModule = {
   },
   actions: {
     async populateTrainingSessionData({ commit }, payload) {
-      let trainingSessions = []
+      let trainingSessions = [];
       for (let ts of payload.trainingSessions) {
         let tsObj = {
           course: await CourseService.getCourses(ts.course),
-          training_session: await TrainingSessionService.getSingleTrainingSession(ts.training_session),
+          training_session: await TrainingSessionService.getSingleTrainingSession(
+            ts.training_session
+          ),
           total_cost: ts.total_cost,
           pk: ts.pk,
           qty: ts.qty,
@@ -34,7 +36,7 @@ export const orderModule = {
         };
         trainingSessions.push(tsObj);
       }
-      commit("setTrainingSessions", {trainingSessions})
+      commit("setTrainingSessions", { trainingSessions });
     }
   }
 };
