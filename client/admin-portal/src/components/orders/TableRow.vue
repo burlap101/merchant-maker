@@ -13,10 +13,10 @@
 <script>
 export default {
   name: "table-row",
-  props: ["values", "id"],
+  props: ["values"],
   methods: {
     rowSelected: async function() {
-      this.$router.push("/orders/edit/" + this.id);
+      this.$router.push("/orders/edit/" + this.values[0]);
     }
   }
 };

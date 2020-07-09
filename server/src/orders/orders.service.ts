@@ -29,7 +29,7 @@ export class OrdersService {
     let order = this.orderModel.findOne({
       _id: id
     }).exec();
-    order.status = "shipped";
+    order.status = "complete";
     return this.orderModel.findOneAndUpdate({ _id: id}, order, {new: true, useFindAndModify: false}).exec();
     
   }
@@ -45,5 +45,9 @@ export class OrdersService {
 
   async findAll(): Promise<Order[]> {
     return this.orderModel.find().exec();
+  }
+
+  async findOne(query: Object): Promise<Order> {
+    return this.orderModel.findOne(query).exec()
   }
 }

@@ -13,7 +13,6 @@
           v-for="(entry, index) in entries"
           v-bind:key="index"
           v-bind:values="Object.values(entry)"
-          v-bind:id="ids[index]"
         />
       </tbody>
     </table>
@@ -31,9 +30,8 @@ export default {
   },
   data() {
     return {
-      headers: [],
+      headers: ["Order No.", "Name", "Value", "Status"],
       entries: [],
-      ids: [],
       errors: []
     };
   },
@@ -47,28 +45,24 @@ export default {
       return;
     }
 
-    let cols = ["#"]; // this stores the header names to be displayed e.g. after title casing applied etc.
-    let names = []; // this stores the header names as they're referred to originally i.e. no formatting applied.
+    // let cols = ["#"]; // this stores the header names to be displayed e.g. after title casing applied etc.
+    // let names = []; // this stores the header names as they're referred to originally i.e. no formatting applied.
+    // for (let order of orders) {
+    //   for (let header in Object.keys(order)) {
+    //     if (!names.includes(header)) {
+    //       cols.push(header);
+    //       names.push(header);
+    //     }
+    //   }
+    // }
+
+    // this.headers = cols;
+
     for (let order of orders) {
-      for (let header in Object.keys(order)) {
-        if (!names.includes(header)) {
-          cols.push(header);
-          names.push(header);
-        }
-      }
-    }
-
-    this.headers = cols;
-
-    let i = 0;
-    for (let order in orders) {
-      i++;
-      let renderedRow = [i];
-      this.ids.push(orders[order]._id);
-
-      for (let name of names) {
-        renderedRow.push(orders[order][name]);
-      }
+      let renderedRow = [order._id];
+      renderedRow.push(order.customer.coreDetails.name);
+      renderedRow.push(order.cart.total);
+      renderedRow.push(order.status);
       this.entries.push(renderedRow);
     }
   }

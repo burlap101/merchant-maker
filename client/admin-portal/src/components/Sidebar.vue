@@ -90,7 +90,7 @@ export default {
   name: "sidebar",
   data() {
     return {
-      activeOption: "products"
+      activeOption: this.$route.name
     };
   }
 };
