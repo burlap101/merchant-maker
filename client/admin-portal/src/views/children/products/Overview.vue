@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import MyTable from "../../components/products/MyTable.vue";
+import MyTable from "@/components/products/MyTable.vue";
 
 export default {
   name: "products",

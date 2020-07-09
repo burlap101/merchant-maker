@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Request, Get, Response, HttpException } from '@nestjs/common';
+import { Controller, Post, Body, Request, Get, Response, HttpException, UseGuards, Param } from '@nestjs/common';
 import { Order } from './interfaces/order.interface';
 import { OrdersService } from './orders.service';
 import { ShoppingCartService } from 'src/shopping-cart/shopping-cart.service';
@@ -6,6 +6,9 @@ import { OpenOrderControllerDto } from './dto/open-order-controller.dto';
 import { ProductsService } from 'src/products/products.service';
 import Stripe from 'stripe';
 import * as Express from 'express';
+import { Roles } from 'src/auth/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 
 @Controller('api/orders')
@@ -74,5 +77,25 @@ export class OrdersController {
 
     res.status(200).json({ id: req.cookies["mm-orderid"]});
   }
+
+  @Roles('admin', 'superuser')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get()
+  async findAll(): Promise<Order[]> {
+    return this.ordersService.findAll();
+  }
   
+  @Roles('admin', 'superuser')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get(':id')
+  async findOneById(@Param() params): Promise<Order> {
+    return this.ordersService.findOne({"_id": params.id});
+  }
+
+  @Roles('admin', 'superuser')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('complete/:id')
+  async completeOrder(@Param() params): Promise<Order> {
+    return this.ordersService.completeOrder(params.id);
+  }
 }

@@ -29,7 +29,7 @@ export class OrdersService {
     let order = this.orderModel.findOne({
       _id: id
     }).exec();
-    order.status = "shipped";
+    order.status = "complete";
     return this.orderModel.findOneAndUpdate({ _id: id}, order, {new: true, useFindAndModify: false}).exec();
     
   }

@@ -10,5 +10,6 @@ export class CreateProductDto {
   readonly attributes: Object;
   readonly available: number;
   readonly category: ProductCategory;
+  readonly shippingCalc?: string;
   readonly images: Array<Object>;
 }

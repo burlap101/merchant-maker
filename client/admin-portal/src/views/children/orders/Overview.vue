@@ -14,3 +14,14 @@
     <my-table />
   </div>
 </template>
+
+<script>
+import MyTable from "@/components/orders/MyTable.vue";
+
+export default {
+  name: "orders",
+  components: {
+    MyTable
+  }
+};
+</script>
