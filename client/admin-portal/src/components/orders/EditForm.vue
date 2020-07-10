@@ -16,7 +16,13 @@
         <div class="align-self-center h5">Status</div>
         <div class="d-flex">
           <div class="">
-            <select v-model="formData.status" class="custom-select" name="" id="" v-on:change="statusUpdated = true">
+            <select
+              v-model="formData.status"
+              class="custom-select"
+              name=""
+              id=""
+              v-on:change="statusUpdated = true"
+            >
               <option value="open">Open</option>
               <option value="paid">Paid</option>
               <option value="complete">Complete</option>
@@ -24,7 +30,13 @@
             </select>
           </div>
           <div class="ml-4">
-            <button class="btn btn-warning text-light" v-bind:disabled="!statusUpdated" v-on:click="updateStatus()">Update Status</button>
+            <button
+              class="btn btn-warning text-light"
+              v-bind:disabled="!statusUpdated"
+              v-on:click="updateStatus()"
+            >
+              Update Status
+            </button>
           </div>
         </div>
       </div>
@@ -107,18 +119,14 @@
             <td>
               {{ item.product.name }}
             </td>
-            <td>
-              ${{ item.product.price.toFixed(2) }}
-            </td>
+            <td>${{ item.product.price.toFixed(2) }}</td>
             <td>
               {{ item.qty }}
             </td>
             <td>
               {{ item.product.uom }}
             </td>
-            <td>
-              ${{ (item.product.price * item.qty).toFixed(2) }}
-            </td>
+            <td>${{ (item.product.price * item.qty).toFixed(2) }}</td>
           </tr>
         </tbody>
       </table>
@@ -151,13 +159,17 @@ export default {
       this.added = false;
       if (this.formData.status === "complete") {
         try {
-          await OrdersService.complete(this.id)
+          await OrdersService.complete(this.id);
           this.added = true;
         } catch (err) {
-          this.errors.push(err.message)
+          this.errors.push(err.message);
         }
       } else {
-        this.errors.push["Sorry but there is no support for the " + status + " yet. Please contact your administrator."];
+        this.errors.push[
+          "Sorry but there is no support for the " +
+            status +
+            " yet. Please contact your administrator."
+        ];
       }
     }
   },
