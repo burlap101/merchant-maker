@@ -98,9 +98,7 @@
     <div class="col-md-6">
       <div class="d-flex justify-content-between">
         <div class="h6">Grand Total:</div>
-        <div class="text-success text-right">
-          ${{ grandTotal }}
-        </div>
+        <div class="text-success text-right">${{ grandTotal.toFixed(2) }}</div>
       </div>
     </div>
     <div class="table-responsive mytable col-md-8 pt-3">
@@ -135,7 +133,7 @@
             <td>
               {{ item.course_code + " - " + item.short_title }}
             </td>
-            <td>${{ item.cost.toFixed(2) }}</td>
+            <td>${{ item.unit_price.toFixed(2) }}</td>
             <td>
               {{ item.qty }}
             </td>
