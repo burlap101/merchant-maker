@@ -131,7 +131,7 @@
             v-bind:key="index"
           >
             <td>
-              {{ item.course_code + " - " + item.short_title }}
+              {{ item.course.course_code + " - " + item.course.short_title }}
             </td>
             <td>${{ item.unit_price.toFixed(2) }}</td>
             <td>
