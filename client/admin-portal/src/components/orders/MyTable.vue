@@ -69,7 +69,7 @@ export default {
         }
         let renderedRow = [order._id];
         renderedRow.push(order.customer.coreDetails.name);
-        renderedRow.push(total);
+        renderedRow.push(total.toFixed(2));
         renderedRow.push(order.status);
         this.entries.push(renderedRow);
       } catch (err) {
