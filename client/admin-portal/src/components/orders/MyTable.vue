@@ -59,11 +59,17 @@ export default {
     // this.headers = cols;
 
     for (let order of orders) {
-      let renderedRow = [order._id];
-      renderedRow.push(order.customer.coreDetails.name);
-      renderedRow.push(order.cart.total);
-      renderedRow.push(order.status);
-      this.entries.push(renderedRow);
+      try {
+        let renderedRow = [order._id];
+        renderedRow.push(order.customer.coreDetails.name);
+        renderedRow.push(order.cart.total);
+        renderedRow.push(order.status);
+        this.entries.push(renderedRow);
+      } catch (err) {
+        if (err.name !== "TypeError") {
+          this.errors.push(err.name + ":", err.message);
+        }
+      }
     }
   }
 };
