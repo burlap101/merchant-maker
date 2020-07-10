@@ -171,10 +171,13 @@ export default {
     };
   },
   computed: {
-    trainingTotal: function() {
+    grandTotal: function() {
       let result = 0;
       for (const ts of this.formData.trainingSessions) {
         result += ts.total_cost;
+      }
+      if (this.formData.cart.total !== undefined) {
+        result += this.formData.cart.total;
       }
       return result;
     }
