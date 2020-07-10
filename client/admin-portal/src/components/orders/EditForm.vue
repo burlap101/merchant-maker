@@ -99,7 +99,7 @@
       <div class="d-flex justify-content-between">
         <div class="h6">Grand Total:</div>
         <div class="text-success text-right">
-          ${{ formData.cart.total.toFixed(2) }}
+          ${{ formData.cart.total.toFixed(2) + trainingTotal }}
         </div>
       </div>
     </div>
@@ -128,6 +128,22 @@
             </td>
             <td>${{ (item.product.price * item.qty).toFixed(2) }}</td>
           </tr>
+          <tr
+            v-for="(item, index) in formData.trainingSessions"
+            v-bind:key="index"
+          >
+            <td>
+              {{ item.course_code + " - " + item.short_title }}
+            </td>
+            <td>${{ item.cost.toFixed(2) }}</td>
+            <td>
+              {{ item.qty }}
+            </td>
+            <td>
+              students
+            </td>
+            <td>${{ item.total_cost }}</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -147,11 +163,21 @@ export default {
       fieldLabels: [],
       formData: {
         customer: {},
-        cart: {}
+        cart: {},
+        trainingSessions: []
       },
       allowEdit: false,
       statusUpdated: false
     };
+  },
+  computed: {
+    trainingTotal: function() {
+      let result = 0;
+      for (const ts of this.formData.trainingSessions) {
+        result += ts.total_cost;
+      }
+      return result;
+    }
   },
   methods: {
     updateStatus: async function() {
