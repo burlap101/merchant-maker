@@ -60,9 +60,16 @@ export default {
 
     for (let order of orders) {
       try {
+        let total = 0;
+        if (order.cart.total !== undefined) {
+          total += order.cart.total;
+        }
+        for (const ts of order.trainingSessions) {
+          total += ts.total_cost;
+        }
         let renderedRow = [order._id];
         renderedRow.push(order.customer.coreDetails.name);
-        renderedRow.push(order.cart.total);
+        renderedRow.push(total);
         renderedRow.push(order.status);
         this.entries.push(renderedRow);
       } catch (err) {
