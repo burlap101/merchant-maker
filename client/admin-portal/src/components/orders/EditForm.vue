@@ -99,7 +99,7 @@
       <div class="d-flex justify-content-between">
         <div class="h6">Grand Total:</div>
         <div class="text-success text-right">
-          ${{ formData.cart.total.toFixed(2) + trainingTotal }}
+          ${{ grandTotal }}
         </div>
       </div>
     </div>
