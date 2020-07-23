@@ -7,6 +7,5 @@ export interface ShoppingCart {
     product: Product,
     qty: number
   }],
-  total: number,
-  paymentIntentId?: string
+  total: number
 }

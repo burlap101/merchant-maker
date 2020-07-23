@@ -50,12 +50,8 @@ export class OrdersService {
   async findOne(query: Object): Promise<Order> {
     return this.orderModel.findOne(query).exec()
   }
-<<<<<<< Updated upstream
-=======
 
   async find(query: Object): Promise<Order[]> {
     return this.orderModel.find(query).exec()
   }
-
->>>>>>> Stashed changes
 }

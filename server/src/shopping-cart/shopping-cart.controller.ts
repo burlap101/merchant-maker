@@ -64,6 +64,7 @@ export class ShoppingCartController {
   async createIntentAndRetrieveSecret(@Request() req): Promise<Object> {
     const cart = await this.shoppingCartService.getCart(req.cartid);
     const paymentIntent = await this.shoppingCartService.createPaymentIntent(cart.total, "aud", {"orderid": req.cookies["mm-orderid"]});
+    this.shoppingCartService.assignPaymentIntentToCart(req.cartid, paymentIntent.id);
     let secretObj = {};
     secretObj["secret"] = paymentIntent.client_secret
     return secretObj;
