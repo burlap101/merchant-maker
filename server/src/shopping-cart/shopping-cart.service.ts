@@ -31,7 +31,7 @@ export class ShoppingCartService {
   async assignUserToCart(cartId: string, userId: string): Promise<ShoppingCart> {
     let cart = await this.shoppingCartModel.findOne({ _id: cartId }).exec();
     cart.userId = userId;
-    return this.shoppingCartModel.findOneAndUpdate({ _id: cartId }, cart, {new: true, useFindAndModify: false});
+    return this.shoppingCartModel.findOneAndUpdate({ _id: cartId }, cart, {new: true, useFindAndModify: false}).select("-paymentIntentId");
   }
 
   /**
@@ -41,15 +41,20 @@ export class ShoppingCartService {
    *  */
   
   async destroyCart(cartId: string): Promise<ShoppingCart | undefined> {
-    return this.shoppingCartModel.findOneAndDelete({ _id: cartId });
+    return this.shoppingCartModel.findOneAndDelete({ _id: cartId }).select("-paymentIntentId");
   }
 
   async getCart(cartId: string): Promise<ShoppingCart> {
-    return this.shoppingCartModel.findOne({ _id: cartId });
+    return this.shoppingCartModel.findOne({ _id: cartId }).select("-paymentIntentId");
   }
 
   async getCartByPaymentIntent(paymentIntentId: string): Promise<ShoppingCart> {
     return this.shoppingCartModel.findOne({ "paymentIntentId": paymentIntentId });
+  }
+
+  async getPaymentIntentByCart(cartId: string): Promise<string> {
+    const cart = await this.shoppingCartModel.findOne({_id: cartId});
+    return cart.paymentIntentId;
   }
 
   async addItemToCart(cartId: string, product: Product, qty: number): Promise<ShoppingCart> {
@@ -64,7 +69,7 @@ export class ShoppingCartService {
         "qty": qty
       });
       cart.total += product.price * qty;
-      return this.shoppingCartModel.findOneAndUpdate({_id: cartId}, cart, {new: true, useFindAndModify: false}).exec();
+      return this.shoppingCartModel.findOneAndUpdate({_id: cartId}, cart, {new: true, useFindAndModify: false}).select("-paymentIntentId").exec();
     }
   }
 
@@ -77,7 +82,8 @@ export class ShoppingCartService {
     let oldQty = item.qty
     cart.total = cart.total - oldQty*item.product.price + qty*item.product.price;
     item.qty = qty;
-    return this.shoppingCartModel.findOneAndUpdate({_id: cartId}, cart, {new: true, useFindAndModify: false}).exec();
+    this.updatePaymentIntent(cartId, {"amount": parseInt((cart.total*100).toFixed(0))})
+    return this.shoppingCartModel.findOneAndUpdate({_id: cartId}, cart, {new: true, useFindAndModify: false}).select("-paymentIntentId").exec();
   }
 
   async createPaymentIntent(amount: number, currency = "aud", metadata = {}): Promise<Stripe.PaymentIntent> {
@@ -88,9 +94,13 @@ export class ShoppingCartService {
     })
   }
 
+  async updatePaymentIntent(cartId: string, params?: Stripe.PaymentIntentUpdateParams): Promise<Stripe.PaymentIntent> {
+    const id = await this.getPaymentIntentByCart(cartId);
+    return stripe.paymentIntents.update(id, params);
+  }
+
   async assignPaymentIntentToCart(cartId: string, paymentIntentId: string): Promise<ShoppingCart>{
     let cart = await this.shoppingCartModel.findOne({ _id: cartId });
-    
     cart.paymentIntentId = paymentIntentId;
     return this.shoppingCartModel.findOneAndUpdate({ _id: cartId }, cart, {new: true, useFindAndModify: false}); 
   }
@@ -100,7 +110,7 @@ export class ShoppingCartService {
     let item = cart.items.find(el => el.product._id === product._id);
     let deleteItemIndex = cart.items.indexOf(item);
     cart.items.splice(deleteItemIndex, 1);
-    return this.shoppingCartModel.findOneAndUpdate({_id: cart._id}, cart, {new: true, useFindAndModify: false});
+    return this.shoppingCartModel.findOneAndUpdate({_id: cart._id}, cart, {new: true, useFindAndModify: false}).select("-paymentIntentId");
   }
 
 }

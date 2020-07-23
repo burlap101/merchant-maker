@@ -1,13 +1,7 @@
 <template>
   <div class="table-responsive mytable">
     <table class="table table-striped table-bordered table-hover">
-      <thead>
-        <tr>
-          <th v-for="(title, index) in headers" v-bind:key="'header-' + index">
-            {{ title }}
-          </th>
-        </tr>
-      </thead>
+      <my-table-header v-bind:headers="headers" />
       <tbody>
         <table-row
           v-for="(entry, index) in entries"
@@ -23,11 +17,13 @@
 <script>
 import { ProductFields } from "../../assets/js/ProductFields";
 import { ProductsService } from "../../assets/js/ProductsService";
+import MyTableHeader from "../MyTableHeader.vue";
 import TableRow from "./TableRow.vue";
 
 export default {
   name: "my-table",
   components: {
+    MyTableHeader,
     TableRow
   },
   data() {

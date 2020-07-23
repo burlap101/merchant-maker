@@ -95,6 +95,27 @@ export const OrdersService = {
     }
   },
 
+  find: async function(query) {
+    let url = baseUrl + '?'
+    for (const q in query) {
+      url += `${q}=${query[q]}&`
+    }
+    let res = await fetch(url.slice(0, -2));
+    if(res.ok) {
+      return res.json();
+    } else {
+      let message = undefined;
+      try {
+        message = (await res.json()).message;
+      } catch (err) {
+        throw Error(
+          "There was a problem communicating with the server. Contact your site's administrator."
+        );
+      }
+      throw Error(message + " - Code: " + res.status);
+    }
+  },
+
   complete: async function(id) {
     let url = baseUrl + "/complete/" + id;
     let res = await fetch(url);

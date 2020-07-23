@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Request, Get, Response, HttpException, UseGuards, Param } from '@nestjs/common';
+import { Controller, Post, Body, Request, Get, Response, HttpException, UseGuards, Param, Query } from '@nestjs/common';
 import { Order } from './interfaces/order.interface';
 import { OrdersService } from './orders.service';
 import { ShoppingCartService } from 'src/shopping-cart/shopping-cart.service';
@@ -81,8 +81,12 @@ export class OrdersController {
   @Roles('admin', 'superuser')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
-  async findAll(): Promise<Order[]> {
-    return this.ordersService.findAll();
+  async find(@Query() q): Promise<Order[]> {
+    if (q) {
+      return this.ordersService.find(q);
+    } else {
+      return this.ordersService.findAll();
+    }
   }
   
   @Roles('admin', 'superuser')

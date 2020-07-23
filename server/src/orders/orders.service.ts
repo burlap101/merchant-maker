@@ -51,4 +51,7 @@ export class OrdersService {
     return this.orderModel.findOne(query).exec()
   }
 
+  async find(query: Object): Promise<Order[]> {
+    return this.orderModel.find(query).exec()
+  }
 }

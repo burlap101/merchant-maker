@@ -6,8 +6,11 @@
       <h2 class="h2">Orders</h2>
       <div class="btn-toolbar mb-2 mb-md-0">
         <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+          <i class="fa fa-filter" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
           <span data-feather="calendar"></span>
-          Actions
+          Other Actions
         </button>
       </div>
     </div>

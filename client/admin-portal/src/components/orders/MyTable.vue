@@ -1,13 +1,7 @@
 <template>
   <div class="table-responsive mytable">
     <table class="table table-striped table-bordered table-hover">
-      <thead>
-        <tr>
-          <th v-for="(title, index) in headers" v-bind:key="'header-' + index">
-            {{ title }}
-          </th>
-        </tr>
-      </thead>
+      <my-table-header v-bind:headers="headers" />
       <tbody>
         <table-row
           v-for="(entry, index) in entries"
@@ -22,17 +16,20 @@
 <script>
 import { OrdersService } from "../../../../common-files/js/OrdersService";
 import TableRow from "./TableRow.vue";
+import MyTableHeader from "../MyTableHeader.vue";
 
 export default {
   name: "my-table",
   components: {
-    TableRow
+    TableRow,
+    MyTableHeader
   },
   data() {
     return {
       headers: ["Order No.", "Name", "Value", "Status"],
       entries: [],
-      errors: []
+      errors: [],
+      
     };
   },
   async created() {
@@ -82,7 +79,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .mytable {
   font-size: smaller;
 }

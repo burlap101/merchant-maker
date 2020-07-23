@@ -69,6 +69,7 @@ export class ShoppingCartController {
     }
     console.log(tsTotal);
     const paymentIntent = await this.shoppingCartService.createPaymentIntent((cart.total + tsTotal), "aud", {"orderid": req.cookies["mm-orderid"]});
+    this.shoppingCartService.assignPaymentIntentToCart(req.cartid, paymentIntent.id);
     let secretObj = {};
     secretObj["secret"] = paymentIntent.client_secret
     return secretObj;
