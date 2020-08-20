@@ -14,9 +14,10 @@
 </template>
 
 <script>
-import { OrdersService } from "@/assets/js/OrdersService";
+import { ShippingService } from "@/assets/js/ShippingService";
 import TableRow from "./TableRow.vue";
 import MyTableHeader from "../MyTableHeader.vue";
+import { mapState } from "vuex";
 
 export default {
   name: "my-table",
@@ -26,15 +27,15 @@ export default {
   },
   data() {
     return {
-      headers: ["Order No.", "Name", "Value", "Status"],
+      headers: ["#", "Description", "Type", "Discounts", "Cost"],
       entries: [],
       errors: []
     };
   },
   async created() {
-    let orders = undefined;
+    let shippingMethods = undefined;
     try {
-      orders = await OrdersService.findAll();
+      shippingMethods = await ShippingService.findAll();
       this.errors = [];
     } catch (err) {
       this.errors.push(err.message);
@@ -54,12 +55,12 @@ export default {
 
     // this.headers = cols;
 
-    for (let order of orders) {
+    for (let method of shippingMethods) {
       try {
-        let renderedRow = [order._id];
-        renderedRow.push(order.customer.coreDetails.name);
-        renderedRow.push(order.cart.total);
-        renderedRow.push(order.status);
+        let renderedRow = [method._id];
+        renderedRow.push(method.customer.coreDetails.name);
+        renderedRow.push(method.cart.total);
+        renderedRow.push(method.status);
         this.entries.push(renderedRow);
       } catch (err) {
         if (err.name !== "TypeError") {

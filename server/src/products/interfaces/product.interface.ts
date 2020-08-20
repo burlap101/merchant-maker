@@ -1,4 +1,5 @@
 import { ProductCategory } from './product-category.interface';
+import { ShippingMethod } from '../../shipping/interfaces/shipping-method.interface';
 
 export interface Product {
   _id: string,
@@ -12,6 +13,6 @@ export interface Product {
   images: Array<Object>,
   category: ProductCategory,
   categories: Array<ProductCategory>,
-  shippingCalc?: string,
+  shippingMethod: ShippingMethod,
   deleted: boolean
 }

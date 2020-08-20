@@ -64,7 +64,7 @@ export const OrdersService = {
     let url = baseUrl;
     let res = await fetch(url);
 
-    if(res.ok) {
+    if (res.ok) {
       return res.json();
     } else {
       let message = undefined;
@@ -92,16 +92,16 @@ export const OrdersService = {
         );
       }
       throw Error(message + " - Code: " + res.status);
-    } 
+    }
   },
 
   find: async function(query) {
-    let url = baseUrl + '?'
+    let url = baseUrl + "?";
     for (const q in query) {
-      url += `${q}=${query[q]}&`
+      url += `${q}=${query[q]}&`;
     }
     let res = await fetch(url.slice(0, -2));
-    if(res.ok) {
+    if (res.ok) {
       return res.json();
     } else {
       let message = undefined;
@@ -131,6 +131,6 @@ export const OrdersService = {
         );
       }
       throw Error(message + " - Code: " + res.status);
-    } 
+    }
   }
 };

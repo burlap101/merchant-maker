@@ -41,6 +41,10 @@ const routes = [
       {
         path: "orders/edit/:id",
         component: () => import("../views/children/orders/Edit.vue")
+      },
+      {
+        path: "shipping",
+        component: () => import("../views/children/shipping/Add.vue")
       }
     ]
   }

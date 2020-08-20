@@ -1,4 +1,3 @@
-import { Category } from '../../categories/interfaces/category.interface';
 import { ProductCategory } from '../interfaces/product-category.interface';
 
 export class CreateProductDto {

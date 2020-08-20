@@ -78,7 +78,7 @@
       <div
         v-for="(field, index) in fieldsObj.textArea"
         class="row"
-        v-bind:key="'number-field-' + index"
+        v-bind:key="'textarea-' + index"
       >
         <div class="col-md-6 mb-3">
           <label v-bind:for="field.id">{{ field.label }}</label>
@@ -115,7 +115,7 @@
 
 <script>
 import _ from "lodash";
-import { ProductValidation } from "../../assets/js/ProductValidation";
+import { Validation } from "../../assets/js/Validation";
 import { ProductFields } from "@/assets/js/ProductFields";
 import { ProductsService } from "@/assets/js/ProductsService";
 import CategorySelection from "./CategorySelection.vue";
@@ -189,7 +189,7 @@ export default {
       for (let field in textFields) {
         try {
           if (
-            !ProductValidation.validateTextField(
+            !Validation.validateTextField(
               this.formData[textFields[field].id],
               textFields[field].required,
               textFields[field].re
@@ -212,7 +212,7 @@ export default {
       for (let field in numberFields) {
         try {
           if (
-            !ProductValidation.validateNumberField(
+            !Validation.validateNumberField(
               this.formData[numberFields[field].id],
               numberFields[field].required,
               numberFields[field].specialValues,

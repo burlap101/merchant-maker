@@ -36,15 +36,26 @@
           </router-link>
         </li>
         <li class="nav-item">
+          <router-link to="/shipping">
+            <div
+              v-bind:class="{ active: activeOption == 'shipping' }"
+              class="nav-link"
+              v-on:click="shipping"
+            >
+              Shipping
+            </div>
+          </router-link>
+        </li>
+        <li class="nav-item">
           <a class="nav-link disabled" href="#">
             <span data-feather="users"></span>
-            Customers
+              Customers
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link disabled" href="#">
             <span data-feather="bar-chart-2"></span>
-            Reports
+              Reports
           </a>
         </li>
       </ul>
@@ -92,6 +103,12 @@ export default {
     return {
       activeOption: this.$route.name
     };
+  },
+  methods: {
+    shipping: async function() {
+      this.$store.dispatch("shipping/populateTypes");
+      this.activeOption = "shipping";
+    }
   }
 };
 </script>

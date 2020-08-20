@@ -1,4 +1,4 @@
-export const ProductValidation = {
+export const Validation = {
   validateTextField: function(value, required, re = undefined) {
     if (!value && required) {
       throw Error("Needs a value");

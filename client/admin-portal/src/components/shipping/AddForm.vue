@@ -1,49 +1,7 @@
 <template>
-  <div v-on:keypress.enter="submit">
-    <div v-if="confirmDestroy">
-      <transition name="modal">
-        <div class="modal-mask">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Are you sure?</h5>
-                <button
-                  type="button"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                  v-on:click="confirmDestroy = false"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <p>This will destroy the record and can't be undone.</p>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-dismiss="modal"
-                  v-on:click="confirmDestroy = false"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-danger"
-                  v-on:click="destroyRecord()"
-                >
-                  Destroy
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition>
-    </div>
+  <div v-on:keypress.enter="submit" class="pb-5">
     <div v-if="added" class="alert alert-success" role="alert">
-      Record updated successfully
+      Record added successfully
     </div>
     <div v-if="errors.length > 0" class="alert alert-danger" role="alert">
       <div class="h5">Errors</div>
@@ -57,19 +15,12 @@
         </li>
       </ol>
     </div>
-    <div class="row my-2">
-      <div class="col-md-6">
-        <button class="btn btn-danger" v-on:click="confirmDestroy = true">
-          Destroy Record
-        </button>
-      </div>
-    </div>
-    <h4 class="my-3">Category</h4>
-    <category-selection
-      v-on:category-object="formData.category = $event"
-      v-bind:parent-category-selected="categoriesSelected"
-      v-on:reset-categories="formData.category = {}"
-    />
+    <h4 class="my-3">Type</h4>
+
+    <!-- Shipping type component gets added here -->
+
+    <shipping-type-selection />
+
     <div class="needs-validation">
       <h4 class="my-3">Details</h4>
       <div
@@ -147,14 +98,28 @@
           />
         </div>
       </div>
-      <image-upload
-        v-bind:images="images"
-        v-on:new-image="images.push($event)"
-      />
-      <additional-attributes
-        v-bind:attributes="formData.attributes"
-        v-on:new-attribute="$set(this.formData.attributes, attr, '')"
-      />
+      <div class="needs-validation">
+        <h4 class="my-3">Discount Points</h4>
+        <add-discount-point
+          v-for="(item, index) in formData.discounts"
+          v-bind:key="index"
+          v-bind:dpIndex="index"
+          v-on:errors="$event.forEach(error => errors.push(error))"
+          v-on:remove="formData.discounts.splice(index, 1)"
+          v-on:updated="formData.discounts.splice(index, 1, $event)"
+        />
+        <div>
+          <button
+            class="btn btn-success"
+            v-on:click="
+              formData.discounts.push({ point: undefined, discount: undefined })
+            "
+          >
+            Add
+          </button>
+        </div>
+      </div>
+
       <button v-on:click="submit" class="btn btn-primary mt-4">
         Submit
       </button>
@@ -165,41 +130,34 @@
 <script>
 import _ from "lodash";
 import { Validation } from "../../assets/js/Validation";
-import { ProductFields } from "@/assets/js/ProductFields";
-import { ProductsService } from "../../assets/js/ProductsService";
-import CategorySelection from "./CategorySelection.vue";
-import AdditionalAttributes from "./AdditionalAttributes.vue";
-import ImageUpload from "./ImageUpload.vue";
-
-const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
-  ? "/store"
-  : "";
+import { ShippingMethodFields } from "@/assets/js/ShippingMethodFields";
+import AddDiscountPoint from "./AddDiscountPoint.vue";
+import ShippingTypeSelection from "./ShippingTypeSelection.vue";
+import { ShippingService } from "@/assets/js/ShippingService";
+import { mapState } from "vuex";
 
 export default {
-  name: "edit-form",
-  props: ["id"],
+  name: "add-form",
   components: {
-    CategorySelection,
-    AdditionalAttributes,
-    ImageUpload
+    AddDiscountPoint,
+    ShippingTypeSelection
   },
   data() {
     return {
       formData: {
-        category: {},
-        attributes: {}
+        discounts: [{ point: undefined, discount: undefined }],
+        shippingType: {}
       },
-      errors: [],
-      attrName: "",
-      isSaving: false,
       added: false,
-      currentImageFileName: "",
-      images: [],
       isFormValid: undefined,
-      categoriesSelected: {},
-      fieldsObj: ProductFields,
-      confirmDestroy: false
+      fieldsObj: ShippingMethodFields
     };
+  },
+  computed: {
+    ...mapState({
+      errors: state => state.shipping.errors,
+      shippingTypes: state => state.shipping.types
+    })
   },
   methods: {
     submit: async function() {
@@ -207,20 +165,20 @@ export default {
         return;
       }
 
-      this.formData.images = this.images;
       try {
-        await ProductsService.update(this.id, this.formData);
+        await ShippingService.add(this.formData);
         this.added = true;
         this.errors = [];
         await this.initialiseFormData();
       } catch (err) {
-        this.errors.push(err.message);
+        this.$store.commit("shipping/addError", {
+          message: err.message
+        });
         this.added = false;
       }
       document.body.scrollTop = 0;
       document.documentElement.scrollTop = 0;
     },
-
     textFieldValidation: function(fieldObj) {
       if (fieldObj.re.test(fieldObj.value)) {
         fieldObj.isValid = true;
@@ -234,33 +192,15 @@ export default {
         fieldObj.value.length < fieldObj.maxLength
       ) {
         fieldObj.isValid = true;
+        // this.isFormValid = undefined;
       } else {
         fieldObj.isValid = false;
       }
     },
-    uploadImageFile: async function(fieldName, event) {
-      event.preventDefault();
-      if (!event.target.files[0]) return;
-      this.isSaving = true;
-      let fd = new FormData();
-      fd.append("image", event.target.files[0]);
-      let res = await fetch(baseUrl + "/file-upload/image", {
-        method: "POST",
-        body: fd
-      });
-
-      if (!res.ok) {
-        this.errors.push(
-          "There was a problem: (" + res.status + ") " + res.statusText
-        );
-      } else {
-        this.images.push(await res.json());
-      }
-      this.isSaving = false;
-    },
     validateFormData: function() {
       const textFields = this.fieldsObj.text;
       const numberFields = this.fieldsObj.number;
+
       let allValid = true;
       for (let field in textFields) {
         try {
@@ -271,18 +211,19 @@ export default {
               textFields[field].re
             )
           ) {
-            this.errors.push(
-              textFields[field].label +
+            this.$store.commit("shipping/addError", {
+              message:
+                textFields[field].label +
                 " field " +
                 textFields[field].errorMsg.toLowerCase()
-            );
+            });
             allValid = false;
           }
         } catch (err) {
           allValid = false;
-          this.errors.push(
-            textFields[field].label + " " + err.message.toLowerCase()
-          );
+          this.$store.commit("shipping/addError", {
+            message: textFields[field].label + " " + err.message.toLowerCase()
+          });
         }
       }
       for (let field in numberFields) {
@@ -326,61 +267,11 @@ export default {
           ] = _.cloneDeep(this.fieldsObj[fieldTypeName][fieldName].value);
         }
       }
-      this.formData.attributes = {};
-    },
-    deObjectifyCategories: async function(categoryObj, lvl = 0) {
-      let maxLevels = lvl;
-      if (categoryObj.parent) {
-        maxLevels = Math.max(
-          lvl,
-          await this.deObjectifyCategories(categoryObj.parent, lvl + 1)
-        );
-      }
-      this.$set(this.categoriesSelected, maxLevels - lvl, categoryObj);
-      return maxLevels;
-    },
-    destroyRecord: async function() {
-      try {
-        await ProductsService.deleteOne(this.id);
-        this.$router.push("/products");
-      } catch (err) {
-        this.errors.push(err.message);
-      }
     }
   },
   async created() {
-    try {
-      this.formData = Object.assign(
-        {},
-        this.formData,
-        await ProductsService.findOne(this.id)
-      );
-      this.categoriesSelected = Object.assign(
-        {},
-        this.categoriesSelected,
-        await this.deObjectifyCategories(this.formData.category)
-      );
-      this.images = _.cloneDeep(this.formData.images);
-    } catch (err) {
-      this.errors.push(err.message);
-    }
+    await this.initialiseFormData();
+    shipping;
   }
 };
 </script>
-
-<style scoped>
-.modal-mask {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: table;
-  transition: opacity 0.3s ease;
-}
-.modal-enter {
-  opacity: 0;
-}
-</style>
