@@ -102,40 +102,16 @@ export default {
     })
   },
   methods: {
+    debounceSubmit: function() {
+      _.debounce(this.submit, 300)();
+    },
     submit: function() {
-      this.errors = [];
       if (!this.validate()) {
         return;
       }
-      this.$emit("updated", formData);
+      this.$store.commit('shipping/submit')
     },
     validate: function() {
-      const textFields = this.fieldsObj.text;
-
-      let allValid = true;
-      for (let field in textFields) {
-        try {
-          if (
-            !Validation.validateTextField(
-              this.formData[textFields[field].id],
-              textFields[field].required,
-              textFields[field].re
-            )
-          ) {
-            this.errors.push(
-              textFields[field].label +
-                " field " +
-                textFields[field].errorMsg.toLowerCase()
-            );
-            allValid = false;
-          }
-        } catch (err) {
-          allValid = false;
-          this.errors.push(
-            textFields[field].label + " " + err.message.toLowerCase()
-          );
-        }
-      }
     }
   }
 };

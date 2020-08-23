@@ -1,10 +1,10 @@
 import { DiscountPoint } from "./discount-point.interface";
-import { ShippingType } from "./shipping-type.interface";
 
 export interface ShippingMethod {
   _id: string,
+  name: string,
   description: string,
-  type: ShippingType,
+  perProduct: boolean,
   discounts?: [DiscountPoint],
   cost: number
 }

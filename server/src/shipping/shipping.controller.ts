@@ -5,7 +5,6 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { CreateShippingMethodDto } from './dto/create-shipping-method.dto';
 import { ShippingMethod } from './interfaces/shipping-method.interface';
-import { ShippingType } from './interfaces/shipping-type.interface';
 
 @Controller('api/shipping')
 export class ShippingController {
@@ -38,30 +37,11 @@ export class ShippingController {
   async deleteOneById(@Param() params): Promise<ShippingMethod> {
     return this.shippingService.findOneByIdAndDelete(params.id);
   }
-  
-  @Roles('admin', 'superuser')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Get('types')
-  async getTypes(): Promise<ShippingType[]> {
-    return this.shippingService.findAllTypes();
-  }
-
-  @Get('types/:id')
-  async getType(@Param() params): Promise<ShippingType> {
-    return this.shippingService.findOneTypeById(params.id);
-  }
 
   @Roles('admin', 'superuser')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Delete('/types/delete/:id')
-  async deleteOneTypeById(@Param() params): Promise<ShippingType> {
-    return this.shippingService.destroyType(params.id);
-  }
-
-  @Roles('admin', 'superuser')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Post('types/update')
-  async updateOneTypeById(@Body() shippingType: ShippingType) : Promise<ShippingType> {
-    return this.shippingService.updateType(shippingType);
+  @Post('update/:id')
+  async update(@Param() params, @Body() updateShippingMethodDto: CreateShippingMethodDto) {
+    return this.shippingService.update(params.id, updateShippingMethodDto);
   }
 }

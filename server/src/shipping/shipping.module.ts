@@ -4,13 +4,11 @@ import { ShippingService } from './shipping.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ShippingMethodSchema } from './schemas/shipping-method.schema';
 import { AuthModule } from 'src/auth/auth.module';
-import { ShippingTypeSchema } from './schemas/shipping-type.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: 'ShippingMethod', schema: ShippingMethodSchema },
-      { name: 'ShippingType', schema: ShippingTypeSchema } 
+      { name: 'ShippingMethod', schema: ShippingMethodSchema }
     ]),
     AuthModule
   ], 

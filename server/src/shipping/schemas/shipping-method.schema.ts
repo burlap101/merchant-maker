@@ -1,8 +1,9 @@
 import * as mongoose from 'mongoose'; 
-import { ShippingTypeSchema } from './shipping-type.schema';
 
 export const ShippingMethodSchema = new mongoose.Schema({
-  type: ShippingTypeSchema,
+  name: String,
+  description: String,
+  perProduct: Boolean,
   discounts: [Object],
   cost: Number
 })

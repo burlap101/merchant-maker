@@ -15,12 +15,6 @@
         </li>
       </ol>
     </div>
-    <h4 class="my-3">Type</h4>
-
-    <!-- Shipping type component gets added here -->
-
-    <shipping-type-selection />
-
     <div class="needs-validation">
       <h4 class="my-3">Details</h4>
       <div
@@ -98,13 +92,40 @@
           />
         </div>
       </div>
+      <div
+        v-for="(field, index) in fieldsObj.boolean"
+        class="row"
+        v-bind:key="'number-field-' + index"
+      >
+        <div class="col mb-3">
+          <div class="custom-control custom-checkbox">
+            <input
+              class="custom-control-input"
+              v-bind:id="field.id"
+              v-model="formData[field.id]"
+              v-bind:value="field.value"
+              v-on:change="$emit('toggled', this.formData[field.id])"
+              type="checkbox"
+            />
+            <label class="custom-control-label" v-bind:for="field.id">{{
+              field.label
+            }}</label>
+            <i
+              class="far fa-question-circle ml-2 text-muted"
+              data-toggle="tooltip"
+              data-placement="right"
+              v-bind:title="field.hint"
+            >
+            </i>
+          </div>
+        </div>
+      </div>
       <div class="needs-validation">
         <h4 class="my-3">Discount Points</h4>
         <add-discount-point
           v-for="(item, index) in formData.discounts"
           v-bind:key="index"
           v-bind:dpIndex="index"
-          v-on:errors="$event.forEach(error => errors.push(error))"
           v-on:remove="formData.discounts.splice(index, 1)"
           v-on:updated="formData.discounts.splice(index, 1, $event)"
         />
@@ -132,15 +153,13 @@ import _ from "lodash";
 import { Validation } from "../../assets/js/Validation";
 import { ShippingMethodFields } from "@/assets/js/ShippingMethodFields";
 import AddDiscountPoint from "./AddDiscountPoint.vue";
-import ShippingTypeSelection from "./ShippingTypeSelection.vue";
 import { ShippingService } from "@/assets/js/ShippingService";
 import { mapState } from "vuex";
 
 export default {
   name: "add-form",
   components: {
-    AddDiscountPoint,
-    ShippingTypeSelection
+    AddDiscountPoint
   },
   data() {
     return {
@@ -150,14 +169,9 @@ export default {
       },
       added: false,
       isFormValid: undefined,
-      fieldsObj: ShippingMethodFields
+      fieldsObj: ShippingMethodFields,
+      errors: [],
     };
-  },
-  computed: {
-    ...mapState({
-      errors: state => state.shipping.errors,
-      shippingTypes: state => state.shipping.types
-    })
   },
   methods: {
     submit: async function() {
@@ -267,11 +281,11 @@ export default {
           ] = _.cloneDeep(this.fieldsObj[fieldTypeName][fieldName].value);
         }
       }
+      this.formData.discounts = [{ point: undefined, discount: undefined }]
     }
   },
   async created() {
     await this.initialiseFormData();
-    shipping;
   }
 };
 </script>

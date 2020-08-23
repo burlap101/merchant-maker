@@ -121,6 +121,7 @@ import { ProductsService } from "@/assets/js/ProductsService";
 import CategorySelection from "./CategorySelection.vue";
 import AdditionalAttributes from "./AdditionalAttributes.vue";
 import ImageUpload from "./ImageUpload.vue";
+import ShippingMethodSelection from "./ShippingMethodSelection";
 
 export default {
   name: "add-form",

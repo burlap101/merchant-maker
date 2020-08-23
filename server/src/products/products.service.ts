@@ -4,7 +4,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './interfaces/product.interface';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Category } from 'src/categories/interfaces/category.interface';
 import { ProductCategory } from './interfaces/product-category.interface';
 
 

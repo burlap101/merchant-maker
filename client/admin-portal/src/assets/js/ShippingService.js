@@ -44,38 +44,22 @@ export const ShippingService = {
     return processResponse(res);
   },
 
-  findAllTypes: async function() {
-    let url = baseUrl + "/types";
+  deleteOne: async function(id) {
+    let url = baseUrl + "/delete/" + id;
     let res = await fetch(url);
 
     return processResponse(res);
   },
 
-  findType: async function(id) {
-    let url = baseUrl + "/types/" + id;
-    let res = await fetch(url);
-
-    return processResponse(res);
-  },
-
-  updateType: async function(newType) {
-    let url = baseUrl + "/types/update";
+  update: async function(id, shippingMethodDetails) {
+    let url = baseUrl + "/update/" + id;
     let res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(newType)
-    });
-
-    return processResponse(res);
-  },
-
-  deleteType: async function(id) {
-    let url = baseUrl + "/types/" + id;
-    let res = await fetch(url, {
-      method: "DELETE"
-    });
+      body: JSON.stringify(shippingMethodDetails)
+    })
 
     return processResponse(res);
   }

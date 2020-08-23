@@ -7,6 +7,7 @@
           v-for="(entry, index) in entries"
           v-bind:key="index"
           v-bind:values="Object.values(entry)"
+          v-bind:id="shippingMethods[index]._id"
         />
       </tbody>
     </table>
@@ -27,15 +28,15 @@ export default {
   },
   data() {
     return {
-      headers: ["#", "Description", "Type", "Discounts", "Cost"],
+      headers: ["#","Name", "Description", "Per Product", "Discounts", "Cost"],
       entries: [],
-      errors: []
+      errors: [],
+      shippingMethods: []
     };
   },
   async created() {
-    let shippingMethods = undefined;
     try {
-      shippingMethods = await ShippingService.findAll();
+      this.shippingMethods = await ShippingService.findAll();
       this.errors = [];
     } catch (err) {
       this.errors.push(err.message);
@@ -55,12 +56,14 @@ export default {
 
     // this.headers = cols;
 
-    for (let method of shippingMethods) {
+    for (const [index, method] of this.shippingMethods.entries()) {
       try {
-        let renderedRow = [method._id];
-        renderedRow.push(method.customer.coreDetails.name);
-        renderedRow.push(method.cart.total);
-        renderedRow.push(method.status);
+        let renderedRow = [index+1];
+        renderedRow.push(method.name);
+        renderedRow.push(method.description);
+        renderedRow.push(method.perProduct);
+        renderedRow.push(method.discounts.length);
+        renderedRow.push(method.cost);
         this.entries.push(renderedRow);
       } catch (err) {
         if (err.name !== "TypeError") {

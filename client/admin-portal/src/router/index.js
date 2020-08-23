@@ -44,6 +44,11 @@ const routes = [
       },
       {
         path: "shipping",
+        name: "shipping",
+        component: () => import("../views/children/shipping/Overview.vue")
+      },
+      {
+        path: "shipping/add",
         component: () => import("../views/children/shipping/Add.vue")
       }
     ]

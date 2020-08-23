@@ -1,4 +1,18 @@
 export const ShippingMethodFields = {
+  text: {
+    name: {
+      id: "name",
+      label: "Name",
+      re: /[A-Za-z]/,
+      maxLength: 255,
+      errorMsg: "Needs to contain one or more letters",
+      hint: "A descriptive name to enable quick selection.",
+      example: "Flat-rate",
+      value: "",
+      isValid: false,
+      required: true
+    }
+  },
   textArea: {
     description: {
       id: "description",
@@ -27,6 +41,16 @@ export const ShippingMethodFields = {
       required: true,
       step: 0.01,
       min: 0
+    }
+  },
+  boolean: {
+    perProduct: {
+      id: "perProduct",
+      label: "Apply shipping to each product in a cart?",
+      hint:
+        "This determines how this shipping will be applied. If ticked, this means that if a product with this method selected will add to total cost despite other items in a user's cart. If not ticked then the shipping will be applied as a per order cost, only being charged once even if multiple products are ordered.",
+      value: false,
+      isValid: true
     }
   }
 };

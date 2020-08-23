@@ -1,9 +1,9 @@
 import { DiscountPoint } from "../interfaces/discount-point.interface";
-import { ShippingType } from "../interfaces/shipping-type.interface";
 
 export class CreateShippingMethodDto {
+  readonly name: string;
   readonly description: string;
-  readonly type: ShippingType;
+  readonly perProduct: boolean;
   readonly cost: number;
   readonly discounts?: [DiscountPoint];
 }

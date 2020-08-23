@@ -93,12 +93,14 @@ export default {
                 numberFields[field].errorMsg.toLowerCase()
             );
             allValid = false;
+            this.$emit("errors", this.errors)
           }
         } catch (err) {
           allValid = false;
           this.errors.push(
             numberFields[field].label + " " + err.message.toLowerCase()
           );
+          this.$emit("errors", this.errors)
         }
       }
       return allValid;

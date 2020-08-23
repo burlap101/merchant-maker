@@ -13,26 +13,20 @@ count = 0
 
 print("Performing migration 'add default shipping method'...")
 
-if (u'shippingMethods' not in db.list_collection_names()) or (db.shippingMethods.count_documents({}) == 0):
-  if (u'shippingTypes' not in db.list_collection_names()) or (db.shippingTyps.count_documents({}) == 0):
-    db.shippingTypes.insert_one({
-      'name': 'free',
-      'description': 'no shipping cost to customer either included in price of product or otherwise.',
-      'perProduct': True
-    })
-    print("Default shipping type created.")
+if (u'shippingmethods' not in db.list_collection_names()) or (db.shippingmethods.count_documents({}) == 0):
   
-  db.shippingMethods.insert_one({
+  db.shippingmethods.insert_one({
+    'name': 'Free',
     'description': 'free shipping per product',
-    'type': db.shippingTypes.find_one(),
+    'perProduct': True,
     'cost': 0
   })
 
   print("Default shipping method created.")
 
 
-result = db.products.update_many({'shippingMethod': None}, {'$set': {'shippingMethod': db.shippingMethods.find_one()}})
+result = db.products.update_many({'shippingmethod': None}, {'$set': {'shippingMethod': db.shippingmethods.find_one()}})
 
-print("Products updated:", result.modified_count)
+print("Documents updated:", result.modified_count)
 
 

@@ -1,4 +1,5 @@
 import { ProductCategory } from '../interfaces/product-category.interface';
+import { ShippingMethod } from 'src/shipping/interfaces/shipping-method.interface';
 
 export class CreateProductDto {
   readonly name: string;
@@ -9,6 +10,6 @@ export class CreateProductDto {
   readonly attributes: Object;
   readonly available: number;
   readonly category: ProductCategory;
-  readonly shippingCalc?: string;
+  readonly shippingMethod: ShippingMethod;
   readonly images: Array<Object>;
 }

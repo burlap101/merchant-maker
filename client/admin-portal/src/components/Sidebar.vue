@@ -106,7 +106,6 @@ export default {
   },
   methods: {
     shipping: async function() {
-      this.$store.dispatch("shipping/populateTypes");
       this.activeOption = "shipping";
     }
   }

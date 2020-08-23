@@ -5,6 +5,11 @@
     >
       <h2 class="h2">Shipping Methods</h2>
       <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group mr-2">
+          <router-link to="/shipping/add">
+            <button class="btn btn-sm btn-outline-success">+ Add</button>
+          </router-link>
+        </div>
         <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
           <i class="fa fa-filter" aria-hidden="true"></i>
         </button>
