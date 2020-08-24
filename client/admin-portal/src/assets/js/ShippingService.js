@@ -37,7 +37,7 @@ export const ShippingService = {
     return processResponse(res);
   },
 
-  find: async function(id) {
+  findOne: async function(id) {
     let url = baseUrl + "/" + id;
     let res = await fetch(url);
 

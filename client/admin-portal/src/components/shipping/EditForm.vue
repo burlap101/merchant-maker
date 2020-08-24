@@ -141,6 +141,54 @@
           />
         </div>
       </div>
+      <div
+        v-for="(field, index) in fieldsObj.boolean"
+        class="row"
+        v-bind:key="'number-field-' + index"
+      >
+        <div class="col mb-3">
+          <div class="custom-control custom-checkbox">
+            <input
+              class="custom-control-input"
+              v-bind:id="field.id"
+              v-model="formData[field.id]"
+              v-bind:value="field.value"
+              v-on:change="$emit('toggled', this.formData[field.id])"
+              type="checkbox"
+            />
+            <label class="custom-control-label" v-bind:for="field.id">{{
+              field.label
+            }}</label>
+            <i
+              class="far fa-question-circle ml-2 text-muted"
+              data-toggle="tooltip"
+              data-placement="right"
+              v-bind:title="field.hint"
+            >
+            </i>
+          </div>
+        </div>
+      </div>
+      <div class="needs-validation">
+        <h4 class="my-3">Discount Points</h4>
+        <add-discount-point
+          v-for="(item, index) in formData.discounts"
+          v-bind:key="index"
+          v-bind:dpIndex="index"
+          v-on:remove="formData.discounts.splice(index, 1)"
+          v-on:updated="formData.discounts.splice(index, 1, $event)"
+        />
+        <div>
+          <button
+            class="btn btn-success"
+            v-on:click="
+              formData.discounts.push({ point: undefined, discount: undefined })
+            "
+          >
+            Add
+          </button>
+        </div>
+      </div>
       <button v-on:click="submit" class="btn btn-primary mt-4">
         Submit
       </button>
@@ -152,10 +200,8 @@
 import _ from "lodash";
 import { Validation } from "../../assets/js/Validation";
 import { ShippingMethodFields } from "@/assets/js/ShippingMethodFields";
-import { ProductsService } from "../../assets/js/ProductsService";
-import CategorySelection from "./CategorySelection.vue";
-import AdditionalAttributes from "./AdditionalAttributes.vue";
-import ImageUpload from "./ImageUpload.vue";
+import { ShippingService } from "@/assets/js/ShippingService";
+import AddDiscountPoint from "./AddDiscountPoint.vue";
 
 const baseUrl = window.location.hostname.includes("yambagraftonfirstaid.com.au")
   ? "/store"
@@ -165,13 +211,12 @@ export default {
   name: "edit-form",
   props: ["id"],
   components: {
-    
+    AddDiscountPoint
   },
   data() {
     return {
       formData: {
-        category: {},
-        attributes: {}
+        discounts: [{ point: undefined, discount: undefined }],
       },
       errors: [],
       attrName: "",
@@ -192,7 +237,6 @@ export default {
         await ShippingService.update(this.id, this.formData);
         this.added = true;
         this.errors = [];
-        await this.initialiseFormData();
       } catch (err) {
         this.errors.push(err.message);
         this.added = false;

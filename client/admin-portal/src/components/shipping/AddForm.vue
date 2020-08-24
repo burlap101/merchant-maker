@@ -165,7 +165,6 @@ export default {
     return {
       formData: {
         discounts: [{ point: undefined, discount: undefined }],
-        shippingType: {}
       },
       added: false,
       isFormValid: undefined,
