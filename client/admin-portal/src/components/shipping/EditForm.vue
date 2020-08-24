@@ -153,7 +153,6 @@
               v-bind:id="field.id"
               v-model="formData[field.id]"
               v-bind:value="field.value"
-              v-on:change="$emit('toggled', this.formData[field.id])"
               type="checkbox"
             />
             <label class="custom-control-label" v-bind:for="field.id">{{
@@ -177,6 +176,8 @@
           v-bind:dpIndex="index"
           v-on:remove="formData.discounts.splice(index, 1)"
           v-on:updated="formData.discounts.splice(index, 1, $event)"
+          v-bind:discount="item.discount"
+          v-bind:point="item.point"
         />
         <div>
           <button

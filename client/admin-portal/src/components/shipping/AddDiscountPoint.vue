@@ -52,7 +52,7 @@ import _ from "lodash";
 
 export default {
   name: "add-discount-point",
-  props: ["dpIndex"],
+  props: ["dpIndex", "point", "discount"],
   data() {
     return {
       formData: {},
@@ -108,6 +108,10 @@ export default {
     remove: function() {
       this.$emit("remove", this.dpIndex);
     }
+  },
+  created() {
+    this.$set(this.formData, "discount", this.discount);
+    this.$set(this.formData, "point", this.point);
   }
 };
 </script>
