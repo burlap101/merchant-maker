@@ -1,4 +1,5 @@
 import { Product } from '../../products/interfaces/product.interface';
+import { TrainingSession } from './training-session.interface';
 
 export interface ShoppingCart {
   _id: string,
@@ -7,5 +8,6 @@ export interface ShoppingCart {
     product: Product,
     qty: number
   }],
+  tsItems: [TrainingSession]
   total: number
 }

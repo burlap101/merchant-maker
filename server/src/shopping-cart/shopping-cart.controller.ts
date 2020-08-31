@@ -8,6 +8,7 @@ import { Roles } from 'src/auth/roles.decorator';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { ModifyCartQtyDto } from './dto/modify-cart-qty.dto';
 import { Product } from 'src/products/interfaces/product.interface';
+import { TrainingSession } from './interfaces/training-session.interface';
 
 
 @Controller('api/shopping-cart')
@@ -51,6 +52,14 @@ export class ShoppingCartController {
     );
   }
 
+  @Post('add-ts-to-cart')
+  async addTsToCart(@Request() req, @Body() trainingSession: TrainingSession): Promise<ShoppingCart> {
+    return this.shoppingCartService.addTsItemToCart(
+      req.cartid,
+      trainingSession
+    )
+  }
+
   @Post('modify-cart-qty')
   async modifyCart(@Request() req, @Body() modifyCartQtyDto: ModifyCartQtyDto): Promise<ShoppingCart> {
     return this.shoppingCartService.modifyItemInCart(
@@ -58,6 +67,14 @@ export class ShoppingCartController {
       modifyCartQtyDto.product,
       modifyCartQtyDto.qty
     );
+  }
+
+  @Post('modify-ts-cart-qty')
+  async modifyTsCart(@Request() req, @Body() trainingSession: TrainingSession): Promise<ShoppingCart> {
+    return this.shoppingCartService.modifyTsItemInCart(
+      req.cartid,
+      trainingSession
+    )
   }
 
   @Get('secret')
@@ -75,20 +92,25 @@ export class ShoppingCartController {
     return secretObj;
   }
 
-  @Get('secretbyval')
-  async createIntentAndRetrieveSecretWithValue(@Request() req, @Query() q): Promise<Object> {
-    if (q.val === undefined) {
-      throw Error()
-    }
-    const paymentIntent = await this.shoppingCartService.createPaymentIntent((q.val/100), "aud", {"orderid": req.cookies["mm-orderid"]});
-    let secretObj = {};
-    secretObj["secret"] = paymentIntent.client_secret;
-    return secretObj;
-  }
+  // @Get('secretbyval')
+  // async createIntentAndRetrieveSecretWithValue(@Request() req, @Query() q): Promise<Object> {
+  //   if (q.val === undefined) {
+  //     throw Error()
+  //   }
+  //   const paymentIntent = await this.shoppingCartService.createPaymentIntent((q.val/100), "aud", {"orderid": req.cookies["mm-orderid"]});
+  //   let secretObj = {};
+  //   secretObj["secret"] = paymentIntent.client_secret;
+  //   return secretObj;
+  // }
 
   @Post('remove-item')
   async removeItemFromCart(@Request() req, @Body() product: Product): Promise<ShoppingCart> {
     return this.shoppingCartService.removeItemFromCart(req.cartid, product);
+  }
+
+  @Post('remove-ts-item')
+  async removeTsItemFromCart(@Request() req, @Body() trainingSession: TrainingSession): Promise<ShoppingCart> {
+    return this.shoppingCartService.removeTsItemFromCart(req.cartid, trainingSession);
   }
 
 }

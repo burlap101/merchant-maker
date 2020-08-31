@@ -165,7 +165,7 @@ export const cartModule = {
 
     async setClientSecret({ state }, payload) {
       state.clientSecret = (
-        await ShoppingCartService.paymentIntentSecret(payload.grandTotal)
+        await ShoppingCartService.paymentIntentSecret()
       ).secret;
     },
 
