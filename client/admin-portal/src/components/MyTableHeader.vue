@@ -1,11 +1,27 @@
 <template>
   <thead>
     <tr>
-      <th v-on:click="toggleSort(title)" v-for="(title, index) in headers" v-bind:key="'header-' + index">
-          {{ title }}
-          <i v-if="title !== sortedBy.category" class="fa fa-sort" aria-hidden="true"></i>
-          <i v-if="(title === sortedBy.category) && (sortedBy.asc)" class="fa fa-sort-asc" aria-hidden="true"></i>
-          <i v-if="(title === sortedBy.category) && (!sortedBy.asc)" class="fa fa-sort-desc" aria-hidden="true"></i>
+      <th
+        v-on:click="toggleSort(title)"
+        v-for="(title, index) in headers"
+        v-bind:key="'header-' + index"
+      >
+        {{ title }}
+        <i
+          v-if="title !== sortedBy.category"
+          class="fa fa-sort"
+          aria-hidden="true"
+        ></i>
+        <i
+          v-if="title === sortedBy.category && sortedBy.asc"
+          class="fa fa-sort-asc"
+          aria-hidden="true"
+        ></i>
+        <i
+          v-if="title === sortedBy.category && !sortedBy.asc"
+          class="fa fa-sort-desc"
+          aria-hidden="true"
+        ></i>
       </th>
     </tr>
   </thead>
@@ -21,7 +37,7 @@ export default {
         asc: true,
         category: ""
       }
-    }
+    };
   },
   methods: {
     toggleSort: function(category) {
@@ -32,6 +48,6 @@ export default {
         this.sortedBy.asc = true;
       }
     }
-  },
-}
+  }
+};
 </script>

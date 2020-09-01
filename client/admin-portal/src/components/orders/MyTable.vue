@@ -28,8 +28,7 @@ export default {
     return {
       headers: ["Order No.", "Name", "Value", "Status"],
       entries: [],
-      errors: [],
-      
+      errors: []
     };
   },
   async created() {

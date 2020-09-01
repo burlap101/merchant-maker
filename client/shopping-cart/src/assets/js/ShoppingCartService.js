@@ -2,6 +2,15 @@ const baseUrl = window.location.host.includes("localhost:8")
   ? "/api/shopping-cart"
   : "/store/api/shopping-cart";
 
+const processResponse = async function(res) {
+  if (res.ok) {
+    return res.json();
+  } else {
+    const message = (await res.json()).message;
+    throw Error(message + " - Code: " + res.status);
+  }
+};
+
 export const ShoppingCartService = {
   findMyCart: async function() {
     let url = baseUrl;
@@ -72,6 +81,18 @@ export const ShoppingCartService = {
     }
   },
 
+  addTsToCart: async function(itemDetails) {
+    let url = baseUrl + "/add-ts-to-cart";
+    let res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(itemDetails)
+    });
+    return processResponse(res);
+  },
+
   paymentIntentSecret: async function(val = undefined) {
     let url = baseUrl;
     if (val !== undefined) {
@@ -105,6 +126,18 @@ export const ShoppingCartService = {
     }
   },
 
+  updateCartTsItem: async function(item) {
+    let url = baseUrl + "/modify-ts-cart-qty";
+    let res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(item)
+    });
+    return processResponse(res);
+  },
+
   removeItem: async function(item) {
     let url = baseUrl + "/remove-item";
     let res = await fetch(url, {
@@ -121,5 +154,18 @@ export const ShoppingCartService = {
       const message = (await res.json()).message;
       throw Error(message + " - Code: " + res.status);
     }
+  },
+
+  removeTsItem: async function(item) {
+    let url = baseUrl + "/remove-ts-item";
+    let res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(item)
+    });
+
+    return processResponse(res);
   }
 };

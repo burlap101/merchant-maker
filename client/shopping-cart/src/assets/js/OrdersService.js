@@ -96,12 +96,12 @@ export const OrdersService = {
   },
 
   find: async function(query) {
-    let url = baseUrl + '?'
+    let url = baseUrl + "?";
     for (const q in query) {
-      url += `${q}=${query[q]}&`
+      url += `${q}=${query[q]}&`;
     }
     let res = await fetch(url.slice(0, -2));
-    if(res.ok) {
+    if (res.ok) {
       return res.json();
     } else {
       let message = undefined;

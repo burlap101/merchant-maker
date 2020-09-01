@@ -142,6 +142,19 @@ export const cartModule = {
         }
       }
       state.changedProducts = [];
+
+      for (let id of state.changedTrainingsessions) {
+        let item = state.trainingSessions.find(el => el.pk === id);
+        if (item.qty <= 0) {
+          TrainingShoppingCartService.delete(item.pk);
+          ShoppingCartService.removeTsItem(item);
+          let itemIndex = state.products.indexOf(item);
+          state.products.splice(itemIndex, 1);
+        } else {
+          TrainingShoppingCartService.update(item);
+          ShoppingCartService.updateCartTsItem(item);
+        }
+      }
     },
 
     async addProductToCart({ state, commit }, payload) {
@@ -163,22 +176,28 @@ export const cartModule = {
       }
     },
 
-    async setClientSecret({ state }, payload) {
+    async setClientSecret({ state }) {
       state.clientSecret = (
         await ShoppingCartService.paymentIntentSecret()
       ).secret;
     },
 
-    async deleteTrainingCart({ state }, payload) {
+    async deleteTrainingCartItem({ state }, payload) {
       console.log("Delete cart called");
-      const res = await fetch("/api/shoppingcart/delete", {
-        method: "DELETE",
-        headers: payload.headers
-      });
-      if (res.ok) {
-        state.trainingSessions = [];
-      } else {
-        state.errors.push(res.status + " - " + res.statusText);
+      try {
+        await TrainingShoppingCartService.delete(payload.pk);
+        await ShoppingCartService.removeTsItem(payload);
+        let ts = state.trainingSessions.find(el => el.pk === payload.pk);
+        let deleteIndex = state.trainingSessions.indexOf(ts);
+        state.trainingSessions.splice(deleteIndex, 1);
+      } catch (err) {
+        state.errors.push(err.message);
+      }
+    },
+
+    async deleteTrainingCart({ state, dispatch }) {
+      for (const ts in state.trainingSessions) {
+        await dispatch("deleteTrainingCartItem", ts);
       }
     }
   }

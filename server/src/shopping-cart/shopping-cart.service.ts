@@ -6,7 +6,6 @@ import { Product } from '../products/interfaces/product.interface';
 import Stripe from 'stripe';
 import keys from "../localconfig/keys";
 import { TrainingSession } from './interfaces/training-session.interface';
-import { ShippingMethod } from 'src/shipping/interfaces/shipping-method.interface';
 
 const stripe = new Stripe(keys.stripe.privateKey, { apiVersion: '2020-03-02' });
 
