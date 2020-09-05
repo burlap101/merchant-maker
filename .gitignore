@@ -62,3 +62,4 @@ static/media/
 media/
 auth/constants.ts
 venv/
+nginx/

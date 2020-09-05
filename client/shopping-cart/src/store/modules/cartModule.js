@@ -39,6 +39,9 @@ export const cartModule = {
       } else if (payload.type === "trainingSession") {
         let item = state.trainingSessions.find(el => el.pk == payload.id);
         item.qty++;
+        if (!state.changedTrainingsessions.includes(payload.id)) {
+          state.changedTrainingsessions.push(payload.id);
+        }
       } else {
         throw Error(
           "Incorrect payload type given, expected 'product' or 'trainingSession'"
@@ -56,6 +59,9 @@ export const cartModule = {
       } else if (payload.type === "trainingSession") {
         let item = state.trainingSessions.find(el => el.pk == payload.id);
         item.qty--;
+        if (!state.changedTrainingsessions.includes(payload.id)) {
+          state.changedTrainingsessions.push(payload.id);
+        }
       } else {
         throw Error(
           "Incorrect payload type given, expected 'product' or 'trainingSession'"
@@ -73,6 +79,9 @@ export const cartModule = {
       } else if (payload.type === "trainingSession") {
         let item = state.trainingSessions.find(el => el.pk == payload.id);
         item.qty = payload.qty;
+        if (!state.changedTrainingsessions.includes(payload.id)) {
+          state.changedTrainingsessions.push(payload.id);
+        }
       } else {
         throw Error(
           "Incorrect payload type given, expected 'product' or 'trainingSession'"
@@ -120,11 +129,19 @@ export const cartModule = {
       }
 
       try {
+        let mmTsCart = (await ShoppingCartService.findMyCart()).tsItems;
         let trainingCart = await TrainingShoppingCartService.getShoppingCart();
+
         state.trainingSessions = [];
         commit("addTrainingSessions", {
           items: trainingCart
         });
+      
+        for (let item of trainingCart) {
+          if (!mmTsCart.includes(item) || mmTsCart.length === 0) {
+            ShoppingCartService.addTsToCart(item);
+          }
+        }
       } catch (err) {
         state.errors.push("TrainingCart: " + err.message);
       }
@@ -155,6 +172,7 @@ export const cartModule = {
           ShoppingCartService.updateCartTsItem(item);
         }
       }
+      state.changedTrainingsessions = [];
     },
 
     async addProductToCart({ state, commit }, payload) {
@@ -177,9 +195,11 @@ export const cartModule = {
     },
 
     async setClientSecret({ state }) {
-      state.clientSecret = (
-        await ShoppingCartService.paymentIntentSecret()
-      ).secret;
+      if (state.clientSecret === "") {
+        state.clientSecret = (
+          await ShoppingCartService.paymentIntentSecret()
+        ).secret;
+      }
     },
 
     async deleteTrainingCartItem({ state }, payload) {

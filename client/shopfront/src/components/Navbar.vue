@@ -167,7 +167,6 @@ export default {
     } catch (err) {
       this.errors.push(err.message);
     }
-    this.$store.dispatch("cart/populateCart");
   }
 };
 </script>
