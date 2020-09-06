@@ -117,7 +117,7 @@ export const cartModule = {
   },
 
   actions: {
-    async populateCart({ commit, state }) {
+    async populateCart({ commit, state, dispatch }) {
       try {
         let products = (await ShoppingCartService.findMyCart()).items;
         state.products = [];
@@ -139,11 +139,15 @@ export const cartModule = {
       
         for (let item of trainingCart) {
           if (!mmTsCart.includes(item) || mmTsCart.length === 0) {
-            ShoppingCartService.addTsToCart(item);
+            await ShoppingCartService.addTsToCart(item);
           }
         }
       } catch (err) {
         state.errors.push("TrainingCart: " + err.message);
+      }
+
+      if (!state.clientSecret) {
+        dispatch("setClientSecret");
       }
     },
 
@@ -203,7 +207,7 @@ export const cartModule = {
     },
 
     async deleteTrainingCartItem({ state }, payload) {
-      console.log("Delete cart called");
+      console.log("Delete cart called with payload:", payload);
       try {
         await TrainingShoppingCartService.delete(payload.pk);
         await ShoppingCartService.removeTsItem(payload);
@@ -216,7 +220,7 @@ export const cartModule = {
     },
 
     async deleteTrainingCart({ state, dispatch }) {
-      for (const ts in state.trainingSessions) {
+      for (const ts of state.trainingSessions) {
         await dispatch("deleteTrainingCartItem", ts);
       }
     }

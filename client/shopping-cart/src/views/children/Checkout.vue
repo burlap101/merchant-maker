@@ -174,20 +174,20 @@ export default {
     ...mapGetters("cart/", ["grandTotal"])
   },
 
-  watch: {
-    grandTotal: async function() {
-      try {
-        if (this.grandTotal > 0) {
-          await this.$store.dispatch("cart/setClientSecret", {
-            grandTotal: this.grandTotal * 100
-          });
-        }
-      } catch (err) {
-        this.viewErrors.push(err.message);
-        throw err;
-      }
-    }
-  },
+  // watch: {
+  //   grandTotal: async function() {
+  //     try {
+  //       if (this.grandTotal > 0) {
+  //         await this.$store.dispatch("cart/setClientSecret", {
+  //           grandTotal: this.grandTotal * 100
+  //         });
+  //       }
+  //     } catch (err) {
+  //       this.viewErrors.push(err.message);
+  //       throw err;
+  //     }
+  //   }
+  // },
 
   methods: {
     contactableChanged: function(event) {

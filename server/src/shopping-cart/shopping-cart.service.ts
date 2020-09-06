@@ -81,7 +81,7 @@ export class ShoppingCartService {
       return this.modifyTsItemInCart(cartId, tsItem);
     } else {
       cart.tsItems.push(tsItem);
-      cart.total += tsItem.total_cost;
+      cart.total += tsItem.unit_price*tsItem.qty;
     }
 
     return this.shoppingCartModel.findOneAndUpdate({_id: cartId}, cart, {new: true, })
