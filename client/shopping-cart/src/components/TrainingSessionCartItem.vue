@@ -47,7 +47,9 @@
           <div class="text-muted text-right">
             <div class="col">
               ${{ (item.qty * item.unit_price).toFixed(2) }}
-              <a class="text-secondary ml-2" v-on:click="updateTrainingSessionQty(0)"
+              <a
+                class="text-secondary ml-2"
+                v-on:click="updateTrainingSessionQty(0)"
                 ><i class="far fa-trash-alt fa-lg"></i
               ></a>
             </div>
@@ -106,8 +108,7 @@ export default {
         id: this.item.pk
       });
       this.$emit("haschanged");
-    },
-
+    }
   },
   async created() {
     const c = await CourseService.getCourses(this.item.course);

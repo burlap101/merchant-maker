@@ -104,9 +104,7 @@ export const cartModule = {
 
     addTrainingSessions(state, payload) {
       payload.items.forEach(item => {
-        const index = state.trainingSessions.findIndex(
-          el => el.training_session === item.training_session
-        );
+        const index = state.trainingSessions.findIndex(el => el.pk === item.pk);
         if (index < 0) {
           state.trainingSessions.push(item);
         } else {
@@ -132,16 +130,16 @@ export const cartModule = {
         let mmTsCart = (await ShoppingCartService.findMyCart()).tsItems;
         let trainingCart = await TrainingShoppingCartService.getShoppingCart();
 
-        state.trainingSessions = [];
-        commit("addTrainingSessions", {
-          items: trainingCart
-        });
-      
         for (let item of trainingCart) {
           if (!mmTsCart.includes(item) || mmTsCart.length === 0) {
             await ShoppingCartService.addTsToCart(item);
           }
         }
+
+        state.trainingSessions = [];
+        commit("addTrainingSessions", {
+          items: trainingCart
+        });
       } catch (err) {
         state.errors.push("TrainingCart: " + err.message);
       }
@@ -166,7 +164,6 @@ export const cartModule = {
 
       for (let id of state.changedTrainingsessions) {
         let item = state.trainingSessions.find(el => el.pk === id);
-        console.log("$store.saveCart", item)
         if (item.qty <= 0) {
           TrainingShoppingCartService.delete(item.pk);
           ShoppingCartService.removeTsItem(item);
