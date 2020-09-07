@@ -166,11 +166,12 @@ export const cartModule = {
 
       for (let id of state.changedTrainingsessions) {
         let item = state.trainingSessions.find(el => el.pk === id);
+        console.log("$store.saveCart", item)
         if (item.qty <= 0) {
           TrainingShoppingCartService.delete(item.pk);
           ShoppingCartService.removeTsItem(item);
-          let itemIndex = state.products.indexOf(item);
-          state.products.splice(itemIndex, 1);
+          let itemIndex = state.trainingSessions.indexOf(item);
+          state.trainingSessions.splice(itemIndex, 1);
         } else {
           TrainingShoppingCartService.update(item);
           ShoppingCartService.updateCartTsItem(item);

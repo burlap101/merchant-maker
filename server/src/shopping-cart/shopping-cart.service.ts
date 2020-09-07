@@ -136,6 +136,8 @@ export class ShoppingCartService {
     let item = cart.items.find(el => el.product._id === product._id);
     let deleteItemIndex = cart.items.indexOf(item);
     cart.items.splice(deleteItemIndex, 1);
+    cart.total -= item.qty*item.product.price;
+    this.updatePaymentIntent(cartId, {"amount": parseInt((cart.total*100).toFixed(0))});
     return this.shoppingCartModel.findOneAndUpdate({_id: cart._id}, cart, {new: true, useFindAndModify: false}).select("-paymentIntentId");
   }
 
@@ -143,7 +145,9 @@ export class ShoppingCartService {
     let cart = await this.shoppingCartModel.findOne({ _id: cartId}).exec();
     let item = cart.tsItems.find(el => el.pk === tsItem.pk );
     let deleteItemIndex = cart.tsItems.indexOf(item);
-    cart.items.splice(deleteItemIndex, 1);
+    cart.tsItems.splice(deleteItemIndex, 1);
+    cart.total -= item.qty*item.unit_price;
+    this.updatePaymentIntent(cartId, { "amount": parseInt((cart.total * 100).toFixed(0))});
     return this.shoppingCartModel.findOneAndUpdate({ _id: cartId }, cart, {new: true, useFindAndModify: false}).select("-paymentIntentId");
   }
 
