@@ -12,63 +12,52 @@ export class CategoriesService {
   ) {}
 
   async create(proposedCategory: ProductCategory, child?: Category, lvl = 0): Promise<Category> {
-    try {
-      const existingCategories = await this.categoryModel.find({ "name": proposedCategory.name, "description": proposedCategory.description }).exec();
-      if (existingCategories.length == 0 && !child) {
-        const createdCategory = new this.categoryModel({
-          name: proposedCategory.name,
-          description: proposedCategory.description,
-          hasParent: proposedCategory.parent.name ? true : false,
-          children: [],
-          level: lvl
-        });
-        let parent: Category;
-        let newChild = await createdCategory.save();
-        if (proposedCategory.parent.name) {
-          parent = await this.create(proposedCategory.parent, newChild, lvl+1);
-        }
-        return newChild;
-      } else if (existingCategories.length > 0 && !child) {
-        return existingCategories[0]
-      } else if (existingCategories.length > 0 && child) {
-        let parent: Category;
-        let newChild: Promise<Category>;
-        let childIndex = _.findIndex(existingCategories[0].children, { "name": child.name, "description": child.description })
-        if (childIndex >= 0) {
-          console.log(`Removing index ${childIndex} from ${existingCategories[0].name}.children:`)
-          console.log(existingCategories[0].children[childIndex]);
-          existingCategories[0].children.splice(childIndex, 1);
-          console.log("And after deletion the array looks like this:")
-          console.log(existingCategories[0].children);
-        }
-        existingCategories[0].children.push(child);
-        newChild = this.update(existingCategories[0]._id, existingCategories[0]);
-        if ((await newChild).hasParent) {
-          parent = (await this.findByObject({ 'children': { $elemMatch: {"name": (await newChild).name, "description": (await newChild).description }}}))[0];
-          this.create(parent, await newChild, lvl + 1);
-        }
-        return newChild;
-      } else if (existingCategories.length == 0 && child) {
-        const createdCategory = new this.categoryModel({
-          name: proposedCategory.name,
-          description: proposedCategory.description,
-          hasParent: proposedCategory.parent.name ? true : false,
-          children: [child],
-          level: lvl
-        });
-        let parent: Category;
-        let newChild = await createdCategory.save();
-        if (proposedCategory.parent.name) {
-          parent = await this.create(proposedCategory.parent, newChild, lvl + 1);
-        }
-        return newChild;
+    const existingCategories = await this.categoryModel.find({ "name": proposedCategory.name, "description": proposedCategory.description }).exec();
+    if (existingCategories.length == 0 && !child) {
+      const createdCategory = new this.categoryModel({
+        name: proposedCategory.name,
+        description: proposedCategory.description,
+        hasParent: proposedCategory.parent.name ? true : false,
+        children: [],
+        level: lvl
+      });
+      let parent: Category;
+      let newChild = await createdCategory.save();
+      if (proposedCategory.parent.name) {
+        parent = await this.create(proposedCategory.parent, newChild, lvl+1);
       }
-    } catch (err) {
-      console.log("child:\n", child);
-      console.log("proposedCategory:\n", proposedCategory);
-      throw err;
+      return newChild;
+    } else if (existingCategories.length > 0 && !child) {
+      return existingCategories[0]
+    } else if (existingCategories.length > 0 && child) {
+      let parent: Category;
+      let newChild: Promise<Category>;
+      let childIndex = _.findIndex(existingCategories[0].children, { "name": child.name, "description": child.description })
+      if (childIndex >= 0) {
+        existingCategories[0].children.splice(childIndex, 1);
+      }
+      existingCategories[0].children.push(child);
+      newChild = this.update(existingCategories[0]._id, existingCategories[0]);
+      if ((await newChild).hasParent) {
+        parent = (await this.findByObject({ 'children': { $elemMatch: {"name": (await newChild).name, "description": (await newChild).description }}}))[0];
+        this.create(parent, await newChild, lvl + 1);
+      }
+      return newChild;
+    } else if (existingCategories.length == 0 && child) {
+      const createdCategory = new this.categoryModel({
+        name: proposedCategory.name,
+        description: proposedCategory.description,
+        hasParent: proposedCategory.parent.name ? true : false,
+        children: [child],
+        level: lvl
+      });
+      let parent: Category;
+      let newChild = await createdCategory.save();
+      if (proposedCategory.parent.name) {
+        parent = await this.create(proposedCategory.parent, newChild, lvl + 1);
+      }
+      return newChild;
     }
-    
   }
 
   async update(id: string, newCategory: Category): Promise<Category>{

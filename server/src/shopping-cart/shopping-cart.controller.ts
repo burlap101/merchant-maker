@@ -84,7 +84,6 @@ export class ShoppingCartController {
     if (q.tsval !== undefined) {
       tsTotal += q.tsval
     }
-    console.log(tsTotal);
     const paymentIntent = await this.shoppingCartService.createPaymentIntent((cart.total + tsTotal), "aud", {"orderid": req.cookies["mm-orderid"]});
     this.shoppingCartService.assignPaymentIntentToCart(req.cartid, paymentIntent.id);
     let secretObj = {};
